@@ -1,0 +1,30 @@
+#!/bin/sh
+
+SSG_EXTENSION="${EXTENSION:-md}"
+SSG_PROCESSOR="${PROCESSOR:-smu}"
+
+gen_index() {
+}
+
+gen_page() {
+    dir="$1"
+    if [ ! -e "$dir/index.html" ]; then
+        if [ -e "$dir/index.md" ]; then
+            "$SSG_PROCESSOR" "$dir/index.$SSG_EXTENSION" > "$dir/index.html"
+        else
+            gen_index "$dir"
+        fi
+    fi
+}
+
+gen_site() {
+    dir="$1"
+    gen_page "$dir"
+    for name in "$dir"; do
+        if [ -d "$name" ] && [ ! -L "$name" ]; then
+            gen "$dir/$name"
+        fi
+    done
+}
+
+gen_site "${1%/}"
