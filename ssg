@@ -1,16 +1,79 @@
 #!/bin/sh
 
-SSG_EXTENSION="${EXTENSION:-md}"
-SSG_PROCESSOR="${PROCESSOR:-smu}"
+SSG_EXTENSION="${SSG_EXTENSION:-md}"
+SSG_PROCESSOR="${SSG_PROCESSOR:-smu}"
+SSG_INCLUDES="${SSG_INCLUDES:-includes}"
+
+has_index() {
+    [ -e "$1/index.html" ] || [ -e "$1/index.$SSG_EXTENSION" ]
+}
+
+is_dir() {
+    [ -d "$1" ] && [ ! -L "$1" ] && [ "${1##*/}" != "$SSG_INCLUDES" ]
+}
+
+is_page() {
+    is_dir "$1" && has_index "$1"
+}
+
+is_category() {
+    is_dir "$1" && ! has_index "$1"
+}
+
+get_title() {
+    dir="$1"
+    if [ -e "$dir/index.$SSG_EXTENSION" ]; then
+        head -n 1 "$dir/index.$SSG_EXTENSION"
+    elif [ -e "$dir/index.html" ]; then
+        cat "$dir/index.html" | tr -d '\r\n' |
+            sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p'
+    else
+        printf "${dir##*/}"
+    fi
+}
+
+copy_header() {
+    title="$(get_title "${1%/*}")"
+    if [ -e "$SSG_INCLUDES/header.html" ]; then
+        sed "s/<title><\/title>/<title>$title<\/title>/" > "$1"
+    fi
+}
+
+add_footer() {
+    if [ -e "$SSG_INCLUDES/footer.html" ];
+        cat "$SSG_INCLUDES/footer.html" >> "$1"
+    else
+        printf "</body>\n</html>\n" >> "$1"
+    fi
+}
 
 gen_index() {
+    dir="$1"
+    index="$dir/index.html"
+    copy_header "$index"
+    for name in "$dir"; do
+        if is_category "$dir/$name"; then
+            printf "<a href=\"$name\">$name</a>\n" >> "$index"
+        fi
+    done
+    # todo: sort by date
+    for name in "$dir"; do
+        if is_page "$dir/$name"; then
+            title="$(get_title "$dir/$name")"
+            printf "<h2><a href=\"$name\">$title</a></h2>\n" >> "$index"
+        fi
+    done
+    add_footer "$index"
 }
 
 gen_page() {
     dir="$1"
-    if [ ! -e "$dir/index.html" ]; then
+    index="$dir/index.html"
+    if [ ! -e "$index" ]; then
         if [ -e "$dir/index.md" ]; then
-            "$SSG_PROCESSOR" "$dir/index.$SSG_EXTENSION" > "$dir/index.html"
+            copy_header "$index"
+            "$SSG_PROCESSOR" "$dir/index.$SSG_EXTENSION" > "$index"
+            add_footer "$index"
         else
             gen_index "$dir"
         fi
@@ -21,8 +84,8 @@ gen_site() {
     dir="$1"
     gen_page "$dir"
     for name in "$dir"; do
-        if [ -d "$name" ] && [ ! -L "$name" ]; then
-            gen "$dir/$name"
+        if is_dir "$dir/$name"; then
+            gen_site "$dir/$name"
         fi
     done
 }
