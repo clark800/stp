@@ -34,13 +34,16 @@ get_title() {
 
 copy_header() {
     title="$(get_title "${1%/*}")"
-    if [ -e "$SSG_INCLUDES/header.html" ]; then
-        sed "s/<title><\/title>/<title>$title<\/title>/" > "$1"
+    header="$SSG_INCLUDES/header.html"
+    if [ -e "$header" ]; then
+        sed "s/<title><\/title>/<title>$title<\/title>/" "$header" > "$1"
+    else
+        printf '<html>\n<body>\n' > "$1"
     fi
 }
 
 add_footer() {
-    if [ -e "$SSG_INCLUDES/footer.html" ];
+    if [ -e "$SSG_INCLUDES/footer.html" ]; then
         cat "$SSG_INCLUDES/footer.html" >> "$1"
     else
         printf "</body>\n</html>\n" >> "$1"
@@ -51,16 +54,16 @@ gen_index() {
     dir="$1"
     index="$dir/index.html"
     copy_header "$index"
-    for name in "$dir"; do
-        if is_category "$dir/$name"; then
-            printf "<a href=\"$name\">$name</a>\n" >> "$index"
+    for path in "$dir"/*; do
+        if is_category "$path"; then
+            printf "<a href=\"${path##*/}\">$name</a>\n" >> "$index"
         fi
     done
     # todo: sort by date
-    for name in "$dir"; do
-        if is_page "$dir/$name"; then
-            title="$(get_title "$dir/$name")"
-            printf "<h2><a href=\"$name\">$title</a></h2>\n" >> "$index"
+    for path in "$dir"/*; do
+        if is_page "$path"; then
+            title="$(get_title "$path")"
+            printf "<h2><a href=\"${path##*/}\">$title</a></h2>\n" >> "$index"
         fi
     done
     add_footer "$index"
@@ -72,7 +75,7 @@ gen_page() {
     if [ ! -e "$index" ]; then
         if [ -e "$dir/index.md" ]; then
             copy_header "$index"
-            "$SSG_PROCESSOR" "$dir/index.$SSG_EXTENSION" > "$index"
+            "$SSG_PROCESSOR" "$dir/index.$SSG_EXTENSION" >> "$index"
             add_footer "$index"
         else
             gen_index "$dir"
@@ -83,11 +86,12 @@ gen_page() {
 gen_site() {
     dir="$1"
     gen_page "$dir"
-    for name in "$dir"; do
-        if is_dir "$dir/$name"; then
-            gen_site "$dir/$name"
+    for path in "$dir"/*; do
+        if is_dir "$path"; then
+            gen_site "$path"
         fi
     done
 }
 
-gen_site "${1%/}"
+
+gen_site "$(pwd)"
