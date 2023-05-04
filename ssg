@@ -72,14 +72,17 @@ gen_index() {
 gen_page() {
     dir="$1"
     index="$dir/index.html"
-    if [ ! -e "$index" ]; then
-        if [ -e "$dir/index.md" ]; then
-            copy_header "$index"
-            "$SSG_PROCESSOR" "$dir/index.$SSG_EXTENSION" >> "$index"
-            add_footer "$index"
-        else
-            gen_index "$dir"
-        fi
+    if [ -e "$dir/index.$SSG_EXTENSION" ]; then
+        copy_header "$index"
+        cat "$dir/index.$SSG_EXTENSION" |
+        sed 's/^% \([^:]*\): \(.*\)$/<dl>\n<dt>\1<\/dt>\n<dd>\2<\/dd>\n<\/dl>/'\
+            | tr -d '\r' |
+            tr '\n' '\r' | sed 's/<\/dl>\r<dl>\r//' | tr '\r' '\n' |
+            "$SSG_PROCESSOR" | sed 's/<p><dl>/<dl>/' |
+            sed 's/<\/dl><\/p>/<\/dl>/' >> "$index"
+        add_footer "$index"
+    elif [ ! -e "$index" ]; then
+        gen_index "$dir"
     fi
 }
 

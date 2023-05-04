@@ -1,6 +1,5 @@
 html {
     max-width: 80ch;
-    padding: 1em;
     margin: auto;
     line-height: 1.75;
     font-size: 1.25em;
@@ -15,9 +14,10 @@ a {
 
 h1 {
     border-bottom: 1px solid #ccc;
+    margin-bottom: 0;
 }
 
-h1,h2,h3,h4,h5,h6 {
+h2,h3,h4,h5,h6 {
     margin-top: 1.5em;
 }
 
@@ -28,4 +28,32 @@ img {
     height: auto;
     border-radius: 16px;
     box-shadow: 0px 0px 16px 8px #ccc;
+}
+
+h1 + dl {
+    margin-top: 0.25em;
+}
+
+h1 + dl > dd, h1 + dl > dt {
+    margin: 0;
+    font-size: small;
+    display: inline;
+    vertical-align: middle;
+}
+
+h1 + dl > dt {
+    font-weight: bolder;
+}
+
+h1 + dl > dt::after {
+    content: ': ';
+}
+
+h1 + dl > dd::after {
+    content: ' ';
+    margin: 0.5em;
+}
+
+h1 + dl > dd:last-of-type::after {
+    margin: 0;
 }
