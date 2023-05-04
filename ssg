@@ -1,15 +1,15 @@
 #!/bin/sh
 
-SSG_EXTENSION="${SSG_EXTENSION:-md}"
-SSG_PROCESSOR="${SSG_PROCESSOR:-smu}"
-SSG_INCLUDES="${SSG_INCLUDES:-includes}"
+EXT="${SSG_EXTENSION:-md}"
+PROCESSOR="${SSG_PROCESSOR:-smu}"
+INCLUDES="${SSG_INCLUDES:-includes}"
 
 has_index() {
-    [ -e "$1/index.html" ] || [ -e "$1/index.$SSG_EXTENSION" ]
+    [ -e "$1/index.html" ] || [ -e "$1/index.$EXT" ]
 }
 
 is_dir() {
-    [ -d "$1" ] && [ ! -L "$1" ] && [ "${1##*/}" != "$SSG_INCLUDES" ]
+    [ -d "$1" ] && [ ! -L "$1" ] && [ "${1##*/}" != "$INCLUDES" ]
 }
 
 is_page() {
@@ -22,8 +22,8 @@ is_category() {
 
 get_title() {
     dir="$1"
-    if [ -e "$dir/index.$SSG_EXTENSION" ]; then
-        head -n 1 "$dir/index.$SSG_EXTENSION"
+    if [ -e "$dir/index.$EXT" ]; then
+        head -n 1 "$dir/index.$EXT"
     elif [ -e "$dir/index.html" ]; then
         cat "$dir/index.html" | tr -d '\r\n' |
             sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p'
@@ -34,7 +34,7 @@ get_title() {
 
 copy_header() {
     title="$(get_title "${1%/*}")"
-    header="$SSG_INCLUDES/header.html"
+    header="$INCLUDES/header.html"
     if [ -e "$header" ]; then
         sed "s/<title><\/title>/<title>$title<\/title>/" "$header" > "$1"
     else
@@ -43,8 +43,8 @@ copy_header() {
 }
 
 add_footer() {
-    if [ -e "$SSG_INCLUDES/footer.html" ]; then
-        cat "$SSG_INCLUDES/footer.html" >> "$1"
+    if [ -e "$INCLUDES/footer.html" ]; then
+        cat "$INCLUDES/footer.html" >> "$1"
     else
         printf "</body>\n</html>\n" >> "$1"
     fi
@@ -72,13 +72,13 @@ gen_index() {
 gen_page() {
     dir="$1"
     index="$dir/index.html"
-    if [ -e "$dir/index.$SSG_EXTENSION" ]; then
+    if [ -e "$dir/index.$EXT" ]; then
         copy_header "$index"
-        cat "$dir/index.$SSG_EXTENSION" |
+        cat "$dir/index.$EXT" |
         sed 's/^% \([^:]*\): \(.*\)$/<dl>\n<dt>\1<\/dt>\n<dd>\2<\/dd>\n<\/dl>/'\
             | tr -d '\r' |
             tr '\n' '\r' | sed 's/<\/dl>\r<dl>\r//' | tr '\r' '\n' |
-            "$SSG_PROCESSOR" | sed 's/<p><dl>/<dl>/' |
+            "$PROCESSOR" | sed 's/<p><dl>/<dl>/' |
             sed 's/<\/dl><\/p>/<\/dl>/' >> "$index"
         add_footer "$index"
     elif [ ! -e "$index" ]; then
