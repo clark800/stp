@@ -72,8 +72,11 @@ gen_index() {
 }
 
 gen_nav() {
-    tail="${1#./}" # a/b/  b/   ''
-    head="/"         # /     /a/  /a/b/
+    tail="${1%/}"
+    tail="${tail%/*}/" # start with parent directory
+    tail="${tail#.}"
+    tail="${tail#/}"   #  a/b/    b/      ''
+    head="/"           # /     /a/   /a/b/
     printf "<a href=\"$head\">Home</a> &gt;\n"
     while [ "$tail" ]; do
         head="$head${tail%%/*}/"
@@ -87,7 +90,7 @@ gen_page() {
     source="$1"
     dest="${source%.*}.html"
     copy_header "$dest"
-    gen_nav "${source%/*/*}/" >> "$dest"
+    gen_nav "${source%/*}" >> "$dest"
     cat "$source" |
     sed 's/^% \([^:]*\): \(.*\)$/<dl>\n<dt>\1<\/dt>\n<dd>\2<\/dd>\n<\/dl>/' |
         tr -d '\r' | tr '\n' '\r' | sed 's/<\/dl>\r<dl>\r//' | tr '\r' '\n' |
