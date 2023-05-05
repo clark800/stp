@@ -70,21 +70,22 @@ gen_index() {
 }
 
 process() {
-    cat "$1" |
+    source="$1"
+    dest="${source%.*}.html"
+    copy_header "$dest"
+    cat "$source" |
     sed 's/^% \([^:]*\): \(.*\)$/<dl>\n<dt>\1<\/dt>\n<dd>\2<\/dd>\n<\/dl>/' |
         tr -d '\r' | tr '\n' '\r' | sed 's/<\/dl>\r<dl>\r//' | tr '\r' '\n' |
         "$PROCESSOR" | sed 's/<p><dl>/<dl>/' | sed 's/<\/dl><\/p>/<\/dl>/' >> \
-        "${1%.*}.html"
+        "$dest"
+    add_footer "$dest"
 }
 
 gen_page() {
     dir="$1"
-    index="$dir/index.html"
     if [ -e "$dir/index.$EXT" ]; then
-        copy_header "$index"
         process "$dir/index.$EXT"
-        add_footer "$index"
-    elif [ ! -e "$index" ]; then
+    elif [ ! -e "$dir/index.html" ]; then
         gen_index "$dir"
     fi
 }
