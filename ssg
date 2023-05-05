@@ -69,17 +69,20 @@ gen_index() {
     add_footer "$index"
 }
 
+process() {
+    cat "$1" |
+    sed 's/^% \([^:]*\): \(.*\)$/<dl>\n<dt>\1<\/dt>\n<dd>\2<\/dd>\n<\/dl>/' |
+        tr -d '\r' | tr '\n' '\r' | sed 's/<\/dl>\r<dl>\r//' | tr '\r' '\n' |
+        "$PROCESSOR" | sed 's/<p><dl>/<dl>/' | sed 's/<\/dl><\/p>/<\/dl>/' >> \
+        "${1%.*}.html"
+}
+
 gen_page() {
     dir="$1"
     index="$dir/index.html"
     if [ -e "$dir/index.$EXT" ]; then
         copy_header "$index"
-        cat "$dir/index.$EXT" |
-        sed 's/^% \([^:]*\): \(.*\)$/<dl>\n<dt>\1<\/dt>\n<dd>\2<\/dd>\n<\/dl>/'\
-            | tr -d '\r' |
-            tr '\n' '\r' | sed 's/<\/dl>\r<dl>\r//' | tr '\r' '\n' |
-            "$PROCESSOR" | sed 's/<p><dl>/<dl>/' |
-            sed 's/<\/dl><\/p>/<\/dl>/' >> "$index"
+        process "$dir/index.$EXT"
         add_footer "$index"
     elif [ ! -e "$index" ]; then
         gen_index "$dir"
