@@ -24,14 +24,14 @@ is_category() {
 }
 
 get_title() {
-    dir="$1"
-    if [ -e "$dir/index.$EXT" ]; then
-        head -n 1 "$dir/index.$EXT"
-    elif [ -e "$dir/index.html" ]; then
-        cat "$dir/index.html" | tr -d '\r\n' |
+    titledir="${1%/}"
+    if [ -e "$titledir/index.$EXT" ]; then
+        head -n 1 "$titledir/index.$EXT"
+    elif [ -e "$titledir/index.html" ]; then
+        cat "$titledir/index.html" | tr -d '\r\n' |
             sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p'
     else
-        printf "${dir##*/}"
+        printf "${titledir##*/}"
     fi
 }
 
@@ -54,16 +54,15 @@ add_footer() {
 }
 
 gen_index() {
-    dir="$1"
-    index="$dir/index.html"
+    index="$1/index.html"
     copy_header "$index"
-    for path in "$dir"/*; do
+    for path in "$1"/*; do
         if is_category "$path"; then
             printf "<a href=\"${path##*/}\">$name</a>\n" >> "$index"
         fi
     done
     # todo: sort by date
-    for path in "$dir"/*; do
+    for path in "$1"/*; do
         if is_page "$path"; then
             title="$(get_title "$path")"
             printf "<h2><a href=\"${path##*/}\">$title</a></h2>\n" >> "$index"
@@ -72,10 +71,23 @@ gen_index() {
     add_footer "$index"
 }
 
+gen_nav() {
+    tail="${1#./}" # a/b/  b/   ''
+    head="/"         # /     /a/  /a/b/
+    printf "<a href=\"$head\">Home</a> &gt;\n"
+    while [ "$tail" ]; do
+        head="$head${tail%%/*}/"
+        tail="${tail#*/}"
+        title="$(get_title ".$head")"
+        printf "<a href=\"$head\">$title</a> &gt;\n"
+    done
+}
+
 gen_page() {
     source="$1"
     dest="${source%.*}.html"
     copy_header "$dest"
+    gen_nav "${source%/*/*}/" >> "$dest"
     cat "$source" |
     sed 's/^% \([^:]*\): \(.*\)$/<dl>\n<dt>\1<\/dt>\n<dd>\2<\/dd>\n<\/dl>/' |
         tr -d '\r' | tr '\n' '\r' | sed 's/<\/dl>\r<dl>\r//' | tr '\r' '\n' |
@@ -86,9 +98,9 @@ gen_page() {
 
 gen_site() {
     dir="$1"
-    for filepath in "$dir"/*."$EXT"; do
-        if [ -e "$filepath" ]; then
-            gen_page "$filepath"
+    for path in "$dir"/*."$EXT"; do
+        if [ -e "$path" ]; then
+            gen_page "$path"
         fi
     done
     if [ ! -e "$dir/index.html" ]; then
@@ -101,4 +113,4 @@ gen_site() {
     done
 }
 
-gen_site "$(pwd)"
+gen_site "."
