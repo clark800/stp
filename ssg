@@ -4,8 +4,11 @@ EXT="${SSG_EXTENSION:-md}"
 PROCESSOR="${SSG_PROCESSOR:-smu}"
 INCLUDES="${SSG_INCLUDES:-includes}"
 
-has_index() {
-    [ -e "$1/index.html" ] || [ -e "$1/index.$EXT" ]
+has_subdir() {
+    for subdir in "$1"/*; do
+        if [ -d "$subdir" ]; then true; fi
+    done
+    false
 }
 
 is_dir() {
@@ -13,11 +16,11 @@ is_dir() {
 }
 
 is_page() {
-    is_dir "$1" && has_index "$1"
+    is_dir "$1" && ! has_subdir "$1"
 }
 
 is_category() {
-    is_dir "$1" && ! has_index "$1"
+    is_dir "$1" && has_subdir "$1"
 }
 
 get_title() {
@@ -69,7 +72,7 @@ gen_index() {
     add_footer "$index"
 }
 
-process() {
+gen_page() {
     source="$1"
     dest="${source%.*}.html"
     copy_header "$dest"
@@ -81,24 +84,21 @@ process() {
     add_footer "$dest"
 }
 
-gen_page() {
-    dir="$1"
-    if [ -e "$dir/index.$EXT" ]; then
-        process "$dir/index.$EXT"
-    elif [ ! -e "$dir/index.html" ]; then
-        gen_index "$dir"
-    fi
-}
-
 gen_site() {
     dir="$1"
-    gen_page "$dir"
+    for filepath in "$dir"/*."$EXT"; do
+        if [ -e "$filepath" ]; then
+            gen_page "$filepath"
+        fi
+    done
+    if [ ! -e "$dir/index.html" ]; then
+        gen_index "$dir"
+    fi
     for path in "$dir"/*; do
         if is_dir "$path"; then
             gen_site "$path"
         fi
     done
 }
-
 
 gen_site "$(pwd)"
