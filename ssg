@@ -24,6 +24,14 @@ is_category() {
     is_dir "$1" && has_subdir "$1"
 }
 
+titlecase() {
+    printf '%s\n' "$1" | tr '_ -' '\n\n\n' |
+    while IFS='' read -r word; do
+        printf ' %.1s' "$word" | tr '[:lower:]' '[:upper:]'
+        printf "${word#?}"
+    done | cut -c 2-
+}
+
 get_title() {
     titledir="${1%/}"
     if [ -e "$titledir/index.$EXT" ]; then
@@ -34,7 +42,7 @@ get_title() {
     elif [ "$titledir" == '.' ]; then
         printf "$TITLE"
     else
-        printf "${titledir##*/}"
+        titlecase "${titledir##*/}"
     fi
 }
 
