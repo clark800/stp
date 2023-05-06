@@ -64,11 +64,11 @@ copy_header() {
     get_header | sed "s/<title><\/title>/<title>$title<\/title>/" > "$1"
 }
 
-add_footer() {
+get_footer() {
     if [ -e "$INCLUDES/footer.html" ]; then
-        cat "$INCLUDES/footer.html" >> "$1"
+        cat "$INCLUDES/footer.html"
     else
-        printf "</body>\n</html>\n" >> "$1"
+        printf "</body>\n</html>\n"
     fi
 }
 
@@ -87,7 +87,7 @@ gen_index() {
             printf "<h2><a href=\"${path##*/}\">$title</a></h2>\n" >> "$index"
         fi
     done
-    add_footer "$index"
+    get_footer >> "$index"
 }
 
 gen_nav() {
@@ -108,6 +108,7 @@ gen_nav() {
 }
 
 process() {
+    cat "$1" |
     sed 's/^% \([^:]*\): \(.*\)$/<dl>\n<dt>\1<\/dt>\n<dd>\2<\/dd>\n<\/dl>/' |
         tr -d '\r' | tr '\n' '\r' | sed 's/<\/dl>\r<dl>\r//' | tr '\r' '\n' |
         "$PROCESSOR" | sed 's/<p><dl>/<dl>/' | sed 's/<\/dl><\/p>/<\/dl>/'
@@ -118,8 +119,8 @@ gen_page() {
     dest="${source%.*}.html"
     copy_header "$dest"
     gen_nav "${source%/*}" >> "$dest"
-    cat "$source" | process >> "$dest"
-    add_footer "$dest"
+    process "$source" >> "$dest"
+    get_footer >> "$dest"
 }
 
 gen_dir() {
