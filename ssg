@@ -34,9 +34,9 @@ titlecase() {
 
 get_title() {
     titledir="${1%/}"
-    if [ -e "$titledir/index.$EXT" ]; then
+    if [ -r "$titledir/index.$EXT" ]; then
         head -n 1 "$titledir/index.$EXT"
-    elif [ -e "$titledir/index.html" ]; then
+    elif [ -r "$titledir/index.html" ]; then
         cat "$titledir/index.html" | tr -d '\r\n' |
             sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p'
     elif [ "$titledir" == '.' ]; then
@@ -47,9 +47,8 @@ get_title() {
 }
 
 get_header_template() {
-    header="$INCLUDES/header.html"
-    if [ -e "$header" ]; then
-        cat "$header"
+    if [ -r "$INCLUDES/header.html" ]; then
+        cat "$INCLUDES/header.html"
     else
         printf '<html>\n<head>\n<title></title>\n'
         printf '<link rel="stylesheet" href="/style.css">\n'
@@ -65,7 +64,7 @@ get_header() {
 }
 
 get_footer() {
-    if [ -e "$INCLUDES/footer.html" ]; then
+    if [ -r "$INCLUDES/footer.html" ]; then
         cat "$INCLUDES/footer.html"
     else
         printf "</body>\n</html>\n"
