@@ -107,16 +107,18 @@ gen_nav() {
     printf "</h6>\n"
 }
 
+process() {
+    sed 's/^% \([^:]*\): \(.*\)$/<dl>\n<dt>\1<\/dt>\n<dd>\2<\/dd>\n<\/dl>/' |
+        tr -d '\r' | tr '\n' '\r' | sed 's/<\/dl>\r<dl>\r//' | tr '\r' '\n' |
+        "$PROCESSOR" | sed 's/<p><dl>/<dl>/' | sed 's/<\/dl><\/p>/<\/dl>/'
+}
+
 gen_page() {
     source="$1"
     dest="${source%.*}.html"
     copy_header "$dest"
     gen_nav "${source%/*}" >> "$dest"
-    cat "$source" |
-    sed 's/^% \([^:]*\): \(.*\)$/<dl>\n<dt>\1<\/dt>\n<dd>\2<\/dd>\n<\/dl>/' |
-        tr -d '\r' | tr '\n' '\r' | sed 's/<\/dl>\r<dl>\r//' | tr '\r' '\n' |
-        "$PROCESSOR" | sed 's/<p><dl>/<dl>/' | sed 's/<\/dl><\/p>/<\/dl>/' >> \
-        "$dest"
+    cat "$source" | process >> "$dest"
     add_footer "$dest"
 }
 
