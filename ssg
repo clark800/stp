@@ -1,6 +1,7 @@
 #!/bin/sh
 
 EXT="${SSG_EXTENSION:-md}"
+TITLE="${SSG_TITLE:-Home}"
 PROCESSOR="${SSG_PROCESSOR:-smu}"
 INCLUDES="${SSG_INCLUDES:-includes}"
 
@@ -30,19 +31,29 @@ get_title() {
     elif [ -e "$titledir/index.html" ]; then
         cat "$titledir/index.html" | tr -d '\r\n' |
             sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p'
+    elif [ "$titledir" == '.' ]; then
+        printf "$TITLE"
     else
         printf "${titledir##*/}"
     fi
 }
 
-copy_header() {
-    title="$(get_title "${1%/*}")"
+get_header() {
     header="$INCLUDES/header.html"
     if [ -e "$header" ]; then
-        sed "s/<title><\/title>/<title>$title<\/title>/" "$header" > "$1"
+        cat "$header"
     else
-        printf '<html>\n<body>\n' > "$1"
+        printf '<html>\n<head>\n<title></title>\n'
+        printf '<link rel="stylesheet" href="/style.css">\n'
+        printf '<link rel="icon" type="image/png" '
+        printf 'href="data:image/png;base64,iVBORw0KGgo=">\n'
+        printf '</head>\n<body>\n'
     fi
+}
+
+copy_header() {
+    title="$(get_title "${1%/*}")"
+    get_header | sed "s/<title><\/title>/<title>$title<\/title>/" > "$1"
 }
 
 add_footer() {
@@ -78,7 +89,7 @@ gen_nav() {
     tail="${tail#/}"   #  a/b/    b/      ''
     head="/"           # /     /a/   /a/b/
     printf "<h6>\n"
-    printf "<a href=\"$head\">Home</a> &gt;\n"
+    printf "<a href=\"$head\">$TITLE</a> &gt;\n"
     while [ "$tail" ]; do
         head="$head${tail%%/*}/"
         tail="${tail#*/}"
