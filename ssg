@@ -46,7 +46,7 @@ get_title() {
     fi
 }
 
-get_header() {
+get_header_template() {
     header="$INCLUDES/header.html"
     if [ -e "$header" ]; then
         cat "$header"
@@ -59,9 +59,9 @@ get_header() {
     fi
 }
 
-copy_header() {
+get_header() {
     title="$(get_title "${1%/*}")"
-    get_header | sed "s/<title><\/title>/<title>$title<\/title>/" > "$1"
+    get_header_template | sed "s/<title><\/title>/<title>$title<\/title>/"
 }
 
 get_footer() {
@@ -74,7 +74,7 @@ get_footer() {
 
 gen_index() {
     index="$1/index.html"
-    copy_header "$index"
+    get_header "$index" > "$index"
     for path in "$1"/*; do
         if is_category "$path"; then
             printf "<a href=\"${path##*/}\">$name</a>\n" >> "$index"
@@ -117,7 +117,7 @@ process() {
 gen_page() {
     source="$1"
     dest="${source%.*}.html"
-    copy_header "$dest"
+    get_header "$source" > "$dest"
     gen_nav "${source%/*}" >> "$dest"
     process "$source" >> "$dest"
     get_footer >> "$dest"
