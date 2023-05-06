@@ -26,7 +26,7 @@ is_category() {
 
 titlecase() {
     printf '%s\n' "$1" | tr '_ -' '\n\n\n' |
-    while IFS='' read -r word; do
+    while read -r word; do
         printf ' %.1s' "$word" | tr '[:lower:]' '[:upper:]'
         printf "${word#?}"
     done | cut -c 2-
@@ -120,20 +120,22 @@ gen_page() {
     add_footer "$dest"
 }
 
-gen_site() {
+gen_dir() {
     dir="$1"
     for path in "$dir"/*."$EXT"; do
-        if [ -e "$path" ]; then
+        if [ -r "$path" ]; then
             gen_page "$path"
         fi
     done
     if [ ! -e "$dir/index.html" ]; then
         gen_index "$dir"
     fi
-    for path in "$dir"/*; do
-        if is_dir "$path"; then
-            gen_site "$path"
-        fi
+}
+
+gen_site() {
+    find "$1" -name ".?*" -prune -o -type d -print |
+    while IFS='' read -r dir; do
+        gen_dir "$dir"
     done
 }
 
