@@ -77,6 +77,7 @@ gen_nav() {
     tail="${tail#.}"
     tail="${tail#/}"   #  a/b/    b/      ''
     head="/"           # /     /a/   /a/b/
+    printf "<h6>\n"
     printf "<a href=\"$head\">Home</a> &gt;\n"
     while [ "$tail" ]; do
         head="$head${tail%%/*}/"
@@ -84,6 +85,7 @@ gen_nav() {
         title="$(get_title ".$head")"
         printf "<a href=\"$head\">$title</a> &gt;\n"
     done
+    printf "</h6>\n"
 }
 
 gen_page() {
