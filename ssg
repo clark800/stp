@@ -110,7 +110,7 @@ process() {
     cat "$1" |
     sed 's/^% \([^:]*\): \(.*\)$/<dl>\n<dt>\1<\/dt>\n<dd>\2<\/dd>\n<\/dl>/' |
         tr -d '\r' | tr '\n' '\r' | sed 's/<\/dl>\r<dl>\r//' | tr '\r' '\n' |
-        "$PROCESSOR" | sed 's/<p><dl>/<dl>/' | sed 's/<\/dl><\/p>/<\/dl>/'
+        $PROCESSOR | sed 's/<p><dl>/<dl>/' | sed 's/<\/dl><\/p>/<\/dl>/'
 }
 
 gen_page() {
