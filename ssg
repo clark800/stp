@@ -154,7 +154,7 @@ gen_page() {
 }
 
 gen_site() {
-    find "$1" -name ".?*" -prune -o -type d -print | LC_ALL=C sort -r |
+    get_recursive_subdirs "$1" | LC_ALL=C sort -r |
     while IFS='' read -r dir; do
         gen_page "$dir"
     done
