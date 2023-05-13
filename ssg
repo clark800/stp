@@ -71,7 +71,7 @@ get_footer() {
     fi
 }
 
-gen_index() {
+gen_category_page() {
     index="$1/index.html"
     get_header "$index" > "$index"
     for path in "$1"/*; do
@@ -113,7 +113,7 @@ process() {
         $PROCESSOR | sed 's/<p><dl>/<dl>/' | sed 's/<\/dl><\/p>/<\/dl>/'
 }
 
-gen_page() {
+gen_content_page() {
     source="$1"
     dest="${source%.*}.html"
     get_header "$source" > "$dest"
@@ -122,22 +122,22 @@ gen_page() {
     get_footer >> "$dest"
 }
 
-gen_dir() {
+gen_page() {
     dir="$1"
     for path in "$dir"/*."$EXT"; do
         if [ -r "$path" ]; then
-            gen_page "$path"
+            gen_content_page "$path"
         fi
     done
     if [ ! -e "$dir/index.html" ]; then
-        gen_index "$dir"
+        gen_category_page "$dir"
     fi
 }
 
 gen_site() {
     find "$1" -name ".?*" -prune -o -type d -print |
     while IFS='' read -r dir; do
-        gen_dir "$dir"
+        gen_page "$dir"
     done
 }
 
