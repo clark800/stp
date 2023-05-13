@@ -5,9 +5,10 @@ TITLE="${SSG_TITLE:-Home}"
 PROCESSOR="${SSG_PROCESSOR:-smu}"
 INCLUDES="${SSG_INCLUDES:-includes}"
 
-has_subdir() {
-    for subdir in "$1"/*; do
-        if [ -d "$subdir" ]; then true; fi
+has_subpage() {
+    find . ! -name . -prune ! -name '.*' -type d |
+    while read -r subdir; do
+        if [ -r "$subdir/index.html" ]; then true; fi
     done
     false
 }
@@ -16,12 +17,12 @@ is_dir() {
     [ -d "$1" ] && [ ! -L "$1" ] && [ "${1##*/}" != "$INCLUDES" ]
 }
 
-is_page() {
-    is_dir "$1" && ! has_subdir "$1"
+is_content_page() {
+    is_dir "$1" && ! has_subpage "$1"
 }
 
-is_category() {
-    is_dir "$1" && has_subdir "$1"
+is_category_page() {
+    is_dir "$1" && has_subpage "$1"
 }
 
 titlecase() {
@@ -75,13 +76,13 @@ gen_category_page() {
     index="$1/index.html"
     get_header "$index" > "$index"
     for path in "$1"/*; do
-        if is_category "$path"; then
+        if is_category_page "$path"; then
             printf "<a href=\"${path##*/}\">$name</a>\n" >> "$index"
         fi
     done
     # todo: sort by date
     for path in "$1"/*; do
-        if is_page "$path"; then
+        if is_content_page "$path"; then
             title="$(get_title "$path")"
             printf "<h2><a href=\"${path##*/}\">$title</a></h2>\n" >> "$index"
         fi
@@ -135,7 +136,7 @@ gen_page() {
 }
 
 gen_site() {
-    find "$1" -name ".?*" -prune -o -type d -print |
+    find "$1" -name ".?*" -prune -o -type d -print | LC_ALL=C sort -r |
     while IFS='' read -r dir; do
         gen_page "$dir"
     done
