@@ -5,12 +5,18 @@ TITLE="${SSG_TITLE:-Home}"
 PROCESSOR="${SSG_PROCESSOR:-smu}"
 INCLUDES="${SSG_INCLUDES:-includes}"
 
+get_subdirs() {
+    find "$1" ! -name "${1##*/}" -prune ! -name '.*' -type d
+}
+
+get_recursive_subdirs() {
+    find "$1" -name ".?*" -prune -o -type d -print
+}
+
 has_subpage() {
-    find . ! -name . -prune ! -name '.*' -type d |
-    while read -r subdir; do
-        if [ -r "$subdir/index.html" ]; then true; fi
-    done
-    false
+    get_subdirs "$1" | { while read -r subdir; do
+        if [ -r "$subdir/index.html" ]; then return 0; fi
+    done; return 1; }
 }
 
 is_dir() {
@@ -18,7 +24,8 @@ is_dir() {
 }
 
 is_content_page() {
-    is_dir "$1" && ! has_subpage "$1"
+    is_dir "$1" && ! has_subpage "$1" &&
+        [ -r "$1/index.$EXT" -o -r "$1/index.html" ]
 }
 
 is_category_page() {
@@ -47,7 +54,7 @@ get_title() {
     fi
 }
 
-get_header_template() {
+get_header() {
     if [ -r "$INCLUDES/header.html" ]; then
         cat "$INCLUDES/header.html"
     else
@@ -59,9 +66,8 @@ get_header_template() {
     fi
 }
 
-get_header() {
-    title="$(get_title "${1%/*}")"
-    get_header_template | sed "s/<title><\/title>/<title>$title<\/title>/"
+set_title() {
+    sed "s/<title><\/title>/<title>$1<\/title>/"
 }
 
 get_footer() {
@@ -73,18 +79,28 @@ get_footer() {
 }
 
 gen_category_page() {
-    index="$1/index.html"
-    get_header "$index" > "$index"
-    for path in "$1"/*; do
+    dir="$1"
+    index="$dir/index.html"
+    title="$(get_title "$dir")"
+    get_header | set_title "$title" > "$index"
+    gen_nav "$dir" >> "$index"
+    printf "<h1>%s</h1>\n" "$title" >> "$index"
+
+    printf "<h6>\n" >> "$index"
+    get_subdirs "$dir" | while read -r path; do
         if is_category_page "$path"; then
-            printf "<a href=\"${path##*/}\">$name</a>\n" >> "$index"
+            title="$(get_title "$path")"
+            printf "<a href=\"${path##*/}\">$title</a>\n" >> "$index"
         fi
     done
+    printf "</h6>\n" >> "$index"
+
     # todo: sort by date
-    for path in "$1"/*; do
+    (cd "$dir"; get_recursive_subdirs .) | while read -r relpath; do
+        path="${dir%/}/${relpath#./}"
         if is_content_page "$path"; then
             title="$(get_title "$path")"
-            printf "<h2><a href=\"${path##*/}\">$title</a></h2>\n" >> "$index"
+            printf "<h2><a href=\"${relpath#./}\">$title</a></h2>\n" >> "$index"
         fi
     done
     get_footer >> "$index"
@@ -101,8 +117,8 @@ gen_nav() {
     while [ "$tail" ]; do
         head="$head${tail%%/*}/"
         tail="${tail#*/}"
-        title="$(get_title ".$head")"
-        printf "<a href=\"$head\">$title</a> &gt;\n"
+        label="$(get_title ".$head")"
+        printf "<a href=\"$head\">$label</a> &gt;\n"
     done
     printf "</h6>\n"
 }
@@ -117,7 +133,7 @@ process() {
 gen_content_page() {
     source="$1"
     dest="${source%.*}.html"
-    get_header "$source" > "$dest"
+    get_header | set_title "$(get_title "$source")" > "$dest"
     gen_nav "${source%/*}" >> "$dest"
     process "$source" >> "$dest"
     get_footer >> "$dest"
@@ -131,7 +147,9 @@ gen_page() {
         fi
     done
     if [ ! -e "$dir/index.html" ]; then
-        gen_category_page "$dir"
+        if is_category_page "$dir"; then
+            gen_category_page "$dir"
+        fi
     fi
 }
 
