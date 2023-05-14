@@ -136,7 +136,9 @@ gen_listing() {
         path="${dir%/}/${relpath#./}"
         if is_content_page "$path"; then
             published="$(get_metadata Published "$path")"
-            printf "%s %s\n" "$published" "$relpath"
+            if [ "$published" ]; then
+                printf "%s %s\n" "$published" "$relpath"
+            fi
         fi
     done |
     sort -r -k 1 |
