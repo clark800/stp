@@ -144,14 +144,14 @@ gen_listing() {
 
 gen_category_page() {
     dir="$1"
-    index="$dir/index.html"
+    html="$dir/index.html"
     title="$(get_title "$dir")"
-    get_header | set_title "$title" > "$index"
-    gen_nav "$dir" >> "$index"
-    printf "<h1>%s</h1>\n" "$title" >> "$index"
-    gen_submenu "$dir" >> "$index"
-    gen_listing "$dir" >> "$index"
-    get_footer >> "$index"
+    get_header | set_title "$title" > "$html"
+    gen_nav "$dir" >> "$html"
+    printf "<h1>%s</h1>\n" "$title" >> "$html"
+    gen_submenu "$dir" >> "$html"
+    gen_listing "$dir" >> "$html"
+    get_footer >> "$html"
 }
 
 process() {
@@ -163,11 +163,11 @@ process() {
 
 gen_content_page() {
     source="$1"
-    dest="${source%.*}.html"
-    get_header | set_title "$(get_title "${source%/*}")" > "$dest"
-    gen_nav "${source%/*}" >> "$dest"
-    process "$source" >> "$dest"
-    get_footer >> "$dest"
+    html="${source%.*}.html"
+    get_header | set_title "$(get_title "${source%/*}")" > "$html"
+    gen_nav "${source%/*}" >> "$html"
+    process "$source" >> "$html"
+    get_footer >> "$html"
 }
 
 gen_page() {
