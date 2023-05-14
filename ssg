@@ -187,7 +187,8 @@ gen_page() {
 }
 
 gen_site() {
-    get_recursive_subdirs "$1" |
+    root="$1"
+    get_recursive_subdirs "$root" |
     LC_ALL=C sort -r |
     while IFS='' read -r dir; do
         gen_page "$dir"
