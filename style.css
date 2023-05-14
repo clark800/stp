@@ -32,6 +32,10 @@ h6 + h1 {
     border-bottom: 1px solid #ccc;
 }
 
+h1 + h6 {
+    margin-top: 0.25em;
+}
+
 h1 + dl {
     margin-top: 0.25em;
 }
