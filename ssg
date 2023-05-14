@@ -164,7 +164,7 @@ process() {
 gen_content_page() {
     source="$1"
     html="${source%.*}.html"
-    get_header | set_title "$(get_title "${source%/*}")" > "$html"
+    get_header | set_title "$(head -n 1 "$source")" > "$html"
     gen_nav "${source%/*}" >> "$html"
     process "$source" >> "$html"
     get_footer >> "$html"
