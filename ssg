@@ -97,6 +97,10 @@ get_metadata() {
 
 gen_nav() {
     tail="${1%/}"
+    if [ "$tail" == "." ]; then
+        printf '<h6>\n</h6>\n'
+        return
+    fi
     tail="${tail%/*}/" # start with parent directory
     tail="${tail#.}"
     tail="${tail#/}"   #  a/b/    b/      ''
