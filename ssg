@@ -86,8 +86,8 @@ get_footer() {
 get_metadata() {
     key="$1"
     dir="$2"
-    if [ -r "$dir/index.md" ]; then
-        sed -n "s/^% $key: \(.*\)$/\1/p" "$dir/index.md"
+    if [ -r "$dir/index.$EXT" ]; then
+        sed -n "s/^% $key: \(.*\)$/\1/p" "$dir/index.$EXT"
     elif [ -r "$dir/index.html" ]; then
         sed -n "s/<dt>$key<\/dt><dd>\(.*\)<\/dd>/\1/p" "$dir/index.html"
     fi
