@@ -63,7 +63,9 @@ get_header() {
     if [ -r "$INCLUDES/header.html" ]; then
         cat "$INCLUDES/header.html"
     else
-        printf '<html>\n<head>\n<title></title>\n'
+        printf '<!DOCTYPE html>\n<html lang="en">\n<head>\n'
+        printf '<meta charset="utf-8">\n'
+        printf '<title></title>\n'
         printf '<link rel="stylesheet" href="/style.css">\n'
         printf '<link rel="icon" type="image/png" '
         printf 'href="data:image/png;base64,iVBORw0KGgo=">\n'
@@ -139,8 +141,8 @@ gen_listing() {
         relpath="${line#* }"
         path="${dir%/}/${relpath#./}"
         title="$(get_title "$path")"
-        printf "$published\n"
-        printf "<h2><a href=\"${relpath#./}\">$title</a></h2>\n"
+        printf "<h2><sup>$published</sup>"
+        printf "<a href=\"${relpath#./}\">$title</a></h2>\n"
     done
 }
 
