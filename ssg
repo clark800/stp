@@ -15,7 +15,7 @@ get_recursive_subdirs() {
 
 has_subpage() {
     get_subdirs "$1" | {
-        while read -r subdir; do
+        while IFS='' read -r subdir; do
             if [ -r "$subdir/index.html" ]; then
                 return 0
             fi
@@ -39,7 +39,7 @@ is_category_page() {
 
 titlecase() {
     printf '%s\n' "$1" | tr '_ -' '\n\n\n' |
-    while read -r word; do
+    while IFS='' read -r word; do
         printf ' %.1s' "$word" | tr '[:lower:]' '[:upper:]'
         printf "${word#?}"
     done | cut -c 2-
@@ -114,7 +114,7 @@ gen_submenu() {
     dir="$1"
     printf "<h6>\n"
     get_subdirs "$dir" |
-    while read -r path; do
+    while IFS='' read -r path; do
         if is_category_page "$path"; then
             title="$(get_title "$path")"
             printf "<a href=\"${path##*/}\">$title</a>\n"
@@ -126,7 +126,7 @@ gen_submenu() {
 gen_listing() {
     dir="$1"
     (cd "$dir"; get_recursive_subdirs .) |
-    while read -r relpath; do
+    while IFS='' read -r relpath; do
         path="${dir%/}/${relpath#./}"
         if is_content_page "$path"; then
             published="$(get_metadata Published "$path")"
@@ -134,7 +134,9 @@ gen_listing() {
         fi
     done |
     sort -r -k 1 |
-    while read -r published relpath; do
+    while IFS='' read -r line; do
+        published="${line%% *}"
+        relpath="${line#* }"
         path="${dir%/}/${relpath#./}"
         title="$(get_title "$path")"
         printf "$published\n"
