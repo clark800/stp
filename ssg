@@ -4,6 +4,8 @@ EXT="${SSG_EXTENSION:-md}"
 TITLE="${SSG_TITLE:-Home}"
 PROCESSOR="${SSG_PROCESSOR:-smu}"
 INCLUDES="${SSG_INCLUDES:-includes}"
+CR="$(printf '\r')"
+FF="$(printf '\f')"
 
 get_subdirs() {
     find "$1" ! -name "${1##*/}" -prune ! -name '.*' -type d
@@ -165,9 +167,9 @@ gen_category_page() {
 }
 
 process() {
-    cat "$1" |
-    sed 's/^% \([^:]*\): \(.*\)$/<dl>\n<dt>\1<\/dt><dd>\2<\/dd>\n<\/dl>/' |
-        tr -d '\r' | tr '\n' '\r' | sed 's/<\/dl>\r<dl>\r//' | tr '\r' '\n' |
+    cat "$1" | tr -d '\r\f' |
+    sed "s/^% \([^:]*\): \(.*\)$/<dl>$FF<dt>\1<\/dt><dd>\2<\/dd>$FF<\/dl>/" |
+        tr '\n' '\r' | sed "s/$FF<\/dl>$CR<dl>$FF/$CR/" | tr '\r\f' '\n\n' |
         $PROCESSOR | sed 's/<p><dl>/<dl>/' | sed 's/<\/dl><\/p>/<\/dl>/'
 }
 
