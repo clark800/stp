@@ -170,7 +170,7 @@ process() {
     cat "$1" | tr -d '\r\f' |
     sed "s/^% \([^:]*\): \(.*\)$/<dl>$FF<dt>\1<\/dt><dd>\2<\/dd>$FF<\/dl>/" |
         tr '\n' '\r' | sed "s/$FF<\/dl>$CR<dl>$FF/$CR/" | tr '\r\f' '\n\n' |
-        $PROCESSOR | sed 's/<p><dl>/<dl>/' | sed 's/<\/dl><\/p>/<\/dl>/'
+        $PROCESSOR | sed 's/^<p><dl>$/<dl>/' | sed 's/^<\/dl><\/p>$/<\/dl>/'
 }
 
 gen_content_page() {
