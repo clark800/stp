@@ -48,7 +48,7 @@ h1 + dl {
     margin-top: 0.25em;
 }
 
-h1 + dl > dd, h1 + dl > dt {
+h1 + dl > dt, h1 + dl > dd {
     margin: 0;
     font-size: small;
     display: inline;
@@ -57,6 +57,7 @@ h1 + dl > dd, h1 + dl > dt {
 
 h1 + dl > dt {
     font-weight: bolder;
+    text-transform: capitalize;
 }
 
 h1 + dl > dt::after {
