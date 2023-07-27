@@ -49,28 +49,19 @@ h1 + dl {
 }
 
 h1 + dl > dt, h1 + dl > dd {
-    margin: 0;
     font-size: small;
     display: inline;
     vertical-align: middle;
 }
 
 h1 + dl > dt {
+    margin: 0;
     font-weight: bolder;
     text-transform: capitalize;
 }
 
-h1 + dl > dt::after {
-    content: ': ';
-}
-
-h1 + dl > dd::after {
-    content: ' ';
-    margin: 0.5em;
-}
-
-h1 + dl > dd:last-of-type::after {
-    margin: 0;
+h1 + dl > dd {
+    margin: 0 1em 0 0.5em;
 }
 
 h2 > sup + a {
