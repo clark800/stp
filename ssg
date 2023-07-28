@@ -87,7 +87,8 @@ set_meta_tags() {
         fi
         key="${trimmed%%:*}"
         value="${trimmed#*: }"
-        command+="s|<meta name=\"$key\" content=\"\">|<meta name=\"$key\" content=\"$value\">|;"
+        prefix="<meta name=\"$key\" content"
+        command+="s|$prefix=\"\">|$prefix=\"$value\">|;"
     done < "$source"
     sed "${command%;}"
 }
