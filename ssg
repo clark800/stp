@@ -66,6 +66,9 @@ get_header() {
     else
         printf '<!DOCTYPE html>\n<html lang="en">\n<head>\n'
         printf '<meta charset="utf-8">\n'
+        printf '<meta name="created" content="">\n'
+        printf '<meta name="modified" content="">\n'
+        printf '<meta name="author" content="">\n'
         printf '<title></title>\n'
         printf '<link rel="stylesheet" href="/style.css">\n'
         printf '<link rel="icon" type="image/png" '
@@ -74,8 +77,23 @@ get_header() {
     fi
 }
 
+set_meta_tags() {
+    source="$1"
+    command=""
+    while read -r line; do
+        trimmed="${line#% }"
+        if [ "$trimmed" == "$line" ]; then
+            continue
+        fi
+        key="${trimmed%%:*}"
+        value="${trimmed#*: }"
+        command+="s|<meta name=\"$key\" content=\"\">|<meta name=\"$key\" content=\"$value\">|;"
+    done < "$source"
+    sed "${command%;}"
+}
+
 set_title() {
-    sed "s/<title><\/title>/<title>$1<\/title>/"
+    sed "s|<title></title>|<title>$1</title>|"
 }
 
 get_footer() {
@@ -175,7 +193,8 @@ process() {
 gen_content_page() {
     source="$1"
     html="${source%.*}.html"
-    get_header | set_title "$(head -n 1 "$source")" > "$html"
+    get_header | set_meta_tags "$source" |
+        set_title "$(head -n 1 "$source")" > "$html"
     gen_nav "${source%/*}" >> "$html"
     process "$source" >> "$html"
     get_footer >> "$html"
