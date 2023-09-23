@@ -29,6 +29,14 @@ is_dir() {
     [ -d "$1" ] && [ ! -L "$1" ] && [ "${1##*/}" != "$INCLUDES" ]
 }
 
+is_generated() {
+    grep -q -x '<meta name="generator" content="ssg">' "$1"
+}
+
+is_writable() {
+    [ ! -e "$1" ] || is_generated "$1"
+}
+
 is_content_page() {
     is_dir "$1" && ! has_subpage "$1" &&
         [ -r "$1/index.$EXT" -o -r "$1/index.html" ]
@@ -73,6 +81,7 @@ get_header() {
     else
         printf '<!DOCTYPE html>\n<html lang="en">\n<head>\n'
         printf '<meta charset="utf-8">\n'
+        printf '<meta name="generator" content="ssg">\n'
         printf '<meta name="created" content="">\n'
         printf '<meta name="modified" content="">\n'
         printf '<title></title>\n'
@@ -197,12 +206,12 @@ gen_content_page() {
 
 gen_page() {
     dir="$1"
-    for path in "$dir"/*."$EXT"; do
-        if [ -r "$path" ]; then
-            gen_content_page "$path"
+    for source in "$dir"/*."$EXT"; do
+        if [ -r "$source" ] && is_writable "${source%.*}.html"; then
+            gen_content_page "$source"
         fi
     done
-    if [ ! -e "$dir/index.html" ]; then
+    if [ ! -e "$dir/index.$EXT" ] && is_writable "$dir/index.html"; then
         if is_category_page "$dir"; then
             gen_category_page "$dir"
         fi
@@ -232,7 +241,9 @@ gen_site() {
     while IFS='' read -r dir; do
         gen_page "$dir"
     done
-    gen_categories "$root"
+    if is_writable "$root/categories.html"; then
+        gen_categories "$root"
+    fi
 }
 
 gen_site "."
