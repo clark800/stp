@@ -132,7 +132,7 @@ gen_nav() {
         head="$head${tail%%/*}/"
         tail="${tail#*/}"
         label="$(get_title ".$head")"
-        printf "<a href=\"$head\">$label</a> &gt;\n"
+        printf "<a href=\"$head\">$label</a>&nbsp;&gt;\n"
     done
     printf "</nav>\n"
 }

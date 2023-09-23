@@ -46,9 +46,15 @@ nav > a {
 
 header > nav {
     float: right;
+    padding-left: 2em;
+}
+
+main > nav {
+    float: left;
 }
 
 main > nav + h1 {
+    clear: both;
     margin-top: 0;
     border-bottom: 1px solid #ccc;
 }
