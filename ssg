@@ -25,10 +25,6 @@ has_subpage() {
     }
 }
 
-is_dir() {
-    [ -d "$1" ] && [ ! -L "$1" ] && [ "${1##*/}" != "$INCLUDES" ]
-}
-
 is_generated() {
     grep -q -x '<meta name="generator" content="ssg">' "$1"
 }
