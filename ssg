@@ -1,10 +1,15 @@
 #!/bin/sh
 
 TITLE="${SSG_TITLE}"
+HOME="${SSG_HOME}"
 EXT="${SSG_EXTENSION:-md}"
 PROCESSOR="${SSG_PROCESSOR:-smu}"
 INCLUDES="${SSG_INCLUDES:-includes}"
 CR="$(printf '\r')"
+
+println() {
+    printf '%s\n' "$1"
+}
 
 get_subdirs() {
     find "$1" ! -name "${1##*/}" -prune ! -name '.*' -type d
@@ -39,10 +44,10 @@ is_content_page() {
 }
 
 titlecase() {
-    printf '%s\n' "$1" | tr '_ -' '\n\n\n' |
+    println "$1" | tr '_ -' '\n\n\n' |
     while IFS='' read -r word; do
         printf ' %.1s' "$word" | tr '[:lower:]' '[:upper:]'
-        printf "${word#?}"
+        printf '%s' "${word#?}"
     done | cut -c 2-
 }
 
@@ -56,13 +61,13 @@ get_html_title() {
 
 get_site_title() {
     if [ "$TITLE" ]; then
-        printf "$TITLE"
+        println "$TITLE"
     else
         title="$(basename "$(pwd)")"
         if [ "${title%.*}" == "$title" ]; then
             titlecase "$title"
         else
-            printf "$title"    # contains a period; likely a domain name
+            println "$title"    # contains a period; likely a domain name
         fi
     fi
 }
@@ -81,20 +86,35 @@ get_page_title() {
     fi
 }
 
+get_home_title() {
+    if [ "$HOME" ]; then
+        println "$HOME"
+    else
+        get_site_title
+    fi
+}
+
 get_header() {
     if [ -r "$INCLUDES/header.html" ]; then
         cat "$INCLUDES/header.html"
     else
-        printf '<!DOCTYPE html>\n<html lang="en">\n<head>\n'
-        printf '<meta charset="utf-8">\n'
-        printf '<meta name="generator" content="ssg">\n'
-        printf '<title></title>\n'
-        printf '<link rel="stylesheet" href="/style.css">\n'
-        printf '<link rel="icon" type="image/png" '
-        printf 'href="data:image/png;base64,iVBORw0KGgo=">\n'
-        printf '</head>\n<body>\n<header>\n<nav>\n'
-        printf '<a href="/categories.html">Categories</a>\n'
-        printf '</nav>\n</header>\n<main>\n'
+        icon="data:image/png;base64,iVBORw0KGgo="
+        println '<!DOCTYPE html>'
+        println '<html lang="en">'
+        println '<head>'
+        println '<meta charset="utf-8">'
+        println '<meta name="generator" content="ssg">'
+        println '<title></title>'
+        println '<link rel="stylesheet" href="/style.css">'
+        println "<link rel=\"icon\" type=\"image/png\" href=\"$icon\">"
+        println '</head>'
+        println '<body>'
+        println '<header>'
+        println '<nav>'
+        println '<a href="/categories.html">Categories</a>'
+        println '</nav>'
+        println '</header>'
+        println '<main>'
     fi
 }
 
@@ -121,7 +141,9 @@ get_footer() {
     if [ -r "$INCLUDES/footer.html" ]; then
         cat "$INCLUDES/footer.html"
     else
-        printf "</main>\n</body>\n</html>\n"
+        println '</main>'
+        println '</body>'
+        println '</html>'
     fi
 }
 
@@ -138,22 +160,23 @@ get_metadata() {
 gen_breadcrumb() {
     tail="${1%/}"
     if [ "$tail" == "." ]; then
-        printf '<nav>\n</nav>\n'
+        println '<nav>'
+        println '</nav>'
         return
     fi
     tail="${tail%/*}/" # start with parent directory
     tail="${tail#.}"
     tail="${tail#/}"   #  a/b/    b/      ''
     head="/"           # /     /a/   /a/b/
-    printf "<nav>\n"
-    printf "<a href=\"$head\">$(get_site_title)</a> &gt;\n"
+    println "<nav>"
+    println "<a href=\"$head\">$(get_home_title)</a> &gt;"
     while [ "$tail" ]; do
         head="$head${tail%%/*}/"
         tail="${tail#*/}"
         label="$(get_page_title ".$head")"
-        printf "<a href=\"$head\">$label</a>&nbsp;&gt;\n"
+        println "<a href=\"$head\">$label</a>&nbsp;&gt;"
     done
-    printf "</nav>\n"
+    println "</nav>"
 }
 
 gen_listing() {
@@ -164,7 +187,7 @@ gen_listing() {
         if is_content_page "$path"; then
             published="$(get_metadata published "$path")"
             if [ "$published" ]; then
-                printf "%s %s\n" "$published" "$relpath"
+                println "$published $relpath"
             fi
         fi
     done |
@@ -174,8 +197,8 @@ gen_listing() {
         relpath="${line#* }"
         path="${dir%/}/${relpath#./}"
         title="$(get_page_title "$path")"
-        printf "<h2><time>$published</time>"
-        printf "<a href=\"${relpath#./}\">$title</a></h2>\n"
+        time="<time>$published</time>"
+        println "<h2>$time<a href=\"${relpath#./}\">$title</a></h2>"
     done
 }
 
@@ -185,7 +208,7 @@ gen_index_page() {
     title="$(get_page_title "$dir")"
     get_header | set_title "$title" > "$html"
     gen_breadcrumb "$dir" >> "$html"
-    printf "<h1>%s</h1>\n" "$title" >> "$html"
+    println "<h1>$title</h1>" >> "$html"
     gen_listing "$dir" >> "$html"
     get_footer >> "$html"
 }
@@ -225,15 +248,16 @@ gen_categories_page() {
     root="$1"
     html="$root/categories.html"
     get_header | set_title "Categories" > "$html"
-    printf '<h1>Categories</h1>\n<ul>' >> "$html"
+    println "<h1>Categories</h1>" >> "$html"
+    println "<ul>" >> "$html"
     get_recursive_subdirs "$root" |
     while IFS='' read -r path; do
         if is_generated "$path/index.html" && [ ! -e "$path/index.$EXT" ]; then
             title="$(get_page_title "$path")"
-            printf "<li><a href=\"${path##*/}\">$title</a></li>\n" >> "$html"
+            println "<li><a href=\"${path##*/}\">$title</a></li>" >> "$html"
         fi
     done
-    printf '</ul>\n' >> "$html"
+    println "</ul>" >> "$html"
     get_footer >> "$html"
 }
 
