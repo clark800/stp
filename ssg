@@ -1,6 +1,8 @@
 #!/bin/sh
 
 EXT="${SSG_EXTENSION:-md}"
+TITLE="${SSG_TITLE}"
+HOME="${SSG_HOME:-Home}"
 PROCESSOR="${SSG_PROCESSOR:-smu}"
 INCLUDES="${SSG_INCLUDES:-includes}"
 CR="$(printf '\r')"
@@ -61,7 +63,11 @@ get_page_title() {
     elif [ -r "$index" ] && ! is_generated "$index" ; then
         get_html_title "$index"
     elif [ "$titledir" == "." ]; then
-        titlecase "$(basename "$(pwd)")"
+        if [ "$TITLE" ]; then
+            printf "$TITLE"
+        else
+            titlecase "$(basename "$(pwd)")"
+        fi
     else
         titlecase "${titledir##*/}"
     fi
@@ -121,7 +127,7 @@ get_metadata() {
     fi
 }
 
-gen_nav() {
+gen_breadcrumb() {
     tail="${1%/}"
     if [ "$tail" == "." ]; then
         printf '<nav>\n</nav>\n'
@@ -132,7 +138,7 @@ gen_nav() {
     tail="${tail#/}"   #  a/b/    b/      ''
     head="/"           # /     /a/   /a/b/
     printf "<nav>\n"
-    printf "<a href=\"$head\">$(get_page_title .)</a> &gt;\n"
+    printf "<a href=\"$head\">$HOME</a> &gt;\n"
     while [ "$tail" ]; do
         head="$head${tail%%/*}/"
         tail="${tail#*/}"
@@ -170,7 +176,7 @@ gen_index_page() {
     html="$dir/index.html"
     title="$(get_page_title "$dir")"
     get_header | set_title "$title" > "$html"
-    gen_nav "$dir" >> "$html"
+    gen_breadcrumb "$dir" >> "$html"
     printf "<h1>%s</h1>\n" "$title" >> "$html"
     gen_listing "$dir" >> "$html"
     get_footer >> "$html"
@@ -188,7 +194,7 @@ gen_content_page() {
     html="${source%.*}.html"
     title="$(get_source_title "$source")"
     get_header | set_meta_tags "$source" | set_title "$title" > "$html"
-    gen_nav "${source%/*}" >> "$html"
+    gen_breadcrumb "${source%/*}" >> "$html"
     process "$source" >> "$html"
     get_footer >> "$html"
 }
