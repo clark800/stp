@@ -38,12 +38,8 @@ is_writable() {
 }
 
 is_content_page() {
-    is_dir "$1" && ! has_subpage "$1" &&
-        [ -r "$1/index.$EXT" -o -r "$1/index.html" ]
-}
-
-is_category_page() {
-    is_dir "$1" && has_subpage "$1"
+    [ -r "$1/index.html" ] &&
+        { [ -r "$1/index.$EXT" ] || ! is_generated "$1/index.html"; }
 }
 
 titlecase() {
@@ -176,7 +172,7 @@ gen_listing() {
     done
 }
 
-gen_category_page() {
+gen_index_page() {
     dir="$1"
     html="$dir/index.html"
     title="$(get_directory_title "$dir")"
@@ -212,20 +208,20 @@ gen_page() {
         fi
     done
     if [ ! -e "$dir/index.$EXT" ] && is_writable "$dir/index.html"; then
-        if is_category_page "$dir"; then
-            gen_category_page "$dir"
+        if has_subpage "$dir"; then
+            gen_index_page "$dir"
         fi
     fi
 }
 
-gen_categories() {
+gen_categories_page() {
     root="$1"
     html="$root/categories.html"
     get_header | set_title "Categories" > "$html"
     printf '<h1>Categories</h1>\n<ul>' >> "$html"
     get_recursive_subdirs "$root" |
     while IFS='' read -r path; do
-        if is_category_page "$path"; then
+        if is_generated "$path/index.html" && [ ! -e "$path/index.$EXT" ]; then
             title="$(get_directory_title "$path")"
             printf "<li><a href=\"${path##*/}\">$title</a></li>\n" >> "$html"
         fi
@@ -242,7 +238,7 @@ gen_site() {
         gen_page "$dir"
     done
     if is_writable "$root/categories.html"; then
-        gen_categories "$root"
+        gen_categories_page "$root"
     fi
 }
 
