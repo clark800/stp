@@ -1,7 +1,6 @@
 #!/bin/sh
 
 EXT="${SSG_EXTENSION:-md}"
-TITLE="${SSG_TITLE:-Home}"
 PROCESSOR="${SSG_PROCESSOR:-smu}"
 INCLUDES="${SSG_INCLUDES:-includes}"
 CR="$(printf '\r')"
@@ -54,14 +53,15 @@ get_html_title() {
     cat "$1" | tr -d '\r\n' | sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p'
 }
 
-get_directory_title() {
+get_page_title() {
     titledir="${1%/}"
+    index="$titledir/index.html"
     if [ -r "$titledir/index.$EXT" ]; then
         get_source_title "$titledir/index.$EXT"
-    elif [ -r "$titledir/index.html" ]; then
-        get_html_title "$titledir/index.html"
-    elif [ "$titledir" == '.' ]; then
-        printf "$TITLE"
+    elif [ -r "$index" ] && ! is_generated "$index" ; then
+        get_html_title "$index"
+    elif [ "$titledir" == "." ]; then
+        titlecase "$(basename "$(pwd)")"
     else
         titlecase "${titledir##*/}"
     fi
@@ -132,11 +132,11 @@ gen_nav() {
     tail="${tail#/}"   #  a/b/    b/      ''
     head="/"           # /     /a/   /a/b/
     printf "<nav>\n"
-    printf "<a href=\"$head\">$TITLE</a> &gt;\n"
+    printf "<a href=\"$head\">$(get_page_title .)</a> &gt;\n"
     while [ "$tail" ]; do
         head="$head${tail%%/*}/"
         tail="${tail#*/}"
-        label="$(get_directory_title ".$head")"
+        label="$(get_page_title ".$head")"
         printf "<a href=\"$head\">$label</a>&nbsp;&gt;\n"
     done
     printf "</nav>\n"
@@ -159,7 +159,7 @@ gen_listing() {
         published="${line%% *}"
         relpath="${line#* }"
         path="${dir%/}/${relpath#./}"
-        title="$(get_directory_title "$path")"
+        title="$(get_page_title "$path")"
         printf "<h2><time>$published</time>"
         printf "<a href=\"${relpath#./}\">$title</a></h2>\n"
     done
@@ -168,7 +168,7 @@ gen_listing() {
 gen_index_page() {
     dir="$1"
     html="$dir/index.html"
-    title="$(get_directory_title "$dir")"
+    title="$(get_page_title "$dir")"
     get_header | set_title "$title" > "$html"
     gen_nav "$dir" >> "$html"
     printf "<h1>%s</h1>\n" "$title" >> "$html"
@@ -215,7 +215,7 @@ gen_categories_page() {
     get_recursive_subdirs "$root" |
     while IFS='' read -r path; do
         if is_generated "$path/index.html" && [ ! -e "$path/index.$EXT" ]; then
-            title="$(get_directory_title "$path")"
+            title="$(get_page_title "$path")"
             printf "<li><a href=\"${path##*/}\">$title</a></li>\n" >> "$html"
         fi
     done
