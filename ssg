@@ -74,8 +74,8 @@ get_header() {
         printf '<!DOCTYPE html>\n<html lang="en">\n<head>\n'
         printf '<meta charset="utf-8">\n'
         printf '<meta name="generator" content="ssg">\n'
-        printf '<meta name="created" content="">\n'
-        printf '<meta name="modified" content="">\n'
+        printf '<meta name="published" content="">\n'
+        printf '<meta name="updated" content="">\n'
         printf '<title></title>\n'
         printf '<link rel="stylesheet" href="/style.css">\n'
         printf '<link rel="icon" type="image/png" '
@@ -151,7 +151,7 @@ gen_listing() {
     while IFS='' read -r relpath; do
         path="${dir%/}/${relpath#./}"
         if is_content_page "$path"; then
-            published="$(get_metadata Published "$path")"
+            published="$(get_metadata published "$path")"
             if [ "$published" ]; then
                 printf "%s %s\n" "$published" "$relpath"
             fi
