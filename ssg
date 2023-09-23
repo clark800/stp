@@ -66,7 +66,12 @@ get_page_title() {
         if [ "$TITLE" ]; then
             printf "$TITLE"
         else
-            titlecase "$(basename "$(pwd)")"
+            title="$(basename "$(pwd)")"
+            if [ "${title%.*}" == "$title" ]; then
+                titlecase "$title"
+            else
+                printf "$title"    # contains a period; likely a domain name
+            fi
         fi
     else
         titlecase "${titledir##*/}"
