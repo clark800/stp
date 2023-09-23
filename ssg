@@ -52,7 +52,7 @@ get_title() {
         head -n 1 "$titledir/index.$EXT"
     elif [ -r "$titledir/index.html" ]; then
         cat "$titledir/index.html" | tr -d '\r\n' |
-            sed -n 's/<title>\(.*\)<\/title>/\1/p'
+            sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p'
     elif [ "$titledir" == '.' ]; then
         printf "$TITLE"
     else
@@ -68,12 +68,13 @@ get_header() {
         printf '<meta charset="utf-8">\n'
         printf '<meta name="created" content="">\n'
         printf '<meta name="modified" content="">\n'
-        printf '<meta name="author" content="">\n'
         printf '<title></title>\n'
         printf '<link rel="stylesheet" href="/style.css">\n'
         printf '<link rel="icon" type="image/png" '
         printf 'href="data:image/png;base64,iVBORw0KGgo=">\n'
-        printf '</head>\n<body>\n'
+        printf '</head>\n<body>\n<header>\n<nav>\n'
+        printf '<a href="/categories.html">Categories</a>\n'
+        printf '</nav>\n</header>\n<main>\n'
     fi
 }
 
@@ -101,7 +102,7 @@ get_footer() {
     if [ -r "$INCLUDES/footer.html" ]; then
         cat "$INCLUDES/footer.html"
     else
-        printf "</body>\n</html>\n"
+        printf "</main>\n</body>\n</html>\n"
     fi
 }
 
@@ -118,14 +119,14 @@ get_metadata() {
 gen_nav() {
     tail="${1%/}"
     if [ "$tail" == "." ]; then
-        printf '<h6>\n</h6>\n'
+        printf '<nav>\n</nav>\n'
         return
     fi
     tail="${tail%/*}/" # start with parent directory
     tail="${tail#.}"
     tail="${tail#/}"   #  a/b/    b/      ''
     head="/"           # /     /a/   /a/b/
-    printf "<h6>\n"
+    printf "<nav>\n"
     printf "<a href=\"$head\">$TITLE</a> &gt;\n"
     while [ "$tail" ]; do
         head="$head${tail%%/*}/"
@@ -133,20 +134,7 @@ gen_nav() {
         label="$(get_title ".$head")"
         printf "<a href=\"$head\">$label</a> &gt;\n"
     done
-    printf "</h6>\n"
-}
-
-gen_submenu() {
-    dir="$1"
-    printf "<h6>\n"
-    get_subdirs "$dir" |
-    while IFS='' read -r path; do
-        if is_category_page "$path"; then
-            title="$(get_title "$path")"
-            printf "<a href=\"${path##*/}\">$title</a>\n"
-        fi
-    done
-    printf "</h6>\n"
+    printf "</nav>\n"
 }
 
 gen_listing() {
@@ -167,7 +155,7 @@ gen_listing() {
         relpath="${line#* }"
         path="${dir%/}/${relpath#./}"
         title="$(get_title "$path")"
-        printf "<h2><sup>$published</sup>"
+        printf "<h2><time>$published</time>"
         printf "<a href=\"${relpath#./}\">$title</a></h2>\n"
     done
 }
@@ -179,7 +167,6 @@ gen_category_page() {
     get_header | set_title "$title" > "$html"
     gen_nav "$dir" >> "$html"
     printf "<h1>%s</h1>\n" "$title" >> "$html"
-    gen_submenu "$dir" >> "$html"
     gen_listing "$dir" >> "$html"
     get_footer >> "$html"
 }
@@ -215,6 +202,22 @@ gen_page() {
     fi
 }
 
+gen_categories() {
+    root="$1"
+    html="$root/categories.html"
+    get_header | set_title "Categories" > "$html"
+    printf '<h1>Categories</h1>\n<ul>' >> "$html"
+    get_recursive_subdirs "$root" |
+    while IFS='' read -r path; do
+        if is_category_page "$path"; then
+            title="$(get_title "$path")"
+            printf "<li><a href=\"${path##*/}\">$title</a></li>\n" >> "$html"
+        fi
+    done
+    printf '</ul>\n' >> "$html"
+    get_footer >> "$html"
+}
+
 gen_site() {
     root="$1"
     get_recursive_subdirs "$root" |
@@ -222,6 +225,7 @@ gen_site() {
     while IFS='' read -r dir; do
         gen_page "$dir"
     done
+    gen_categories "$root"
 }
 
 gen_site "."

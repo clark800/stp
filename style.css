@@ -35,35 +35,47 @@ h1 > a, h2 > a, h3 > a, h4 > a, h5 > a, h6 > a {
     text-decoration: none
 }
 
-h6 + h1 {
+nav {
+    font-size: 0.67em;
+    font-weight: bold;
+}
+
+nav > a {
+    text-decoration: none;
+}
+
+header > nav {
+    float: right;
+}
+
+main > nav + h1 {
     margin-top: 0;
     border-bottom: 1px solid #ccc;
 }
 
-h1 + h6 > a + a {
-    margin-left: 1.5em;
-}
-
-h1 + dl {
+main > nav + h1 + dl {
     margin-top: 0.25em;
 }
 
-h1 + dl > dt, h1 + dl > dd {
+main > nav + h1 + dl > dt, main > nav + h1 + dl > dd {
     font-size: small;
     display: inline;
     vertical-align: middle;
 }
 
-h1 + dl > dt {
+main > nav + h1 + dl > dt {
     margin: 0;
     font-weight: bolder;
     text-transform: capitalize;
 }
 
-h1 + dl > dd {
+main > nav + h1 + dl > dd {
     margin: 0 1em 0 0.5em;
 }
 
-h2 > sup + a {
-    margin-left: 0.5em;
+main > h2 > time {
+    vertical-align: super;
+    font-size: 0.5em;
+    color: #5e5e5e;
+    margin-right: 1em;
 }
