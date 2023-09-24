@@ -215,7 +215,7 @@ gen_listing() {
         path="${dir%/}/${relpath#./}"
         title="$(get_html_title "$path/index.html")"
         time="<time>$published</time>"
-        println "<h2>$time<a href=\"${relpath#./}\">$title</a></h2>"
+        println "<section>$time<a href=\"${relpath#./}\">$title</a></section>"
     done
 }
 
