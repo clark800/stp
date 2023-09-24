@@ -231,6 +231,7 @@ gen_metadata() {
     println "<dl>"
     grep '^% ' "$1" | sed "s|^% \([^:]*\): \(.*\)$|<dt>\1</dt><dd>\2</dd>|"
     println "</dl>"
+    println "</header>"
 }
 
 process() {
@@ -250,6 +251,7 @@ gen_content_page() {
     get_header "$title" | set_meta_tags "$source"
     gen_breadcrumb "${source%/*}"
     println "<article>"
+    println "<header>"
     println "$content"
     println "</article>"
     get_footer

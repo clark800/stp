@@ -58,28 +58,28 @@ main > nav {
     float: left;
 }
 
-main > h1, main > article > h1 {
+main > h1, main > article > header > h1 {
     border-bottom: 1px solid #ccc;
 }
 
-article > h1 + dl {
-    margin-top: 0.25em;
+header > dl {
+    margin-top: 0em;
 }
 
-article > h1 + dl > dt,
-article > h1 + dl > dd {
+header > dl > dt,
+header > dl > dd {
     font-size: small;
     display: inline;
     vertical-align: middle;
 }
 
-article > h1 + dl > dt {
+header > dl > dt {
     margin: 0;
     font-weight: bolder;
     text-transform: capitalize;
 }
 
-article > h1 + dl > dd {
+header > dl > dd {
     margin: 0 1em 0 0.5em;
 }
 
