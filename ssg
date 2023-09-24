@@ -38,11 +38,6 @@ is_writable() {
     [ ! -e "$1" ] || is_generated "$1"
 }
 
-is_content_page() {
-    [ -r "$1/index.html" ] &&
-        { [ -r "$1/index.$EXT" ] || ! is_generated "$1/index.html"; }
-}
-
 titlecase() {
     println "$1" | tr '_ -' '\n\n\n' |
     while IFS='' read -r word; do
@@ -149,12 +144,8 @@ get_footer() {
 
 get_metadata() {
     key="$1"
-    dir="$2"
-    if [ -r "$dir/index.$EXT" ]; then
-        sed -n "s/^% $key: \(.*\)$/\1/p" "$dir/index.$EXT"
-    elif [ -r "$dir/index.html" ]; then
-        sed -n "s/<dt>$key<\/dt><dd>\(.*\)<\/dd>/\1/p" "$dir/index.html"
-    fi
+    html="$2"
+    sed -n "s/<meta name=\"$key\" content=\"\(.*\)\">/\1/p" "$html"
 }
 
 gen_breadcrumb() {
@@ -184,11 +175,9 @@ gen_listing() {
     (cd "$dir"; get_recursive_subdirs .) |
     while IFS='' read -r relpath; do
         path="${dir%/}/${relpath#./}"
-        if is_content_page "$path"; then
-            published="$(get_metadata published "$path")"
-            if [ "$published" ]; then
-                println "$published $relpath"
-            fi
+        published="$(get_metadata published "$path/index.html")"
+        if [ "$published" ]; then
+            println "$published $relpath"
         fi
     done |
     sort -r -k 1 |
