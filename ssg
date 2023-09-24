@@ -265,6 +265,8 @@ gen_categories_page() {
     root="$1"
     html="$root/categories.html"
     get_header "Categories"
+    gen_breadcrumb "$root"
+    println "<nav>"
     println "<h1>Categories</h1>"
     println "<ul>"
     get_recursive_subdirs "$root" |
@@ -275,6 +277,7 @@ gen_categories_page() {
         fi
     done
     println "</ul>"
+    println "</nav>"
     get_footer
 }
 
