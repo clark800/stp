@@ -175,14 +175,15 @@ get_footer() {
 gen_breadcrumb() {
     tail="${1%/}"
     if [ "$tail" == "." ]; then
-        println '<nav>'
-        println '</nav>'
+        println '<header>'
+        println '</header>'
         return
     fi
     tail="${tail%/*}/" # start with parent directory
     tail="${tail#.}"
     tail="${tail#/}"   #  a/b/    b/      ''
     head="/"           # /     /a/   /a/b/
+    println "<header>"
     println "<nav>"
     println "<a href=\"$head\">$(get_home_title)</a>&nbsp;&gt;"
     while [ "$tail" ]; do
@@ -192,6 +193,7 @@ gen_breadcrumb() {
         println "<a href=\"$head\">$label</a>&nbsp;&gt;"
     done
     println "</nav>"
+    println "</header>"
 }
 
 gen_listing() {
@@ -222,8 +224,10 @@ gen_index_page() {
     title="$(get_index_title "$dir")"
     get_header "$title"
     gen_breadcrumb "$dir"
+    println "<nav>"
     println "<h1>$title</h1>"
     gen_listing "$dir"
+    println "</nav>"
     get_footer
 }
 

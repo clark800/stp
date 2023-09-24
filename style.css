@@ -40,13 +40,13 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
     text-decoration: none
 }
 
-nav {
-    font-size: 0.8em;
-    font-weight: bold;
-}
-
 nav a {
     text-decoration: none;
+}
+
+header nav {
+    font-size: 0.8em;
+    font-weight: bold;
 }
 
 body > header nav {
@@ -58,7 +58,7 @@ body > header nav a {
     margin-left: 1em;
 }
 
-main > nav {
+main > header nav {
     float: left;
 }
 
@@ -83,7 +83,7 @@ header > dl > dd {
     margin: 0 1em 0 0.5em;
 }
 
-main > h2 > time {
+nav > h2 > time {
     vertical-align: top;
     font-size: 0.5em;
     color: #5e5e5e;
@@ -93,6 +93,6 @@ main > h2 > time {
     width: 6em;
 }
 
-main > h2 > time + a {
+nav > h2 > time + a {
     display: table-cell;
 }
