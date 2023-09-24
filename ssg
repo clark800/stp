@@ -99,10 +99,12 @@ get_home_title() {
     fi
 }
 
+insert_meta_sed_cmd() {
+    printf '/<title>/i\\\n<meta name="%s" content="%s">\n;' "$1" "$2"
+}
+
 set_generator() {
-    sed '/<title>/i\
-<meta name="generator" content="ssg">
-'
+    sed "$(insert_meta_sed_cmd generator ssg)"
 }
 
 set_title() {
@@ -149,7 +151,7 @@ set_meta_tags() {
         fi
         key="${trimmed%%:*}"
         value="${trimmed#*: }"
-        command+="s/<title>/<meta name=\"$key\" content=\"$value\">\n<title>/;"
+        command+="$(insert_meta_sed_cmd "$key" "$value")"
     done < "$source"
     sed "${command%;}"
 }
