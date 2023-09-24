@@ -77,17 +77,23 @@ get_site_title() {
     fi
 }
 
-get_page_title() {
-    titledir="${1%/}"
-    index="$titledir/index.html"
-    if [ -r "$titledir/index.$EXT" ]; then
-        get_source_title "$titledir/index.$EXT"
-    elif [ -r "$index" ] && ! is_generated "$index" ; then
-        get_html_title "$index"
-    elif [ "$titledir" == "." ]; then
+get_index_title() {
+    if [ "$1" == "." ]; then
         get_site_title
     else
-        titlecase "${titledir##*/}"
+        titlecase "${1##*/}"
+    fi
+}
+
+get_page_title() {
+    dir="${1%/}"
+    index="$dir/index.html"
+    if [ -r "$dir/index.$EXT" ]; then
+        get_source_title "$dir/index.$EXT"
+    elif [ -r "$index" ] && ! is_generated "$index" ; then
+        get_html_title "$index"
+    else
+        get_index_title "$dir"
     fi
 }
 
@@ -213,13 +219,12 @@ gen_listing() {
 
 gen_index_page() {
     dir="$1"
-    html="$dir/index.html"
-    title="$(get_page_title "$dir")"
-    get_header "$title" > "$html"
-    gen_breadcrumb "$dir" >> "$html"
-    println "<h1>$title</h1>" >> "$html"
-    gen_listing "$dir" >> "$html"
-    get_footer >> "$html"
+    title="$(get_index_title "$dir")"
+    get_header "$title"
+    gen_breadcrumb "$dir"
+    println "<h1>$title</h1>"
+    gen_listing "$dir"
+    get_footer
 }
 
 gen_metadata() {
@@ -237,24 +242,23 @@ process() {
 
 gen_content_page() {
     source="$1"
-    html="${source%.*}.html"
     title="$(get_source_title "$source")"
-    get_header "$title" | set_meta_tags "$source" > "$html"
-    gen_breadcrumb "${source%/*}" >> "$html"
-    process "$source" >> "$html"
-    get_footer >> "$html"
+    get_header "$title" | set_meta_tags "$source"
+    gen_breadcrumb "${source%/*}"
+    process "$source"
+    get_footer
 }
 
 gen_page() {
     dir="$1"
     for source in "$dir"/*."$EXT"; do
         if [ -r "$source" ] && is_writable "${source%.*}.html"; then
-            gen_content_page "$source"
+            gen_content_page "$source" > "${source%.*}.html"
         fi
     done
     if [ ! -e "$dir/index.$EXT" ] && is_writable "$dir/index.html"; then
         if has_subpage "$dir"; then
-            gen_index_page "$dir"
+            gen_index_page "$dir" > "$dir/index.html"
         fi
     fi
 }
@@ -262,18 +266,18 @@ gen_page() {
 gen_categories_page() {
     root="$1"
     html="$root/categories.html"
-    get_header "Categories" > "$html"
-    println "<h1>Categories</h1>" >> "$html"
-    println "<ul>" >> "$html"
+    get_header "Categories"
+    println "<h1>Categories</h1>"
+    println "<ul>"
     get_recursive_subdirs "$root" |
     while IFS='' read -r path; do
         if is_category_page "$path"; then
             title="$(get_page_title "$path")"
-            println "<li><a href=\"${path##*/}\">$title</a></li>" >> "$html"
+            println "<li><a href=\"${path##*/}\">$title</a></li>"
         fi
     done
-    println "</ul>" >> "$html"
-    get_footer >> "$html"
+    println "</ul>"
+    get_footer
 }
 
 gen_site() {
@@ -283,7 +287,7 @@ gen_site() {
         gen_page "$dir"
     done
     if is_writable "categories.html"; then
-        gen_categories_page "."
+        gen_categories_page "." > "categories.html"
     fi
 }
 
