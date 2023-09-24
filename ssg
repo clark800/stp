@@ -39,7 +39,8 @@ is_writable() {
 }
 
 is_category_page() {
-    is_generated "$1/index.html" && [ ! -e "$1/index.$EXT" ]
+    [ -r "$1/index.html" ] && is_generated "$1/index.html" && \
+        [ ! -e "$1/index.$EXT" ]
 }
 
 titlecase() {
@@ -93,9 +94,18 @@ get_home_title() {
     fi
 }
 
+set_generator() {
+    sed 's/<title>/<meta name="generator" content="ssg">\n<title>/'
+}
+
 get_header() {
-    if [ -r "$INCLUDES/header.html" ]; then
-        cat "$INCLUDES/header.html"
+    file="$INCLUDES/header.html"
+    if [ -r "$file" ]; then
+        if is_generated "$file"; then
+            cat "$file"
+        else
+            cat "$file" | set_generator
+        fi
     else
         icon="data:image/png;base64,iVBORw0KGgo="
         println '<!DOCTYPE html>'
@@ -127,13 +137,13 @@ set_meta_tags() {
         fi
         key="${trimmed%%:*}"
         value="${trimmed#*: }"
-        command+="s|<title>|<meta name=\"$key\" content=\"$value\">\n<title>|;"
+        command+="s/<title>/<meta name=\"$key\" content=\"$value\">\n<title>/;"
     done < "$source"
     sed "${command%;}"
 }
 
 set_title() {
-    sed "s|<title></title>|<title>$1</title>|"
+    sed "s|<title>.*</title>|<title>$1</title>|"
 }
 
 get_footer() {
@@ -179,9 +189,11 @@ gen_listing() {
     (cd "$dir"; get_recursive_subdirs .) |
     while IFS='' read -r relpath; do
         path="${dir%/}/${relpath#./}"
-        published="$(get_metadata published "$path/index.html")"
-        if [ "$published" ]; then
-            println "$published $relpath"
+        if [ -r "$path/index.html" ]; then
+            published="$(get_metadata published "$path/index.html")"
+            if [ "$published" ]; then
+                println "$published $relpath"
+            fi
         fi
     done |
     sort -r -k 1 |
