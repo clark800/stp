@@ -99,6 +99,5 @@ main > nav > section > time {
     color: #888;
     margin-right: 1em;
     padding-top: 0.25em;
-    display: table-cell;
     width: 6em;
 }
