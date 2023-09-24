@@ -51,6 +51,12 @@ titlecase() {
     done | cut -c 2-
 }
 
+get_metadata() {
+    key="$1"
+    html="$2"
+    sed -n "s/<meta name=\"$key\" content=\"\(.*\)\">/\1/p" "$html"
+}
+
 get_source_title() {
     grep -v '^[[:space:]]*$' "$1" | head -n 1
 }
@@ -155,12 +161,6 @@ get_footer() {
         println '</body>'
         println '</html>'
     fi
-}
-
-get_metadata() {
-    key="$1"
-    html="$2"
-    sed -n "s/<meta name=\"$key\" content=\"\(.*\)\">/\1/p" "$html"
 }
 
 gen_breadcrumb() {
