@@ -219,11 +219,17 @@ gen_index_page() {
     get_footer >> "$html"
 }
 
+gen_metadata() {
+    println "<dl>"
+    grep '^% ' "$1" | sed "s|^% \([^:]*\): \(.*\)$|<dt>\1</dt><dd>\2</dd>|"
+    println "</dl>"
+}
+
 process() {
-    cat "$1" | tr -d '\r' |
-    sed "s/^% \([^:]*\): \(.*\)$/<dl>$CR<dt>\1<\/dt><dd>\2<\/dd>$CR<\/dl>/" |
-        tr '\n' '\r' | sed "s/$CR<\/dl>$CR<dl>$CR/$CR/" | tr '\r' '\n' |
-        $PROCESSOR | sed 's/^<p><dl>$/<dl>/' | sed 's/^<\/dl><\/p>$/<\/dl>/'
+    source="$1"
+    gen_metadata "$source" > "$source.tmp"
+    grep -v '^% ' "$source" | $PROCESSOR | sed "/<\/h1>/r $source.tmp"
+    rm -f "$source.tmp"
 }
 
 gen_content_page() {
