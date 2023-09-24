@@ -87,8 +87,15 @@ main > nav + h1 + dl > dd {
 }
 
 main > h2 > time {
-    vertical-align: super;
+    vertical-align: top;
     font-size: 0.5em;
     color: #5e5e5e;
     margin-right: 1em;
+    padding-top: 0.5em;
+    display: table-cell;
+    width: 6em;
+}
+
+main > h2 > time + a {
+    display: table-cell;
 }
