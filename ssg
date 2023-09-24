@@ -249,7 +249,9 @@ gen_content_page() {
     title="$(println "$content" | get_h1_title)"
     get_header "$title" | set_meta_tags "$source"
     gen_breadcrumb "${source%/*}"
+    println "<article>"
     println "$content"
+    println "</article>"
     get_footer
 }
 
