@@ -62,24 +62,24 @@ main > header nav {
     float: left;
 }
 
-header > dl {
+header dl {
     margin-top: 0em;
 }
 
-header > dl > dt,
-header > dl > dd {
+header dl dt,
+header dl dd {
     font-size: small;
     display: inline;
     vertical-align: middle;
 }
 
-header > dl > dt {
+header dl dt {
     margin: 0;
     font-weight: bolder;
     text-transform: capitalize;
 }
 
-header > dl > dd {
+header dl dd {
     margin: 0 1em 0 0.5em;
 }
 
