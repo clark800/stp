@@ -38,6 +38,10 @@ is_writable() {
     [ ! -e "$1" ] || is_generated "$1"
 }
 
+is_category_page() {
+    is_generated "$1/index.html" && [ ! -e "$1/index.$EXT" ]
+}
+
 titlecase() {
     println "$1" | tr '_ -' '\n\n\n' |
     while IFS='' read -r word; do
@@ -241,7 +245,7 @@ gen_categories_page() {
     println "<ul>" >> "$html"
     get_recursive_subdirs "$root" |
     while IFS='' read -r path; do
-        if is_generated "$path/index.html" && [ ! -e "$path/index.$EXT" ]; then
+        if is_category_page "$path"; then
             title="$(get_page_title "$path")"
             println "<li><a href=\"${path##*/}\">$title</a></li>" >> "$html"
         fi
