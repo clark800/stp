@@ -98,13 +98,18 @@ set_generator() {
     sed 's/<title>/<meta name="generator" content="ssg">\n<title>/'
 }
 
+set_title() {
+    sed "s|<title>.*</title>|<title>$1</title>|"
+}
+
 get_header() {
+    title="$1"
     file="$INCLUDES/header.html"
     if [ -r "$file" ]; then
         if is_generated "$file"; then
-            cat "$file"
+            cat "$file" | set_title "$title"
         else
-            cat "$file" | set_generator
+            cat "$file" | set_title "$title" | set_generator
         fi
     else
         icon="data:image/png;base64,iVBORw0KGgo="
@@ -113,7 +118,7 @@ get_header() {
         println '<head>'
         println '<meta charset="utf-8">'
         println '<meta name="generator" content="ssg">'
-        println '<title></title>'
+        println "<title>$title</title>"
         println '<link rel="stylesheet" href="/style.css">'
         println "<link rel=\"icon\" type=\"image/png\" href=\"$icon\">"
         println '</head>'
@@ -140,10 +145,6 @@ set_meta_tags() {
         command+="s/<title>/<meta name=\"$key\" content=\"$value\">\n<title>/;"
     done < "$source"
     sed "${command%;}"
-}
-
-set_title() {
-    sed "s|<title>.*</title>|<title>$1</title>|"
 }
 
 get_footer() {
@@ -211,7 +212,7 @@ gen_index_page() {
     dir="$1"
     html="$dir/index.html"
     title="$(get_page_title "$dir")"
-    get_header | set_title "$title" > "$html"
+    get_header "$title" > "$html"
     gen_breadcrumb "$dir" >> "$html"
     println "<h1>$title</h1>" >> "$html"
     gen_listing "$dir" >> "$html"
@@ -229,7 +230,7 @@ gen_content_page() {
     source="$1"
     html="${source%.*}.html"
     title="$(get_source_title "$source")"
-    get_header | set_meta_tags "$source" | set_title "$title" > "$html"
+    get_header "$title" | set_meta_tags "$source" > "$html"
     gen_breadcrumb "${source%/*}" >> "$html"
     process "$source" >> "$html"
     get_footer >> "$html"
@@ -252,7 +253,7 @@ gen_page() {
 gen_categories_page() {
     root="$1"
     html="$root/categories.html"
-    get_header | set_title "Categories" > "$html"
+    get_header "Categories" > "$html"
     println "<h1>Categories</h1>" >> "$html"
     println "<ul>" >> "$html"
     get_recursive_subdirs "$root" |
