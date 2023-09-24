@@ -265,12 +265,15 @@ gen_categories_page() {
     root="$1"
     html="$root/categories.html"
     get_header "Categories"
-    gen_breadcrumb "$root"
+    gen_breadcrumb "$root/categories.html"
     println "<nav>"
     println "<h1>Categories</h1>"
     println "<ul>"
     get_recursive_subdirs "$root" |
     while IFS='' read -r path; do
+        if [ "$path" == "$root" ]; then
+            continue
+        fi
         if is_category_page "$path"; then
             title="$(get_html_title "$path/index.html")"
             println "<li><a href=\"${path##*/}\">$title</a></li>"
