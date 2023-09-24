@@ -56,12 +56,12 @@ get_meta_value() {
     sed -n "s/<meta name=\"$key\" content=\"\(.*\)\">/\1/p" "$html"
 }
 
-get_source_title() {
-    grep -v '^[[:space:]]*$' "$1" | head -n 1
+get_h1_title() {
+    tr -d '\r\n' | sed -n 's|.*<h1>\(.*\)</h1>.*|\1|p'
 }
 
 get_html_title() {
-    cat "$1" | tr -d '\r\n' | sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p'
+    cat "$1" | tr -d '\r\n' | sed -n 's|.*<title>\(.*\)</title>.*|\1|p'
 }
 
 get_site_title() {
@@ -85,11 +85,11 @@ get_index_title() {
     fi
 }
 
-get_page_title() { # need this because breadcrums are generated before parents
+get_breadcrumb_title() {
     dir="${1%/}"
     index="$dir/index.html"
-    if [ -r "$dir/index.$EXT" ]; then
-        get_source_title "$dir/index.$EXT"
+    if [ -r "$index" ] && [ -r "$dir/index.$EXT" ]; then
+        get_html_title "$index"
     elif [ -r "$index" ] && ! is_generated "$index" ; then
         get_html_title "$index"
     else
@@ -184,11 +184,11 @@ gen_breadcrumb() {
     tail="${tail#/}"   #  a/b/    b/      ''
     head="/"           # /     /a/   /a/b/
     println "<nav>"
-    println "<a href=\"$head\">$(get_home_title)</a> &gt;"
+    println "<a href=\"$head\">$(get_home_title)</a>&nbsp;&gt;"
     while [ "$tail" ]; do
         head="$head${tail%%/*}/"
         tail="${tail#*/}"
-        label="$(get_page_title ".$head")"
+        label="$(get_breadcrumb_title ".$head")"
         println "<a href=\"$head\">$label</a>&nbsp;&gt;"
     done
     println "</nav>"
@@ -242,25 +242,12 @@ process() {
 
 gen_content_page() {
     source="$1"
-    title="$(get_source_title "$source")"
+    content="$(process "$source")"
+    title="$(println "$content" | get_h1_title)"
     get_header "$title" | set_meta_tags "$source"
     gen_breadcrumb "${source%/*}"
-    process "$source"
+    println "$content"
     get_footer
-}
-
-gen_page() {
-    dir="$1"
-    for source in "$dir"/*."$EXT"; do
-        if [ -r "$source" ] && is_writable "${source%.*}.html"; then
-            gen_content_page "$source" > "${source%.*}.html"
-        fi
-    done
-    if [ ! -e "$dir/index.$EXT" ] && is_writable "$dir/index.html"; then
-        if has_subpage "$dir"; then
-            gen_index_page "$dir" > "$dir/index.html"
-        fi
-    fi
 }
 
 gen_categories_page() {
@@ -281,10 +268,29 @@ gen_categories_page() {
 }
 
 gen_site() {
+    # the first pass does a pre-order traversal to processes source files so
+    # that titles will be available for breadcrumb navigation without
+    # reprocessing the source files; a content page can have subpages so
+    # source-generated pages may be in the breadcrumb navigation
     get_recursive_subdirs "." |
-    LC_ALL=C sort -r |
     while IFS='' read -r dir; do
-        gen_page "$dir"
+        for source in "$dir"/*."$EXT"; do
+            if [ -r "$source" ] && is_writable "${source%.*}.html"; then
+                gen_content_page "$source" > "${source%.*}.html"
+            fi
+        done
+    done
+    # the second pass does a post-order traversal to generate index files so
+    # that we know which directories contain pages without another recursive
+    # search; we don't want to generate index files for direcories that only
+    # contain images for example
+    get_recursive_subdirs "." | LC_ALL=C sort -r |
+    while IFS='' read -r dir; do
+        if [ ! -e "$dir/index.$EXT" ] && is_writable "$dir/index.html"; then
+            if has_subpage "$dir"; then
+                gen_index_page "$dir" > "$dir/index.html"
+            fi
+        fi
     done
     if is_writable "categories.html"; then
         gen_categories_page "." > "categories.html"
