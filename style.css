@@ -85,7 +85,7 @@ header > dl > dd {
 
 main > nav > section {
     font-size: 1em;
-    margin-top: 1em;
+    margin: 1em;
 }
 
 main > nav > section > * {
