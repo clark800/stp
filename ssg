@@ -293,7 +293,7 @@ gen_tree() {
         done
         println "</details>"
     else
-        println "<a href=\"$1\">$title</a><br>"
+        println "<a href=\"$1\">$title</a>"
     fi
 }
 
