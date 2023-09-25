@@ -51,6 +51,7 @@ details summary::-webkit-details-marker {
 
 details > summary::before {
     content: '>';
+    transform: scale(0.8, 1.25);
     font-family: "Courier New", "Courier", monospace;
     font-weight: bold;
     font-size: smaller;
@@ -61,6 +62,7 @@ details > summary::before {
 
 details[open] > summary::before {
     content: '\2228';
+    transform: scale(1.25, 0.8);
 }
 
 nav > details {
@@ -117,6 +119,7 @@ main > header nav a {
 
 main > header nav a::after {
     content: '>';
+    transform: scale(0.8, 1.25);
     font-family: "Courier New", "Courier", monospace;
     display: inline-block;
     margin-left: 0.4em;
