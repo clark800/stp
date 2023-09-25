@@ -306,7 +306,7 @@ gen_site() {
     find_files "." "*.$EXT" |
     while IFS='' read -r source; do
         html="${source%.*}.html"
-        if [ -r "$source" ] && is_writable "$html"; then
+        if is_writable "$html"; then
             log "${html#./}"
             gen_content_page "$source" > "$html"
         fi
