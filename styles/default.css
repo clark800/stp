@@ -116,6 +116,19 @@ main > header nav {
     float: left;
 }
 
+main > header nav a {
+    display: inline-block;
+}
+
+main > header nav a::after {
+    content: '>';
+    font-family: "Courier New", "Courier", monospace;
+    display: inline-block;
+    margin-left: 0.4em;
+    margin-right: 0.2em;
+    line-height: 0;
+}
+
 /* "header dl" is for metadata shown under the heading */
 
 header dl {

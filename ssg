@@ -195,12 +195,12 @@ gen_breadcrumb() {
     head="/"           # /     /a/   /a/b/
     println "<header>"
     println "<nav>"
-    println "<a href=\"$head\">$(get_home_title)</a>&nbsp;&gt;"
+    println "<a href=\"$head\">$(get_home_title)</a>"
     while [ "$tail" ]; do
         head="$head${tail%%/*}/"
         tail="${tail#*/}"
         label="$(get_breadcrumb_title ".$head")"
-        println "<a href=\"$head\">$label</a>&nbsp;&gt;"
+        println "<a href=\"$head\">$label</a>"
     done
     println "</nav>"
     println "</header>"
