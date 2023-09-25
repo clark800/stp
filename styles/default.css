@@ -53,6 +53,8 @@ header nav {
     font-weight: bold;
 }
 
+/* "body > header nav" is the main navigation menu */
+
 body > header nav {
     float: right;
     padding-left: 2em;
@@ -62,9 +64,13 @@ body > header nav a {
     margin-left: 1em;
 }
 
+/* "main > header nav" is the breadcrumb menu */
+
 main > header nav {
     float: left;
 }
+
+/* "header dl" is for metadata shown under the heading */
 
 header dl {
     margin-top: 0em;
@@ -86,6 +92,9 @@ header dl dt {
 header dl dd {
     margin: 0 1em 0 0.5em;
 }
+
+/* "main > nav" is the content of an index or category page */
+/* "main > nav > section" corresponds to a listing item in an index page */
 
 main > nav > section {
     font-size: 1em;
