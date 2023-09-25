@@ -40,22 +40,50 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
     text-decoration: none
 }
 
-details {
+details summary {
+    cursor: pointer;
+    list-style-type: none;
+}
+
+details summary::-webkit-details-marker {
+    display:none;
+}
+
+details > summary::before {
+    content: '';
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>');
+    background-position: 50% 50%;
+    background-size: 1em 1em;
+}
+
+details[open] > summary::before {
+    content: '';
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+    background-size: 1em 1em;
+}
+
+nav > details {
+    margin-left: 1em;
+    margin-top: 0.5em;
+}
+
+nav details {
     line-height: 2em;
 }
 
-details summary {
-    cursor: pointer;
-}
-
-details > *:not(summary){
+nav details > details {
     margin-left: 1em;
 }
 
-details > a {
+nav details > a {
     display: block;
     margin-left: 2em;
-    padding-left: 0;
 }
 
 nav a {
