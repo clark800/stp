@@ -150,7 +150,7 @@ get_header() {
         println '<body>'
         println '<header>'
         println '<nav>'
-        println '<a href="/categories.html">Categories</a>'
+        println '<a href="/directory.html">Directory</a>'
         println '</nav>'
         println '</header>'
         println '<main>'
@@ -287,7 +287,7 @@ gen_tree() {
         println "<summary>"
         println "<a href=\"$1\">$title</a>"
         println "</summary>"
-        println "$subdirs" |
+        println "$subdirs" | sort |
         while IFS='' read -r path; do
             gen_tree "$path"
         done
@@ -297,13 +297,13 @@ gen_tree() {
     fi
 }
 
-gen_categories_page() {
+gen_directory_page() {
     root="$1"
-    html="$root/categories.html"
-    get_header "Categories"
-    gen_breadcrumb "$root/categories.html"
+    html="$root/directory.html"
+    get_header "Directory"
+    gen_breadcrumb "$root/directory.html"
     println "<nav>"
-    println "<h1>Categories</h1>"
+    println "<h1>Directory</h1>"
     gen_tree "$root"
     println "</nav>"
     get_footer
@@ -336,9 +336,9 @@ gen_site() {
             fi
         fi
     done
-    if is_writable "categories.html"; then
-        log "categories.html"
-        gen_categories_page "." > "categories.html"
+    if is_writable "directory.html"; then
+        log "directory.html"
+        gen_directory_page "." > "directory.html"
     fi
 }
 
