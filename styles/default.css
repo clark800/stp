@@ -46,26 +46,21 @@ details summary {
 }
 
 details summary::-webkit-details-marker {
-    display:none;
+    display: none;
 }
 
 details > summary::before {
-    content: '';
+    content: '>';
+    font-family: "Courier New", "Courier", monospace;
+    font-weight: bold;
+    font-size: smaller;
     display: inline-block;
+    vertical-align: top;
     width: 1em;
-    height: 1em;
-    background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>');
-    background-position: 50% 50%;
-    background-size: 1em 1em;
 }
 
 details[open] > summary::before {
-    content: '';
-    display: inline-block;
-    width: 1em;
-    height: 1em;
-    background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
-    background-size: 1em 1em;
+    content: '\2228';
 }
 
 nav > details {
@@ -83,7 +78,7 @@ nav details > details {
 
 nav details > a {
     display: block;
-    margin-left: 2.3em;
+    margin-left: 2.1em;
 }
 
 nav a {
