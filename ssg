@@ -19,8 +19,12 @@ get_subdirs() {
     find "$1" ! -name "${1##*/}" -prune ! -name '.*' -type d
 }
 
-get_recursive_subdirs() {
-    find "$1" -name ".?*" -prune -o -type d -print
+find_subdirs() {
+    find "$1" -name '.?*' -prune -o -type d -print
+}
+
+find_files() {
+    find "$1" -name '.?*' -prune -o -type f -name "$2" -print
 }
 
 has_subpage() {
@@ -201,26 +205,28 @@ gen_breadcrumb() {
     println "</header>"
 }
 
-gen_listing() {
+get_posts() {
     dir="$1"
-    (cd "$dir"; get_recursive_subdirs .) |
+    (cd "$dir"; find_files "." "*.html") |
     while IFS='' read -r relpath; do
         path="${dir%/}/${relpath#./}"
-        if [ -r "$path/index.html" ]; then
-            published="$(get_meta_value published "$path/index.html")"
-            if [ "$published" ]; then
-                println "$published $relpath"
-            fi
+        published="$(get_meta_value "published" "$path")"
+        if [ "$published" ]; then
+            println "$published ${relpath#./}"
         fi
-    done |
-    sort -r -k 1 |
+    done
+}
+
+gen_listing() {
+    dir="$1"
+    get_posts "$dir" | sort -r -k 1 |
     while IFS='' read -r line; do
         published="${line%% *}"
         relpath="${line#* }"
-        path="${dir%/}/${relpath#./}"
-        title="$(get_html_title "$path/index.html")"
+        path="${dir%/}/$relpath"
+        title="$(get_html_title "$path")"
         time="<time>$published</time>"
-        println "<section>$time<a href=\"${relpath#./}\">$title</a></section>"
+        println "<section>$time<a href=\"$relpath\">$title</a></section>"
     done
 }
 
@@ -274,7 +280,7 @@ gen_categories_page() {
     println "<nav>"
     println "<h1>Categories</h1>"
     println "<ul>"
-    get_recursive_subdirs "$root" |
+    find_subdirs "$root" |
     while IFS='' read -r path; do
         if [ "$path" == "$root" ]; then
             continue
@@ -294,21 +300,19 @@ gen_site() {
     # that titles will be available for breadcrumb navigation without
     # reprocessing the source files; a content page can have subpages so
     # source-generated pages may be in the breadcrumb navigation
-    get_recursive_subdirs "." |
-    while IFS='' read -r dir; do
-        for source in "$dir"/*."$EXT"; do
-            html="${source%.*}.html"
-            if [ -r "$source" ] && is_writable "$html"; then
-                log "${html#./}"
-                gen_content_page "$source" > "$html"
-            fi
-        done
+    find_files "." "*.$EXT" |
+    while IFS='' read -r source; do
+        html="${source%.*}.html"
+        if [ -r "$source" ] && is_writable "$html"; then
+            log "${html#./}"
+            gen_content_page "$source" > "$html"
+        fi
     done
     # the second pass does a post-order traversal to generate index files so
     # that we know which directories contain pages without another recursive
     # search; we don't want to generate index files for direcories that only
     # contain images for example
-    get_recursive_subdirs "." | LC_ALL=C sort -r |
+    find_subdirs "." | LC_ALL=C sort -r |
     while IFS='' read -r dir; do
         html="$dir/index.html"
         if [ ! -e "$dir/index.$EXT" ] && is_writable "$html"; then
