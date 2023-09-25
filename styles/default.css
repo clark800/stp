@@ -44,6 +44,10 @@ nav a {
     text-decoration: none;
 }
 
+nav a:hover {
+    text-decoration: underline;
+}
+
 header nav {
     font-size: 0.8em;
     font-weight: bold;
