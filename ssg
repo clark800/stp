@@ -245,6 +245,7 @@ gen_metadata() {
 
 process() {
     source="$1"
+    println "<header>"
     gen_metadata "$source" > "$source.tmp"
     # hack: add and remove a blank line so we can use sed address range
     # to insert only after the first </h1> tag
@@ -260,7 +261,6 @@ gen_content_page() {
     get_header "$title" | set_meta_tags "$source"
     gen_breadcrumb "${source%/*}"
     println "<article>"
-    println "<header>"
     println "$content"
     println "</article>"
     get_footer
