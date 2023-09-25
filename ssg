@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 TITLE="${SSG_TITLE}"
 HOME="${SSG_HOME}"
@@ -8,6 +9,10 @@ INCLUDES="${SSG_INCLUDES:-.includes}"
 
 println() {
     printf '%s\n' "$1"
+}
+
+log() {
+    println "$1" >&2
 }
 
 get_subdirs() {
@@ -292,8 +297,10 @@ gen_site() {
     get_recursive_subdirs "." |
     while IFS='' read -r dir; do
         for source in "$dir"/*."$EXT"; do
-            if [ -r "$source" ] && is_writable "${source%.*}.html"; then
-                gen_content_page "$source" > "${source%.*}.html"
+            html="${source%.*}.html"
+            if [ -r "$source" ] && is_writable "$html"; then
+                log "${html#./}"
+                gen_content_page "$source" > "$html"
             fi
         done
     done
@@ -303,13 +310,16 @@ gen_site() {
     # contain images for example
     get_recursive_subdirs "." | LC_ALL=C sort -r |
     while IFS='' read -r dir; do
-        if [ ! -e "$dir/index.$EXT" ] && is_writable "$dir/index.html"; then
+        html="$dir/index.html"
+        if [ ! -e "$dir/index.$EXT" ] && is_writable "$html"; then
             if has_subpage "$dir"; then
-                gen_index_page "$dir" > "$dir/index.html"
+                log "${html#./}"
+                gen_index_page "$dir" > "$html"
             fi
         fi
     done
     if is_writable "categories.html"; then
+        log "categories.html"
         gen_categories_page "." > "categories.html"
     fi
 }
