@@ -1,8 +1,4 @@
 
-get_subdirs() {
-    find "$1" ! -name "${1##*/}" -prune ! -name '.*' -type d
-}
-
 gen_directory_tree() {
     title="$(get_html_title "$1/index.html")"
     subdirs="$(get_subdirs "$1")"
