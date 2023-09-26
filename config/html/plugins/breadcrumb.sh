@@ -4,7 +4,7 @@ get_home_title() {
     if [ "$HOME_TITLE" ]; then
         println "$HOME_TITLE"
     else
-        get_site_title
+        get_root_title
     fi
 }
 

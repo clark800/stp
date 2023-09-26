@@ -28,7 +28,7 @@ format_title() {
     fi
 }
 
-get_site_title() {
+get_root_title() {
     if [ "$TITLE" ]; then
         println "$TITLE"
     else

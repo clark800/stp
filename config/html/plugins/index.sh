@@ -19,7 +19,7 @@ find_subdirs() {
 
 get_index_title() {
     if [ "${1%/}" == "." ]; then
-        get_site_title
+        get_root_title
     else
         format_title "${1##*/}"
     fi
