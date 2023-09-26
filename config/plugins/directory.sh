@@ -47,7 +47,7 @@ gen_directory_page() {
 
 directory_generator() {
     if is_writable "directory.html"; then
-        log "directory.html"
+        println "directory.html" >&2
         gen_directory_page "." > "directory.html"
     fi
 }

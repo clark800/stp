@@ -57,7 +57,7 @@ index_generator() {
         html="$dir/index.html"
         if [ ! -e "$dir/index.$EXT" ] && is_writable "$html"; then
             if [ "$(get_posts "$dir")" ]; then
-                log "${html#./}"
+                println "${html#./}" >&2
                 gen_index_page "$dir" > "$html"
             fi
         fi

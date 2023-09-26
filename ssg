@@ -12,10 +12,6 @@ println() {
     printf '%s\n' "$1"
 }
 
-log() {
-    println "$1" >&2
-}
-
 find_files() {
     find "$1" -name '.?*' -prune -o -type f -name "$2" -print
 }
@@ -98,7 +94,7 @@ gen_content_pages() {
     while IFS='' read -r source; do
         html="${source%.*}.html"
         if is_writable "$html"; then
-            log "${html#./}"
+            println "${html#./}" >&2
             gen_content_page "$source" |
                 apply_transforms "$TRANSFORMS" "$source" > "$html"
         fi
