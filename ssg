@@ -162,7 +162,8 @@ get_header_template() {
 }
 
 get_header() {
-   get_header_template "$1" | process_template
+    title="$1"
+    get_header_template "$title" | process_template
 }
 
 set_meta_tags() {
