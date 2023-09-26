@@ -34,17 +34,6 @@ process_template() {
     eval "printf '%s\\n' \"$(sed 's/"/\\"/g')\""
 }
 
-has_subpage() {
-    get_subdirs "$1" | {
-        while IFS='' read -r subdir; do
-            if [ -r "$subdir/index.html" ]; then
-                return 0
-            fi
-        done
-        return 1
-    }
-}
-
 is_generated() {
     grep -q -x '<meta name="generator" content="ssg">' "$1"
 }
@@ -265,7 +254,7 @@ gen_index_pages() {
     while IFS='' read -r dir; do
         html="$dir/index.html"
         if [ ! -e "$dir/index.$EXT" ] && is_writable "$html"; then
-            if has_subpage "$dir"; then
+            if [ "$(get_posts "$dir")" ]; then
                 log "${html#./}"
                 gen_index_page "$dir" > "$html"
             fi

@@ -1,8 +1,17 @@
 
+get_subpages() {
+    get_subdirs "$1" |
+    while IFS='' read -r subdir; do
+        if [ -r "$subdir/index.html" ]; then
+            println "$subdir"
+        fi
+    done
+}
+
 gen_directory_tree() {
     title="$(get_html_title "$1/index.html")"
-    subdirs="$(get_subdirs "$1")"
-    if [ "$subdirs" ]; then
+    subpages="$(get_subpages "$1")"
+    if [ "$subpages" ]; then
         if [ "$1" == "$dir" ]; then
             println "<details open>"
         else
@@ -11,7 +20,7 @@ gen_directory_tree() {
         println "<summary>"
         println "<a href=\"$1\">$title</a>"
         println "</summary>"
-        println "$subdirs" | sort |
+        println "$subpages" | sort |
         while IFS='' read -r path; do
             gen_directory_tree "$path"
         done
