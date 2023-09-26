@@ -42,6 +42,15 @@ format_basename() {
     fi
 }
 
+get_source_title() {
+    path="${1%.*}"
+    if [ "${path##*/}" == "index" ]; then
+        format_basename "${path%/*}"
+    else
+        format_basename "$path"
+    fi
+}
+
 process_template() {
     eval "printf '%s\\n' \"$(sed 's/"/\\"/g')\""
 }
@@ -75,7 +84,7 @@ apply_transforms() {
 }
 
 generate() {
-    title="$(format_basename "${source_path%.*}")"
+    title="$(get_source_title "$source_path")"
     cat "$CONFIG/$target/templates/header.$target" \
         "$CONFIG/$target/templates/${source_path##*.}.$target" \
         "$CONFIG/$target/templates/footer.$target" |
