@@ -110,12 +110,11 @@ set_meta_tags() {
     command=""
     while read -r line; do
         trimmed="${line#% }"
-        if [ "$trimmed" == "$line" ]; then
-            continue
+        if [ "$trimmed" != "$line" ]; then
+            key="${trimmed%%:*}"
+            value="${trimmed#*: }"
+            command+="$(insert_meta_sed_cmd "$key" "$value")"
         fi
-        key="${trimmed%%:*}"
-        value="${trimmed#*: }"
-        command+="$(insert_meta_sed_cmd "$key" "$value")"
     done < "$source"
     sed "${command%;}"
 }
