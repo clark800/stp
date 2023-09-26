@@ -366,6 +366,16 @@ gen_site() {
     gen_directory_pages
 }
 
+import_plugins() {
+    if [ -r "$INCLUDES" ]; then
+        for plugin in "$INCLUDES"/*.sh; do
+            if [ -r "$plugin" ]; then
+                . "$plugin"
+            fi
+        done
+    fi
+}
 
 cd "${1:-.}" || exit 1
+import_plugins
 gen_site
