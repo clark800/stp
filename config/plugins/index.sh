@@ -52,7 +52,7 @@ gen_index_page() {
 
 
 index_generator() {
-    find_subdirs "." | LC_ALL=C sort -r |
+    find_subdirs "." |
     while IFS='' read -r dir; do
         html="$dir/index.html"
         if [ ! -e "$dir/index.$EXT" ] && ! is_custom_html "$html"; then
