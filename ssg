@@ -18,8 +18,8 @@ is_generated() {
     grep -q -x '<meta name="generator" content="ssg">' "$1"
 }
 
-is_writable() {
-    [ ! -e "$1" ] || is_generated "$1"
+is_custom_html() {
+    [ -e "$1" ] && ! is_generated "$1"
 }
 
 titlecase() {
@@ -91,7 +91,7 @@ gen_content_pages() {
     find_files "." "*.$EXT" |
     while IFS='' read -r source; do
         html="${source%.*}.html"
-        if is_writable "$html"; then
+        if ! is_custom_html "$html"; then
             println "${html#./}" >&2
             gen_content_page "$source" |
                 apply_transforms "$TRANSFORMS" "$source" > "$html"

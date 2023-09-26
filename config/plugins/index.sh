@@ -55,7 +55,7 @@ index_generator() {
     find_subdirs "." | LC_ALL=C sort -r |
     while IFS='' read -r dir; do
         html="$dir/index.html"
-        if [ ! -e "$dir/index.$EXT" ] && is_writable "$html"; then
+        if [ ! -e "$dir/index.$EXT" ] && ! is_custom_html "$html"; then
             if [ "$(get_posts "$dir")" ]; then
                 println "${html#./}" >&2
                 gen_index_page "$dir" > "$html"
