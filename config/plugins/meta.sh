@@ -4,7 +4,7 @@ insert_meta_sed_cmd() {
 }
 
 meta_transform() {
-    source="$1"
+    source_path="$1"
     command=""
     while read -r line; do
         trimmed="${line#% }"
@@ -13,6 +13,6 @@ meta_transform() {
             value="${trimmed#*: }"
             command+="$(insert_meta_sed_cmd "$key" "$value")"
         fi
-    done < "$source"
+    done < "$source_path"
     sed "${command%;}"
 }

@@ -71,9 +71,9 @@ get_footer() {  # args: dir, title
 }
 
 gen_content_page() {
-    source="$1"
-    dir="${source%/*}"
-    content="$(grep -v '^%' "$source" | $PROCESSOR)"
+    source_path="$1"
+    dir="${source_path%/*}"
+    content="$(grep -v '^%' "$source_path" | $PROCESSOR)"
     title="$(println "$content" | get_h1_title)"
     get_header "$dir" "$title"
     println "<article>"
@@ -92,12 +92,12 @@ apply_transforms() {
 
 gen_content_pages() {
     find_files "." "*.$EXT" |
-    while IFS='' read -r source; do
-        html="${source%.*}.html"
+    while IFS='' read -r source_path; do
+        html="${source_path%.*}.html"
         if ! is_custom_html "$html"; then
             println "${html#./}" >&2
-            gen_content_page "$source" |
-                apply_transforms "$TRANSFORMS" "$source" > "$html"
+            gen_content_page "$source_path" |
+                apply_transforms "$TRANSFORMS" "$source_path" > "$html"
         fi
     done
 }
