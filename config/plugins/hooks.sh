@@ -1,3 +1,3 @@
-register_transform set_meta_tags
-register_hook index_hook
-register_hook directory_hook
+register_transform meta_transform
+register_generator index_generator
+register_generator directory_generator

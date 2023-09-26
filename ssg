@@ -5,7 +5,7 @@ TITLE="${SSG_TITLE}"
 EXT="${SSG_EXTENSION:-md}"
 PROCESSOR="${SSG_PROCESSOR:-smu}"
 CONFIG="${SSG_CONFIG:-.ssg}"
-HOOKS=""
+GENERATORS=""
 TRANSFORMS=""
 
 println() {
@@ -130,8 +130,8 @@ gen_content_pages() {
     done
 }
 
-register_hook() {
-    HOOKS="$HOOKS$1;"
+register_generator() {
+    GENERATORS="$GENERATORS$1;"
 }
 
 register_transform() {
@@ -151,4 +151,4 @@ import_plugins() {
 cd "${1:-.}" || exit 1
 import_plugins
 gen_content_pages
-eval "$HOOKS"
+eval "$GENERATORS"

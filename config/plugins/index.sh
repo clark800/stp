@@ -51,7 +51,7 @@ gen_index_page() {
 }
 
 
-index_hook() {
+index_generator() {
     find_subdirs "." | LC_ALL=C sort -r |
     while IFS='' read -r dir; do
         html="$dir/index.html"

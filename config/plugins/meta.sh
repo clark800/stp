@@ -1,5 +1,5 @@
 
-set_meta_tags() {
+meta_transform() {
     source="$1"
     command=""
     while read -r line; do
