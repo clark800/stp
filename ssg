@@ -159,6 +159,7 @@ get_header_template() {
         println '</nav>'
         println '</header>'
         println '<main>'
+        println '$(gen_breadcrumb)'
     fi
 }
 
@@ -184,7 +185,8 @@ get_footer() {
 }
 
 gen_breadcrumb() {
-    tail="${1%/}"
+    dir="${1:-$dir}"
+    tail="${dir%/}"
     if [ "$tail" == "." ]; then
         println '<header>'
         println '</header>'
@@ -238,7 +240,6 @@ gen_index_page() {
     dir="$1"
     title="$(get_index_title "$dir")"
     get_header "$dir" "$title"
-    gen_breadcrumb "$dir"
     println "<nav>"
     println "<h1>$title</h1>"
     gen_listing "$dir"
@@ -285,7 +286,6 @@ gen_content_page() {
     content="$(process "$source")"
     title="$(println "$content" | get_h1_title)"
     get_header "$dir" "$title" | set_meta_tags "$source"
-    gen_breadcrumb "$dir"
     println "<article>"
     println "$content"
     println "</article>"
@@ -296,7 +296,7 @@ gen_tree() {
     title="$(get_html_title "$1/index.html")"
     subdirs="$(get_subdirs "$1")"
     if [ "$subdirs" ]; then
-        if [ "$1" == "." ]; then
+        if [ "$1" == "$dir" ]; then
             println "<details open>"
         else
             println "<details>"
@@ -315,13 +315,11 @@ gen_tree() {
 }
 
 gen_directory_page() {
-    root="$1"
-    html="$root/directory.html"
-    get_header "$root" "Directory"
-    gen_breadcrumb "$root/directory.html"
+    dir="$1"
+    get_header "$dir" "Directory"
     println "<nav>"
     println "<h1>Directory</h1>"
-    gen_tree "$root"
+    gen_tree "$dir"
     println "</nav>"
     get_footer "$dir"
 }
