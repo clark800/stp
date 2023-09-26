@@ -1,7 +1,8 @@
+HOME_TITLE="$SSG_HOME_TITLE"
 
 get_home_title() {
-    if [ "$SSG_HOME" ]; then
-        println "$SSG_HOME"
+    if [ "$HOME_TITLE" ]; then
+        println "$HOME_TITLE"
     else
         get_site_title
     fi
