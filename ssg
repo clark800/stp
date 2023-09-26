@@ -30,7 +30,7 @@ find_files() {
 
 process_template() {
     dir="$1"
-    eval "printf '%s' \"$(sed 's/"/\\"/g')\""
+    eval "printf '%s\\n' \"$(sed 's/"/\\"/g')\""
 }
 
 has_subpage() {
@@ -251,13 +251,12 @@ gen_metadata() {
     println "<dl>"
     grep '^% ' "$1" | sed "s|^% \([^:]*\): \(.*\)$|<dt>\1</dt><dd>\2</dd>|"
     println "</dl>"
-    println "</header>"
 }
 
 process() {
     source="$1"
     println "<header>"
-    gen_metadata "$source" > "$source.tmp"
+    (gen_metadata "$source" && println "</header>") > "$source.tmp"
     # hack: add and remove a blank line so we can use sed address range
     # to insert only after the first </h1> tag
     grep -v '^% ' "$source" | $PROCESSOR | sed '1{H;g;}' |
