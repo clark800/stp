@@ -47,5 +47,3 @@ gen_directory_pages() {
         gen_directory_page "." > "directory.html"
     fi
 }
-
-register_hook gen_directory_pages
