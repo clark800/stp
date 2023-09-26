@@ -88,16 +88,16 @@ get_footer() {  # args: dir, title
     cat "$CONFIG/templates/footer.html" | process_template "$1" "$2"
 }
 
-gen_metadata() {
-    println "<dl>"
-    grep '^% ' "$1" | sed "s|^% \([^:]*\): \(.*\)$|<dt>\1</dt><dd>\2</dd>|"
-    println "</dl>"
-}
-
 process() {
     source="$1"
     println "<header>"
-    (gen_metadata "$source" && println "</header>") > "$source.tmp"
+    (
+        println "<dl>"
+        grep '^% ' "$source" |
+            sed "s|^% \([^:]*\): \(.*\)$|<dt>\1</dt><dd>\2</dd>|"
+        println "</dl>"
+        println "</header>"
+    ) > "$source.tmp"
     # hack: add and remove a blank line so we can use sed address range
     # to insert only after the first </h1> tag
     grep -v '^% ' "$source" | $PROCESSOR | sed '1{H;g;}' |
