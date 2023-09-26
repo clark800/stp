@@ -66,14 +66,6 @@ get_site_title() {
     fi
 }
 
-get_index_title() {
-    if [ "${1%/}" == "." ]; then
-        get_site_title
-    else
-        titlecase "${1##*/}"
-    fi
-}
-
 insert_meta_sed_cmd() {
     printf '/<title>/i\\\n<meta name="%s" content="%s">\n;' "$1" "$2"
 }

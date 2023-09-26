@@ -4,6 +4,14 @@ find_subdirs() {
     find "$1" -name '.?*' -prune -o -type d -print
 }
 
+get_index_title() {
+    if [ "${1%/}" == "." ]; then
+        get_site_title
+    else
+        titlecase "${1##*/}"
+    fi
+}
+
 get_posts() {
     dir="$1"
     (cd "$dir"; find_files "." "*.html") |
