@@ -1,2 +1,3 @@
+register_transform set_meta_tags
 register_hook index_hook
 register_hook directory_hook

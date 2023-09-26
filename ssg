@@ -5,7 +5,8 @@ TITLE="${SSG_TITLE}"
 EXT="${SSG_EXTENSION:-md}"
 PROCESSOR="${SSG_PROCESSOR:-smu}"
 CONFIG="${SSG_CONFIG:-.ssg}"
-HOOKS=":"
+HOOKS=""
+TRANSFORMS=""
 
 println() {
     printf '%s\n' "$1"
@@ -97,30 +98,24 @@ process() {
     rm -f "$source.tmp"
 }
 
-set_meta_tags() {
-    source="$1"
-    command=""
-    while read -r line; do
-        trimmed="${line#% }"
-        if [ "$trimmed" != "$line" ]; then
-            key="${trimmed%%:*}"
-            value="${trimmed#*: }"
-            command+="$(insert_meta_sed_cmd "$key" "$value")"
-        fi
-    done < "$source"
-    sed "${command%;}"
-}
-
 gen_content_page() {
     source="$1"
     dir="${source%/*}"
     content="$(process "$source")"
     title="$(println "$content" | get_h1_title)"
-    get_header "$dir" "$title" | set_meta_tags "$source"
+    get_header "$dir" "$title"
     println "<article>"
     println "$content"
     println "</article>"
     get_footer "$dir" "$title"
+}
+
+apply_transforms() {
+    if [ ! "$1" ]; then
+        cat
+    else
+        "${1%%;*}" "$2" | apply_transforms "${1#*;}" "$2"
+    fi
 }
 
 gen_content_pages() {
@@ -129,13 +124,18 @@ gen_content_pages() {
         html="${source%.*}.html"
         if is_writable "$html"; then
             log "${html#./}"
-            gen_content_page "$source" > "$html"
+            gen_content_page "$source" |
+                apply_transforms "$TRANSFORMS" "$source" > "$html"
         fi
     done
 }
 
 register_hook() {
-    HOOKS="$HOOKS;$1"
+    HOOKS="$HOOKS$1;"
+}
+
+register_transform() {
+    TRANSFORMS="$TRANSFORMS$1;"
 }
 
 import_plugins() {
