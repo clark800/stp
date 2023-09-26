@@ -21,7 +21,7 @@ get_breadcrumb_title() {
 }
 
 gen_breadcrumb() {
-    dir="${1:-$dir}"
+    dir="${source_path%/*}"
     tail="${dir%/}"
     if [ "$tail" == "." ]; then
         println '<header>'

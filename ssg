@@ -50,43 +50,35 @@ get_html_title() {
     cat "$1" | tr -d '\r\n' | sed -n 's|.*<title>\(.*\)</title>.*|\1|p'
 }
 
-get_h1_title() {
-    sed '/<\/h1>/q' | tr -d '\r\n' | sed -n 's|.*<h1>\(.*\)</h1>.*|\1|p'
-}
-
 get_meta_value() {
     sed -n "s/<meta name=\"$1\" content=\"\(.*\)\">/\1/p"
 }
 
 process_template() {
-    dir="$1" title="$2" eval "printf '%s\\n' \"$(sed 's/"/\\"/g')\""
+    eval "printf '%s\\n' \"$(sed 's/"/\\"/g')\""
 }
 
-get_header() {  # args: dir, title
-    cat "$CONFIG/templates/header.html" | process_template "$1" "$2"
+get_header() {
+    cat "$CONFIG/templates/header.html" | process_template
 }
 
-get_footer() {  # args: dir, title
-    cat "$CONFIG/templates/footer.html" | process_template "$1" "$2"
+get_footer() {
+    cat "$CONFIG/templates/footer.html" | process_template
+}
+
+read_source() {
+    grep -v '^%' "$source_path"
 }
 
 gen_content_page() {
-    source_path="$1"
-    dir="${source_path%/*}"
-    content="$(grep -v '^%' "$source_path" | $PROCESSOR)"
-    title="$(println "$content" | get_h1_title)"
-    get_header "$dir" "$title"
-    println "<article>"
-    println "$content"
-    println "</article>"
-    get_footer "$dir" "$title"
+    cat "$CONFIG/templates/$EXT.html" | process_template
 }
 
 apply_transforms() {
     if [ ! "$1" ]; then
         cat
     else
-        "${1%%;*}" "$2" | apply_transforms "${1#*;}" "$2"
+        "${1%%;*}" "$source_path" | apply_transforms "${1#*;}"
     fi
 }
 
@@ -96,8 +88,7 @@ gen_content_pages() {
         html="${source_path%.*}.html"
         if ! is_custom_html "$html"; then
             println "${html#./}" >&2
-            gen_content_page "$source_path" |
-                apply_transforms "$TRANSFORMS" "$source_path" > "$html"
+            gen_content_page | apply_transforms "$TRANSFORMS" > "$html"
         fi
     done
 }
