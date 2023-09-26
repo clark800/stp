@@ -72,7 +72,7 @@ gen_content_page() {
     cat "$CONFIG/templates/header.html" \
         "$CONFIG/templates/${source_path##*.}.html" \
         "$CONFIG/templates/footer.html" |
-        process_template | apply_transforms "$TRANSFORMS"
+        title="" process_template | apply_transforms "$TRANSFORMS"
 }
 
 gen_content_pages() {
