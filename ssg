@@ -42,9 +42,7 @@ titlecase() {
 }
 
 get_meta_value() {
-    key="$1"
-    html="$2"
-    sed -n "s/<meta name=\"$key\" content=\"\(.*\)\">/\1/p" "$html"
+    sed -n "s/<meta name=\"$1\" content=\"\(.*\)\">/\1/p" "$2"
 }
 
 get_h1_title() {
@@ -80,58 +78,14 @@ insert_meta_sed_cmd() {
     printf '/<title>/i\\\n<meta name="%s" content="%s">\n;' "$1" "$2"
 }
 
-set_generator() {
-    sed "$(insert_meta_sed_cmd generator ssg)"
+get_header() {  # args: dir, title
+    cat "$CONFIG/templates/header.html" |
+        sed "$(insert_meta_sed_cmd generator ssg)" |
+        process_template "$1" "$2"
 }
 
-get_header_template() {
-    file="$CONFIG/templates/header.html"
-    if [ -r "$file" ]; then
-        if is_generated "$file"; then
-            cat "$file"
-        else
-            cat "$file" | set_generator
-        fi
-    else
-        println '<!DOCTYPE html>'
-        println '<html lang="en">'
-        println '<head>'
-        println '<meta charset="utf-8">'
-        println '<meta name="generator" content="ssg">'
-        println '<title>$title</title>'
-        println '<link rel="stylesheet" href="/.ssg/styles/default.css">'
-        println '</head>'
-        println '<body>'
-        println '<header>'
-        println '<nav>'
-        println '<a href="/directory.html">Directory</a>'
-        println '</nav>'
-        println '</header>'
-        println '<main>'
-        println '$(gen_breadcrumb)'
-    fi
-}
-
-get_header() {
-    dir="$1"
-    title="$2"
-    get_header_template | process_template "$dir" "$title"
-}
-
-get_footer_template() {
-    if [ -r "$CONFIG/templates/footer.html" ]; then
-        cat "$CONFIG/templates/footer.html"
-    else
-        println '</main>'
-        println '</body>'
-        println '</html>'
-    fi
-}
-
-get_footer() {
-    dir="$1"
-    title="$2"
-    get_footer_template | process_template "$dir" "$title"
+get_footer() {  # args: dir, title
+    cat "$CONFIG/templates/footer.html" | process_template "$1" "$2"
 }
 
 gen_metadata() {
@@ -179,10 +133,6 @@ gen_content_page() {
 }
 
 gen_content_pages() {
-    # the first pass does a pre-order traversal to processes source files so
-    # that titles will be available for breadcrumb navigation without
-    # reprocessing the source files; a content page can have subpages so
-    # source-generated pages may be in the breadcrumb navigation
     find_files "." "*.$EXT" |
     while IFS='' read -r source; do
         html="${source%.*}.html"

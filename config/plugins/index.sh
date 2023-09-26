@@ -44,10 +44,6 @@ gen_index_page() {
 
 
 index_hook() {
-    # the second pass does a post-order traversal to generate index files so
-    # that we know which directories contain pages without another recursive
-    # search; we don't want to generate index files for direcories that only
-    # contain images for example
     find_subdirs "." | LC_ALL=C sort -r |
     while IFS='' read -r dir; do
         html="$dir/index.html"
