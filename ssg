@@ -67,7 +67,7 @@ get_site_title() {
 }
 
 get_index_title() {
-    if [ "$1" == "." ]; then
+    if [ "${1%/}" == "." ]; then
         get_site_title
     else
         titlecase "${1##*/}"
