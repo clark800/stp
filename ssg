@@ -13,14 +13,6 @@ find_files() {
     find "$1" -name '.?*' -prune -o -type f -name "$2" -print
 }
 
-is_generated() {
-    grep -q -x '<meta name="generator" content="ssg">' "$1"
-}
-
-is_custom_html() {
-    [ -e "$1" ] && ! is_generated "$1"
-}
-
 titlecase() {
     tr '_ -' '\n\n\n' |
     while IFS='' read -r word; do
@@ -88,10 +80,8 @@ gen_content_pages() {
     find_files "." "*.$EXT" |
     while IFS='' read -r source_path; do
         html="${source_path%.*}.html"
-        if ! is_custom_html "$html"; then
-            println "${html#./}" >&2
-            gen_content_page > "$html"
-        fi
+        println "${html#./}" >&2
+        gen_content_page > "$html"
     done
 }
 

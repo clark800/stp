@@ -1,5 +1,13 @@
 DATEKEY="${SSG_DATEKEY:-published}"
 
+is_generated() {
+    grep -q -x '<meta name="generator" content="ssg">' "$1"
+}
+
+is_custom_html() {
+    [ -e "$1" ] && ! is_generated "$1"
+}
+
 find_subdirs() {
     find "$1" -name '.?*' -prune -o -type d -print
 }
