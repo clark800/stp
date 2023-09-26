@@ -49,7 +49,7 @@ get_footer() {
 }
 
 read_source() {
-    grep -v '^%' "$source_path"
+    cat "$source_path"
 }
 
 register_generator() {
