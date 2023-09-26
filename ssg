@@ -20,12 +20,6 @@ find_files() {
     find "$1" -name '.?*' -prune -o -type f -name "$2" -print
 }
 
-process_template() {
-    dir="$1"    # templates may use the $dir and $title variables
-    title="$2"
-    eval "printf '%s\\n' \"$(sed 's/"/\\"/g')\""
-}
-
 is_generated() {
     grep -q -x '<meta name="generator" content="ssg">' "$1"
 }
@@ -69,6 +63,12 @@ get_site_title() {
 
 insert_meta_sed_cmd() {
     printf '/<title>/i\\\n<meta name="%s" content="%s">\n;' "$1" "$2"
+}
+
+process_template() {
+    dir="$1"    # templates may use the $dir and $title variables
+    title="$2"
+    eval "printf '%s\\n' \"$(sed 's/"/\\"/g')\""
 }
 
 get_header() {  # args: dir, title
