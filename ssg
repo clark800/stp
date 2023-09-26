@@ -324,7 +324,7 @@ gen_directory_page() {
     get_footer "$dir"
 }
 
-gen_site() {
+gen_content_pages() {
     # the first pass does a pre-order traversal to processes source files so
     # that titles will be available for breadcrumb navigation without
     # reprocessing the source files; a content page can have subpages so
@@ -337,6 +337,9 @@ gen_site() {
             gen_content_page "$source" > "$html"
         fi
     done
+}
+
+gen_index_pages() {
     # the second pass does a post-order traversal to generate index files so
     # that we know which directories contain pages without another recursive
     # search; we don't want to generate index files for direcories that only
@@ -351,10 +354,19 @@ gen_site() {
             fi
         fi
     done
+}
+
+gen_directory_pages() {
     if is_writable "directory.html"; then
         log "directory.html"
         gen_directory_page "." > "directory.html"
     fi
+}
+
+gen_site() {
+    gen_content_pages
+    gen_index_pages
+    gen_directory_pages
 }
 
 
