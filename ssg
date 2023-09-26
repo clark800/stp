@@ -93,7 +93,7 @@ process() {
     ) > "$source.tmp"
     # hack: add and remove a blank line so we can use sed address range
     # to insert only after the first </h1> tag
-    grep -v '^% ' "$source" | $PROCESSOR | sed '1{H;g;}' |
+    grep -v '^%' "$source" | $PROCESSOR | sed '1{H;g;}' |
         sed -e "1,/<\/h1>/{/<\/h1>/r $source.tmp" -e '}' | sed '1d'
     rm -f "$source.tmp"
 }
