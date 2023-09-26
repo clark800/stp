@@ -292,7 +292,7 @@ gen_content_page() {
     get_footer "$dir"
 }
 
-gen_tree() {
+gen_directory_tree() {
     title="$(get_html_title "$1/index.html")"
     subdirs="$(get_subdirs "$1")"
     if [ "$subdirs" ]; then
@@ -306,7 +306,7 @@ gen_tree() {
         println "</summary>"
         println "$subdirs" | sort |
         while IFS='' read -r path; do
-            gen_tree "$path"
+            gen_directory_tree "$path"
         done
         println "</details>"
     else
@@ -319,7 +319,7 @@ gen_directory_page() {
     get_header "$dir" "Directory"
     println "<nav>"
     println "<h1>Directory</h1>"
-    gen_tree "$dir"
+    gen_directory_tree "$dir"
     println "</nav>"
     get_footer "$dir"
 }
