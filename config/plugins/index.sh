@@ -9,7 +9,7 @@ get_posts() {
     (cd "$dir"; find_files "." "*.html") |
     while IFS='' read -r relpath; do
         path="${dir%/}/${relpath#./}"
-        date="$(get_meta_value "$DATEKEY" "$path")"
+        date="$(cat "$path" | get_meta_value "$DATEKEY")"
         if [ "$date" ]; then
             println "$date ${relpath#./}"
         fi

@@ -42,7 +42,7 @@ titlecase() {
 }
 
 get_meta_value() {
-    sed -n "s/<meta name=\"$1\" content=\"\(.*\)\">/\1/p" "$2"
+    sed -n "s/<meta name=\"$1\" content=\"\(.*\)\">/\1/p"
 }
 
 get_h1_title() {
