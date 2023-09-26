@@ -77,9 +77,8 @@ gen_content_page() {
 
 gen_content_pages() {
     ls "$CONFIG/templates" |
-    grep -v -x -e 'header.html' -e 'footer.html' |
+    grep -v -x -F -e 'header.html' -e 'footer.html' |
     while IFS='' read -r template_filename; do
-        println "TEMPLATE $template_filename"
         find_files "." "*.${template_filename%%.*}" |
         while IFS='' read -r source_path; do
             dest_path="${source_path%.*}.html"
