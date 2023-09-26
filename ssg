@@ -2,7 +2,6 @@
 set -e
 
 TITLE="${SSG_TITLE}"
-HOME="${SSG_HOME}"
 EXT="${SSG_EXTENSION:-md}"
 PROCESSOR="${SSG_PROCESSOR:-smu}"
 CONFIG="${SSG_CONFIG:-.ssg}"
@@ -102,26 +101,6 @@ get_index_title() {
     fi
 }
 
-get_breadcrumb_title() {
-    dir="${1%/}"
-    index="$dir/index.html"
-    if [ -r "$index" ] && [ -r "$dir/index.$EXT" ]; then
-        get_html_title "$index"
-    elif [ -r "$index" ] && ! is_generated "$index" ; then
-        get_html_title "$index"
-    else
-        get_index_title "$dir"
-    fi
-}
-
-get_home_title() {
-    if [ "$HOME" ]; then
-        println "$HOME"
-    else
-        get_site_title
-    fi
-}
-
 insert_meta_sed_cmd() {
     printf '/<title>/i\\\n<meta name="%s" content="%s">\n;' "$1" "$2"
 }
@@ -178,31 +157,6 @@ get_footer() {
     dir="$1"
     title="$2"
     get_footer_template | process_template "$dir" "$title"
-}
-
-gen_breadcrumb() {
-    dir="${1:-$dir}"
-    tail="${dir%/}"
-    if [ "$tail" == "." ]; then
-        println '<header>'
-        println '</header>'
-        return
-    fi
-    tail="${tail%/*}/" # start with parent directory
-    tail="${tail#.}"
-    tail="${tail#/}"   #  a/b/    b/      ''
-    head="/"           # /     /a/   /a/b/
-    println "<header>"
-    println "<nav>"
-    println "<a href=\"$head\">$(get_home_title)</a>"
-    while [ "$tail" ]; do
-        head="$head${tail%%/*}/"
-        tail="${tail#*/}"
-        label="$(get_breadcrumb_title ".$head")"
-        println "<a href=\"$head\">$label</a>"
-    done
-    println "</nav>"
-    println "</header>"
 }
 
 get_posts() {
