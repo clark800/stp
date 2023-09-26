@@ -5,7 +5,7 @@ TITLE="${SSG_TITLE}"
 HOME="${SSG_HOME}"
 EXT="${SSG_EXTENSION:-md}"
 PROCESSOR="${SSG_PROCESSOR:-smu}"
-INCLUDES="${SSG_INCLUDES:-.includes}"
+CONFIG="${SSG_CONFIG:-.ssg}"
 DATEKEY="${SSG_DATEKEY:-published}"
 HOOKS=":"
 
@@ -131,7 +131,7 @@ set_generator() {
 }
 
 get_header_template() {
-    file="$INCLUDES/header.html"
+    file="$CONFIG/templates/header.html"
     if [ -r "$file" ]; then
         if is_generated "$file"; then
             cat "$file"
@@ -139,15 +139,13 @@ get_header_template() {
             cat "$file" | set_generator
         fi
     else
-        icon="data:image/png;base64,iVBORw0KGgo="
         println '<!DOCTYPE html>'
         println '<html lang="en">'
         println '<head>'
         println '<meta charset="utf-8">'
         println '<meta name="generator" content="ssg">'
         println '<title>$title</title>'
-        println '<link rel="stylesheet" href="/style.css">'
-        println "<link rel=\"icon\" type=\"image/png\" href=\"$icon\">"
+        println '<link rel="stylesheet" href="/.ssg/styles/default.css">'
         println '</head>'
         println '<body>'
         println '<header>'
@@ -167,8 +165,8 @@ get_header() {
 }
 
 get_footer_template() {
-    if [ -r "$INCLUDES/footer.html" ]; then
-        cat "$INCLUDES/footer.html"
+    if [ -r "$CONFIG/templates/footer.html" ]; then
+        cat "$CONFIG/templates/footer.html"
     else
         println '</main>'
         println '</body>'
@@ -373,8 +371,8 @@ register_hook() {
 }
 
 import_plugins() {
-    if [ -r "$INCLUDES" ]; then
-        for plugin in "$INCLUDES"/*.sh; do
+    if [ -r "$CONFIG/plugins" ]; then
+        for plugin in "$CONFIG/plugins"/*.sh; do
             if [ -r "$plugin" ]; then
                 . "$plugin"
             fi
