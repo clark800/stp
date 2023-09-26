@@ -28,6 +28,10 @@ find_files() {
     find "$1" -name '.?*' -prune -o -type f -name "$2" -print
 }
 
+process_template() {
+    eval "printf '%s' \"$(sed 's/"/\\"/g')\""
+}
+
 has_subpage() {
     get_subdirs "$1" | {
         while IFS='' read -r subdir; do
@@ -127,7 +131,7 @@ set_title() {
     sed "s|<title>.*</title>|<title>$1</title>|"
 }
 
-get_header() {
+get_header_template() {
     title="$1"
     file="$INCLUDES/header.html"
     if [ -r "$file" ]; then
@@ -157,6 +161,10 @@ get_header() {
     fi
 }
 
+get_header() {
+   get_header_template "$1" | process_template
+}
+
 set_meta_tags() {
     source="$1"
     command=""
@@ -172,7 +180,7 @@ set_meta_tags() {
     sed "${command%;}"
 }
 
-get_footer() {
+get_footer_template() {
     if [ -r "$INCLUDES/footer.html" ]; then
         cat "$INCLUDES/footer.html"
     else
@@ -180,6 +188,10 @@ get_footer() {
         println '</body>'
         println '</html>'
     fi
+}
+
+get_footer() {
+    get_footer_template | process_template
 }
 
 gen_breadcrumb() {
