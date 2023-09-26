@@ -8,7 +8,7 @@ get_index_title() {
     if [ "${1%/}" == "." ]; then
         get_site_title
     else
-        titlecase "${1##*/}"
+        format_title "${1##*/}"
     fi
 }
 

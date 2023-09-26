@@ -16,7 +16,7 @@ get_breadcrumb_title() {
     elif [ -r "$index" ] && ! is_generated "$index" ; then
         get_html_title "$index"
     else
-        titlecase "${dir##*/}"
+        format_title "${dir##*/}"
     fi
 }
 
