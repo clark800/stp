@@ -68,8 +68,7 @@ process_template() {
 }
 
 get_header() {  # args: dir, title
-    cat "$CONFIG/templates/header.html" |
-        process_template "$1" "$2"
+    cat "$CONFIG/templates/header.html" | process_template "$1" "$2"
 }
 
 get_footer() {  # args: dir, title
