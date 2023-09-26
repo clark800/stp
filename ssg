@@ -3,7 +3,6 @@ set -e
 
 TITLE="${SSG_TITLE}"
 EXT="${SSG_EXTENSION:-md}"
-PROCESSOR="${SSG_PROCESSOR:-smu}"
 CONFIG="${SSG_CONFIG:-.ssg}"
 
 println() {
@@ -70,10 +69,6 @@ read_source() {
     grep -v '^%' "$source_path"
 }
 
-gen_content_page() {
-    cat "$CONFIG/templates/$EXT.html" | process_template
-}
-
 apply_transforms() {
     if [ ! "$1" ]; then
         cat
@@ -82,13 +77,20 @@ apply_transforms() {
     fi
 }
 
+gen_content_page() {
+    cat "$CONFIG/templates/header.html" \
+        "$CONFIG/templates/$EXT.html" \
+        "$CONFIG/templates/footer.html" |
+        process_template | apply_transforms "$TRANSFORMS"
+}
+
 gen_content_pages() {
     find_files "." "*.$EXT" |
     while IFS='' read -r source_path; do
         html="${source_path%.*}.html"
         if ! is_custom_html "$html"; then
             println "${html#./}" >&2
-            gen_content_page | apply_transforms "$TRANSFORMS" > "$html"
+            gen_content_page > "$html"
         fi
     done
 }
