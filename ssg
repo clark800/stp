@@ -62,9 +62,7 @@ get_site_title() {
 }
 
 process_template() {
-    dir="$1"    # templates may use the $dir and $title variables
-    title="$2"
-    eval "printf '%s\\n' \"$(sed 's/"/\\"/g')\""
+    dir="$1" title="$2" eval "printf '%s\\n' \"$(sed 's/"/\\"/g')\""
 }
 
 get_header() {  # args: dir, title
