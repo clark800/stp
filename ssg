@@ -29,6 +29,7 @@ find_files() {
 }
 
 process_template() {
+    dir="$1"
     eval "printf '%s' \"$(sed 's/"/\\"/g')\""
 }
 
@@ -162,8 +163,9 @@ get_header_template() {
 }
 
 get_header() {
-    title="$1"
-    get_header_template "$title" | process_template
+    dir="$1"
+    title="$2"
+    get_header_template "$title" | process_template "$dir"
 }
 
 set_meta_tags() {
@@ -192,7 +194,8 @@ get_footer_template() {
 }
 
 get_footer() {
-    get_footer_template | process_template
+    dir="$1"
+    get_footer_template | process_template "$dir"
 }
 
 gen_breadcrumb() {
@@ -249,13 +252,13 @@ gen_listing() {
 gen_index_page() {
     dir="$1"
     title="$(get_index_title "$dir")"
-    get_header "$title"
+    get_header "$dir" "$title"
     gen_breadcrumb "$dir"
     println "<nav>"
     println "<h1>$title</h1>"
     gen_listing "$dir"
     println "</nav>"
-    get_footer
+    get_footer "$dir"
 }
 
 gen_metadata() {
@@ -278,14 +281,15 @@ process() {
 
 gen_content_page() {
     source="$1"
+    dir="${source%/*}"
     content="$(process "$source")"
     title="$(println "$content" | get_h1_title)"
-    get_header "$title" | set_meta_tags "$source"
-    gen_breadcrumb "${source%/*}"
+    get_header "$dir" "$title" | set_meta_tags "$source"
+    gen_breadcrumb "$dir"
     println "<article>"
     println "$content"
     println "</article>"
-    get_footer
+    get_footer "$dir"
 }
 
 gen_tree() {
@@ -313,13 +317,13 @@ gen_tree() {
 gen_directory_page() {
     root="$1"
     html="$root/directory.html"
-    get_header "Directory"
+    get_header "$root" "Directory"
     gen_breadcrumb "$root/directory.html"
     println "<nav>"
     println "<h1>Directory</h1>"
     gen_tree "$root"
     println "</nav>"
-    get_footer
+    get_footer "$dir"
 }
 
 gen_site() {
