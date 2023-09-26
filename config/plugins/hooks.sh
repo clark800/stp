@@ -1,1 +1,2 @@
+register_hook index_hook
 register_hook directory_hook

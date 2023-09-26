@@ -1,4 +1,8 @@
 
+get_subdirs() {
+    find "$1" ! -name "${1##*/}" -prune ! -name '.*' -type d
+}
+
 get_subpages() {
     get_subdirs "$1" |
     while IFS='' read -r subdir; do
