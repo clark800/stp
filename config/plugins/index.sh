@@ -1,3 +1,4 @@
+DATEKEY="${SSG_DATEKEY:-published}"
 
 find_subdirs() {
     find "$1" -name '.?*' -prune -o -type d -print
