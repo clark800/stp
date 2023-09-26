@@ -10,5 +10,9 @@ get_h1_title() {
 set_title() {
     stream="$(cat)"
     title="$(println "$stream" | get_h1_title)"
-    println "$stream" | sed "s|<title></title>|<title>$title</title>|"
+    if [ "$title" ]; then
+        println "$stream" | sed "s|<title>.*</title>|<title>$title</title>|"
+    else
+        println "$stream"
+    fi
 }

@@ -17,14 +17,6 @@ find_subdirs() {
     find "$1" -name '.?*' -prune -o -type d -print
 }
 
-get_index_title() {
-    if [ "${1%/}" == "." ]; then
-        get_root_title
-    else
-        format_title "${1##*/}"
-    fi
-}
-
 get_posts() {
     dir="$1"
     (cd "$dir"; find_files "." "*.html") |
@@ -54,7 +46,7 @@ gen_listing() {
 
 gen_index_page() {
     dir="$1"
-    title="$(get_index_title "$dir")"
+    title="$(format_basename "$dir")"
     get_header "$dir" "$title" | set_generator
     println "<nav>"
     println "<h1>$title</h1>"

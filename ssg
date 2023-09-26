@@ -28,11 +28,17 @@ format_title() {
     fi
 }
 
-get_root_title() {
-    if [ "$ROOT_TITLE" ]; then
-        println "$ROOT_TITLE"
+format_basename() {
+    path="${1%/}"
+    basename="${path##*/}"
+    if [ "$basename" == "." ]; then
+        if [ "$ROOT_TITLE" ]; then
+            println "$ROOT_TITLE"
+        else
+            format_title "$(basename "$(pwd)")"
+        fi
     else
-        format_title "$(basename "$(pwd)")"
+        format_title "$basename"
     fi
 }
 
@@ -69,10 +75,11 @@ apply_transforms() {
 }
 
 generate() {
+    title="$(format_basename "${source_path%.*}")"
     cat "$CONFIG/$target/templates/header.$target" \
         "$CONFIG/$target/templates/${source_path##*.}.$target" \
         "$CONFIG/$target/templates/footer.$target" |
-        title="" process_template | apply_transforms "$TRANSFORMS"
+        process_template | apply_transforms "$TRANSFORMS"
 }
 
 import_plugins() {
