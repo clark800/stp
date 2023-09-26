@@ -49,43 +49,15 @@ process_template() {
 }
 
 get_header() {
-    cat "$CONFIG/templates/header.html" | process_template
+    cat "$CONFIG/$target/templates/header.$target" | process_template
 }
 
 get_footer() {
-    cat "$CONFIG/templates/footer.html" | process_template
+    cat "$CONFIG/$target/templates/footer.$target" | process_template
 }
 
 read_source() {
     grep -v '^%' "$source_path"
-}
-
-apply_transforms() {
-    if [ ! "$1" ]; then
-        cat
-    else
-        "${1%%;*}" "$source_path" | apply_transforms "${1#*;}"
-    fi
-}
-
-gen_content_page() {
-    cat "$CONFIG/templates/header.html" \
-        "$CONFIG/templates/${source_path##*.}.html" \
-        "$CONFIG/templates/footer.html" |
-        title="" process_template | apply_transforms "$TRANSFORMS"
-}
-
-gen_content_pages() {
-    ls "$CONFIG/templates" |
-    grep -v -x -F -e 'header.html' -e 'footer.html' |
-    while IFS='' read -r template_filename; do
-        find_files "." "*.${template_filename%%.*}" |
-        while IFS='' read -r source_path; do
-            dest_path="${source_path%.*}.html"
-            println "${dest_path#./}" >&2
-            gen_content_page > "$dest_path"
-        done
-    done
 }
 
 register_generator() {
@@ -96,9 +68,24 @@ register_transform() {
     TRANSFORMS="$TRANSFORMS$1;"
 }
 
+apply_transforms() {
+    if [ ! "$1" ]; then
+        cat
+    else
+        "${1%%;*}" "$source_path" | apply_transforms "${1#*;}"
+    fi
+}
+
+generate() {
+    cat "$CONFIG/$target/templates/header.$target" \
+        "$CONFIG/$target/templates/${source_path##*.}.$target" \
+        "$CONFIG/$target/templates/footer.$target" |
+        title="" process_template | apply_transforms "$TRANSFORMS"
+}
+
 import_plugins() {
-    if [ -r "$CONFIG/plugins" ]; then
-        for plugin in "$CONFIG/plugins"/*.sh; do
+    if [ -r "$1" ]; then
+        for plugin in "$1"/*.sh; do
             if [ -r "$plugin" ]; then
                 . "$plugin"
             fi
@@ -106,7 +93,25 @@ import_plugins() {
     fi
 }
 
+main() {
+    for target_config in "$CONFIG"/*; do
+        target="${target_config##*/}"
+        TRANSFORMS=""
+        GENERATORS=""
+        import_plugins "$target_config/plugins"
+        ls "$target_config/templates" |
+        grep -v -x -F -e "header.$target" -e "footer.$target" |
+        while IFS='' read -r template_filename; do
+            find_files "." "*.${template_filename%%.*}" |
+            while IFS='' read -r source_path; do
+                dest_path="${source_path%.*}.$target"
+                println "${dest_path#./}" >&2
+                generate > "$dest_path"
+            done
+        done
+        eval "$GENERATORS"
+    done
+}
+
 cd "${1:-.}" || exit 1
-import_plugins
-gen_content_pages
-eval "$GENERATORS"
+main
