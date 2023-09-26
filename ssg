@@ -30,6 +30,14 @@ titlecase() {
     done | cut -c 2-
 }
 
+format_title() {
+    if [ "${1%.*}" == "$1" ]; then
+        titlecase "$1"
+    else
+        println "$1"    # contains a period; likely a domain name
+    fi
+}
+
 get_meta_value() {
     sed -n "s/<meta name=\"$1\" content=\"\(.*\)\">/\1/p"
 }
@@ -46,12 +54,7 @@ get_site_title() {
     if [ "$TITLE" ]; then
         println "$TITLE"
     else
-        title="$(basename "$(pwd)")"
-        if [ "${title%.*}" == "$title" ]; then
-            titlecase "$title"
-        else
-            println "$title"    # contains a period; likely a domain name
-        fi
+        format_title "$(basename "$(pwd)")"
     fi
 }
 
