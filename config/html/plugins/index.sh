@@ -1,5 +1,9 @@
 DATEKEY="${SSG_DATEKEY:-published}"
 
+get_meta_tag_content() {
+    sed -n "s/<meta name=\"$1\" content=\"\(.*\)\">/\1/p"
+}
+
 is_generated_index() {
     grep -q -x '<meta name="generator" content="ssg:index">' "$1"
 }
@@ -26,7 +30,7 @@ get_posts() {
     (cd "$dir"; find_files "." "*.html") |
     while IFS='' read -r relpath; do
         path="${dir%/}/${relpath#./}"
-        date="$(cat "$path" | get_meta_value "$DATEKEY")"
+        date="$(cat "$path" | get_meta_tag_content "$DATEKEY")"
         if [ "$date" ]; then
             println "$date ${relpath#./}"
         fi
