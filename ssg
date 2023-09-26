@@ -28,7 +28,7 @@ format_title() {
     fi
 }
 
-format_basename() {
+get_basename_title() {
     path="${1%/}"
     basename="${path##*/}"
     if [ "$basename" == "." ]; then
@@ -45,9 +45,9 @@ format_basename() {
 get_source_title() {
     path="${1%.*}"
     if [ "${path##*/}" == "index" ]; then
-        format_basename "${path%/*}"
+        get_basename_title "${path%/*}"
     else
-        format_basename "$path"
+        get_basename_title "$path"
     fi
 }
 

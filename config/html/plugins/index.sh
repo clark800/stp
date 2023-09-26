@@ -46,7 +46,7 @@ gen_listing() {
 
 gen_index_page() {
     dir="$1"
-    title="$(format_basename "$dir")"
+    title="$(get_basename_title "$dir")"
     get_header "$dir" "$title" | set_generator
     println "<nav>"
     println "<h1>$title</h1>"
