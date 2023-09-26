@@ -36,10 +36,6 @@ get_site_title() {
     fi
 }
 
-get_html_title() {
-    cat "$1" | tr -d '\r\n' | sed -n 's|.*<title>\(.*\)</title>.*|\1|p'
-}
-
 process_template() {
     eval "printf '%s\\n' \"$(sed 's/"/\\"/g')\""
 }
