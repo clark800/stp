@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-TITLE="${SSG_TITLE}"
+ROOT_TITLE="${SSG_TITLE}"
 CONFIG="${SSG_CONFIG:-.ssg}"
 
 println() {
@@ -29,8 +29,8 @@ format_title() {
 }
 
 get_root_title() {
-    if [ "$TITLE" ]; then
-        println "$TITLE"
+    if [ "$ROOT_TITLE" ]; then
+        println "$ROOT_TITLE"
     else
         format_title "$(basename "$(pwd)")"
     fi
