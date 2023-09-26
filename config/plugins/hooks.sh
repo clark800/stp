@@ -1,3 +1,4 @@
 register_transform meta_transform
+register_transform dl_transform
 register_generator index_generator
 register_generator directory_generator
