@@ -168,21 +168,6 @@ get_header() {
     get_header_template "$title" | process_template "$dir"
 }
 
-set_meta_tags() {
-    source="$1"
-    command=""
-    while read -r line; do
-        trimmed="${line#% }"
-        if [ "$trimmed" == "$line" ]; then
-            continue
-        fi
-        key="${trimmed%%:*}"
-        value="${trimmed#*: }"
-        command+="$(insert_meta_sed_cmd "$key" "$value")"
-    done < "$source"
-    sed "${command%;}"
-}
-
 get_footer_template() {
     if [ -r "$INCLUDES/footer.html" ]; then
         cat "$INCLUDES/footer.html"
@@ -277,6 +262,21 @@ process() {
     grep -v '^% ' "$source" | $PROCESSOR | sed '1{H;g;}' |
         sed -e "1,/<\/h1>/{/<\/h1>/r $source.tmp" -e '}' | sed '1d'
     rm -f "$source.tmp"
+}
+
+set_meta_tags() {
+    source="$1"
+    command=""
+    while read -r line; do
+        trimmed="${line#% }"
+        if [ "$trimmed" == "$line" ]; then
+            continue
+        fi
+        key="${trimmed%%:*}"
+        value="${trimmed#*: }"
+        command+="$(insert_meta_sed_cmd "$key" "$value")"
+    done < "$source"
+    sed "${command%;}"
 }
 
 gen_content_page() {
