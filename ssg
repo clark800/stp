@@ -23,7 +23,7 @@ is_custom_html() {
 }
 
 titlecase() {
-    println "$1" | tr '_ -' '\n\n\n' |
+    tr '_ -' '\n\n\n' |
     while IFS='' read -r word; do
         printf ' %.1s' "$word" | tr '[:lower:]' '[:upper:]'
         printf '%s' "${word#?}"
@@ -32,7 +32,7 @@ titlecase() {
 
 format_title() {
     if [ "${1%.*}" == "$1" ]; then
-        titlecase "$1"
+        println "$1" | titlecase
     else
         println "$1"    # contains a period; likely a domain name
     fi
