@@ -41,7 +41,7 @@ gen_directory_page() {
     get_footer "$dir" "$title"
 }
 
-gen_directory_pages() {
+directory_hook() {
     if is_writable "directory.html"; then
         log "directory.html"
         gen_directory_page "." > "directory.html"

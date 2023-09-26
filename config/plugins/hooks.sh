@@ -1,1 +1,1 @@
-register_hook gen_directory_pages
+register_hook directory_hook
