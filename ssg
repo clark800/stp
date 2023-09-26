@@ -5,8 +5,6 @@ TITLE="${SSG_TITLE}"
 EXT="${SSG_EXTENSION:-md}"
 PROCESSOR="${SSG_PROCESSOR:-smu}"
 CONFIG="${SSG_CONFIG:-.ssg}"
-GENERATORS=""
-TRANSFORMS=""
 
 println() {
     printf '%s\n' "$1"
