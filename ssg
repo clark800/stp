@@ -42,7 +42,7 @@ get_basename_title() {
     fi
 }
 
-get_source_title() {
+get_filename_title() {
     path="${1%.*}"
     if [ "${path##*/}" == "index" ]; then
         get_basename_title "${path%/*}"
@@ -84,7 +84,7 @@ apply_transforms() {
 }
 
 generate() {
-    title="$(get_source_title "$source_path")"
+    title="$(get_filename_title "$source_path")"
     cat "$CONFIG/$target/templates/header.$target" \
         "$CONFIG/$target/templates/${source_path##*.}.$target" \
         "$CONFIG/$target/templates/footer.$target" |
