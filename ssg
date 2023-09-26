@@ -29,7 +29,7 @@ find_files() {
 }
 
 process_template() {
-    dir="$1"
+    dir="$1"    # templates may use the $dir variable
     eval "printf '%s\\n' \"$(sed 's/"/\\"/g')\""
 }
 
