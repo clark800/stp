@@ -12,7 +12,7 @@ find_files() {
     find "$1" -name '.?*' -prune -o -type f -name "$2" -print
 }
 
-titlecase() {
+capitalize() {
     tr '_ -' '\n\n\n' |
     while IFS='' read -r word; do
         printf ' %.1s' "$word" | tr '[:lower:]' '[:upper:]'
@@ -22,7 +22,7 @@ titlecase() {
 
 format_title() {
     if [ "${1%.*}" == "$1" ]; then
-        println "$1" | titlecase
+        println "$1" | capitalize
     else
         println "$1"    # contains a period; likely a domain name
     fi
