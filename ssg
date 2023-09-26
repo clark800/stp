@@ -29,7 +29,8 @@ find_files() {
 }
 
 process_template() {
-    dir="$1"    # templates may use the $dir variable
+    dir="$1"    # templates may use the $dir and $title variables
+    title="$2"
     eval "printf '%s\\n' \"$(sed 's/"/\\"/g')\""
 }
 
@@ -128,18 +129,13 @@ set_generator() {
     sed "$(insert_meta_sed_cmd generator ssg)"
 }
 
-set_title() {
-    sed "s|<title>.*</title>|<title>$1</title>|"
-}
-
 get_header_template() {
-    title="$1"
     file="$INCLUDES/header.html"
     if [ -r "$file" ]; then
         if is_generated "$file"; then
-            cat "$file" | set_title "$title"
+            cat "$file"
         else
-            cat "$file" | set_title "$title" | set_generator
+            cat "$file" | set_generator
         fi
     else
         icon="data:image/png;base64,iVBORw0KGgo="
@@ -148,7 +144,7 @@ get_header_template() {
         println '<head>'
         println '<meta charset="utf-8">'
         println '<meta name="generator" content="ssg">'
-        println "<title>$title</title>"
+        println '<title>$title</title>'
         println '<link rel="stylesheet" href="/style.css">'
         println "<link rel=\"icon\" type=\"image/png\" href=\"$icon\">"
         println '</head>'
@@ -166,7 +162,7 @@ get_header_template() {
 get_header() {
     dir="$1"
     title="$2"
-    get_header_template "$title" | process_template "$dir"
+    get_header_template | process_template "$dir" "$title"
 }
 
 get_footer_template() {
@@ -181,7 +177,8 @@ get_footer_template() {
 
 get_footer() {
     dir="$1"
-    get_footer_template | process_template "$dir"
+    title="$2"
+    get_footer_template | process_template "$dir" "$title"
 }
 
 gen_breadcrumb() {
@@ -244,7 +241,7 @@ gen_index_page() {
     println "<h1>$title</h1>"
     gen_listing "$dir"
     println "</nav>"
-    get_footer "$dir"
+    get_footer "$dir" "$title"
 }
 
 gen_metadata() {
@@ -288,7 +285,7 @@ gen_content_page() {
     println "<article>"
     println "$content"
     println "</article>"
-    get_footer "$dir"
+    get_footer "$dir" "$title"
 }
 
 gen_directory_tree() {
@@ -315,12 +312,13 @@ gen_directory_tree() {
 
 gen_directory_page() {
     dir="$1"
-    get_header "$dir" "Directory"
+    title="Directory"
+    get_header "$dir" "$title"
     println "<nav>"
     println "<h1>Directory</h1>"
     gen_directory_tree "$dir"
     println "</nav>"
-    get_footer "$dir"
+    get_footer "$dir" "$title"
 }
 
 gen_content_pages() {
