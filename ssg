@@ -2,7 +2,6 @@
 set -e
 
 TITLE="${SSG_TITLE}"
-EXT="${SSG_EXTENSION:-md}"
 CONFIG="${SSG_CONFIG:-.ssg}"
 
 println() {
@@ -71,17 +70,22 @@ apply_transforms() {
 
 gen_content_page() {
     cat "$CONFIG/templates/header.html" \
-        "$CONFIG/templates/$EXT.html" \
+        "$CONFIG/templates/${source_path##*.}.html" \
         "$CONFIG/templates/footer.html" |
         process_template | apply_transforms "$TRANSFORMS"
 }
 
 gen_content_pages() {
-    find_files "." "*.$EXT" |
-    while IFS='' read -r source_path; do
-        html="${source_path%.*}.html"
-        println "${html#./}" >&2
-        gen_content_page > "$html"
+    ls "$CONFIG/templates" |
+    grep -v -x -e 'header.html' -e 'footer.html' |
+    while IFS='' read -r template_filename; do
+        println "TEMPLATE $template_filename"
+        find_files "." "*.${template_filename%%.*}" |
+        while IFS='' read -r source_path; do
+            dest_path="${source_path%.*}.html"
+            println "${dest_path#./}" >&2
+            gen_content_page > "$dest_path"
+        done
     done
 }
 

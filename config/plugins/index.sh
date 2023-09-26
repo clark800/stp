@@ -1,11 +1,12 @@
 DATEKEY="${SSG_DATEKEY:-published}"
 
-is_generated() {
-    grep -q -x '<meta name="generator" content="ssg">' "$1"
+is_generated_index() {
+    grep -q -x '<meta name="generator" content="ssg:index">' "$1"
 }
 
-is_custom_html() {
-    [ -e "$1" ] && ! is_generated "$1"
+set_generator() {
+    sed 's/<meta name="generator" content=".*">/'\
+'<meta name="generator" content="ssg:index">/'
 }
 
 find_subdirs() {
@@ -50,7 +51,7 @@ gen_listing() {
 gen_index_page() {
     dir="$1"
     title="$(get_index_title "$dir")"
-    get_header "$dir" "$title"
+    get_header "$dir" "$title" | set_generator
     println "<nav>"
     println "<h1>$title</h1>"
     gen_listing "$dir"
@@ -63,7 +64,7 @@ index_generator() {
     find_subdirs "." |
     while IFS='' read -r dir; do
         html="$dir/index.html"
-        if [ ! -e "$dir/index.$EXT" ] && ! is_custom_html "$html"; then
+        if [ ! -e "$html" ] || is_generated_index "$html"; then
             if [ "$(get_posts "$dir")" ]; then
                 println "${html#./}" >&2
                 gen_index_page "$dir" > "$html"

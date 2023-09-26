@@ -46,8 +46,6 @@ gen_directory_page() {
 }
 
 directory_generator() {
-    if ! is_custom_html "directory.html"; then
-        println "directory.html" >&2
-        gen_directory_page "." > "directory.html"
-    fi
+    println "directory.html" >&2
+    gen_directory_page "." > "directory.html"
 }

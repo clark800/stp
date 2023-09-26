@@ -11,9 +11,7 @@ get_home_title() {
 get_breadcrumb_title() {
     dir="${1%/}"
     index="$dir/index.html"
-    if [ -r "$index" ] && [ -r "$dir/index.$EXT" ]; then
-        get_html_title "$index"
-    elif [ -r "$index" ] && ! is_generated "$index" ; then
+    if [ -r "$index" ] && ! is_generated_index "$index" ; then
         get_html_title "$index"
     else
         format_title "${dir##*/}"
