@@ -1,4 +1,8 @@
 
+insert_meta_sed_cmd() {
+    printf '/<title>/i\\\n<meta name="%s" content="%s">\n;' "$1" "$2"
+}
+
 meta_transform() {
     source="$1"
     command=""
@@ -12,4 +16,3 @@ meta_transform() {
     done < "$source"
     sed "${command%;}"
 }
-

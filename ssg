@@ -61,10 +61,6 @@ get_site_title() {
     fi
 }
 
-insert_meta_sed_cmd() {
-    printf '/<title>/i\\\n<meta name="%s" content="%s">\n;' "$1" "$2"
-}
-
 process_template() {
     dir="$1"    # templates may use the $dir and $title variables
     title="$2"
@@ -73,7 +69,6 @@ process_template() {
 
 get_header() {  # args: dir, title
     cat "$CONFIG/templates/header.html" |
-        sed "$(insert_meta_sed_cmd generator ssg)" |
         process_template "$1" "$2"
 }
 
