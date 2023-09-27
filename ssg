@@ -2,6 +2,7 @@
 set -e
 
 ROOT_TITLE="${SSG_ROOT_TITLE}"
+TITLE_FORMAT="${SSG_TITLE_FORMAT-capitalize}"
 CONFIG="${SSG_CONFIG:-.ssg}"
 
 println() {
@@ -22,7 +23,7 @@ capitalize() {
 
 format_title() {
     if [ "${1%.*}" == "$1" ]; then
-        println "$1" | tr '_-' '  ' | capitalize
+        println "$1" | tr '_-' '  ' | "${TITLE_FORMAT:-cat}"
     else
         println "$1"    # contains a period; likely a domain name
     fi
