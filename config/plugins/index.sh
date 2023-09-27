@@ -14,11 +14,6 @@ _get_meta_tag_content() {
     sed -n "s/<meta name=\"$1\" content=\"\(.*\)\">/\1/p"
 }
 
-_set_generator() {
-    sed 's/<meta name="generator" content=".*">/'\
-'<meta name="generator" content="ssg:index">/'
-}
-
 _find_subdirs() {
     find "$1" -name '.?*' -prune -o -type d -print
 }
@@ -53,7 +48,7 @@ _generate_listing() {
 _generate_index_page() {
     dir="$1"
     title="$(get_basename_title "$dir")"
-    instantiate_template html header "$dest_path" | _set_generator
+    instantiate_template html header "$dest_path"
     println "<nav>"
     println "<h1>$title</h1>"
     _generate_listing "$dir"
@@ -63,6 +58,7 @@ _generate_index_page() {
 
 
 _generate_index() {
+    generator="index"
     _find_subdirs "." |
     while IFS='' read -r dir; do
         dest_path="$dir/index.html"
@@ -73,6 +69,7 @@ _generate_index() {
             fi
         fi
     done
+    unset generator
 }
 
 _generate_index

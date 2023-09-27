@@ -52,9 +52,11 @@ _generate_directory_page() {
 }
 
 _generate_directory() {
+    generator="directory"
     dest_path="./directory.html"
     println "${dest_path#*/}" >&2
     _generate_directory_page "." > "$dest_path"
+    unset generator
 }
 
 _generate_directory

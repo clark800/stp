@@ -110,6 +110,7 @@ main() {
     import "$CONFIG/plugins"
     import "$CONFIG/hooks"
     run_hook "pre_hook"
+    generator="core"
     for target_config in "$CONFIG/templates"/*; do
         TRANSFORMS=""
         target="${target_config##*/}"
@@ -126,7 +127,7 @@ main() {
         unset source_path dest_path template_filename
         run_hook "post_${target}_hook"
     done
-    unset target target_config TRANSFORMS
+    unset generator target target_config TRANSFORMS
     run_hook "post_hook"
 }
 
