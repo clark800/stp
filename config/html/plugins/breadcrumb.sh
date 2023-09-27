@@ -2,6 +2,16 @@ HOME_TITLE="$SSG_HOME_TITLE"
 
 breadcrumb() {
 
+_get_html_generator() {
+    sed 's|<meta name="generator" content="\(.*\)">|\1|' "$1" | head -n 1
+}
+
+_is_generator_file() {
+    html_generator="$(_get_html_generator "$1")"
+    generator="${html_generator#ssg:}"
+    [ "$generator" != "$html_generator" ] && [ "$generator" != "core" ]
+}
+
 _get_html_title() {
     cat "$1" | tr -d '\r\n' | sed -n 's|.*<title>\(.*\)</title>.*|\1|p'
 }
@@ -17,7 +27,7 @@ _get_home_title() {
 _get_breadcrumb_title() {
     dir="${1%/}"
     index="$dir/index.html"
-    if [ -r "$index" ] && ! is_generated_index "$index" ; then
+    if [ -r "$index" ] && ! _is_generator_file "$index" ; then
         _get_html_title "$index"
     else
         format_title "${dir##*/}"

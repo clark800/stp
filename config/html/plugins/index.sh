@@ -1,10 +1,10 @@
 DATEKEY="${SSG_DATEKEY:-published}"
 
-is_generated_index() {
+index() {
+
+_is_generated_index() {
     grep -q -x '<meta name="generator" content="ssg:index">' "$1"
 }
-
-index() {
 
 _get_html_title() {
     cat "$1" | tr -d '\r\n' | sed -n 's|.*<title>\(.*\)</title>.*|\1|p'
@@ -66,7 +66,7 @@ _generate_index() {
     _find_subdirs "." |
     while IFS='' read -r dir; do
         dest_path="$dir/index.html"
-        if [ ! -e "$dest_path" ] || is_generated_index "$dest_path"; then
+        if [ ! -e "$dest_path" ] || _is_generated_index "$dest_path"; then
             if [ "$(_get_posts "$dir")" ]; then
                 println "${dest_path#./}" >&2
                 _generate_index_page "$dir" > "$dest_path"
