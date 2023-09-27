@@ -123,8 +123,10 @@ main() {
                 generate > "$dest_path"
             done
         done
+        unset source_path dest_path template_filename
         run_hook "post_${target}_hook"
     done
+    unset target target_config TRANSFORMS
     run_hook "post_hook"
 }
 
