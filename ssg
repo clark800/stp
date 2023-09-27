@@ -71,10 +71,6 @@ read_source() {
     cat "$source_path"
 }
 
-register_transform() {
-    TRANSFORMS="$TRANSFORMS$1;"
-}
-
 apply_transforms() {
     if [ ! "$1" ]; then
         cat
@@ -83,11 +79,19 @@ apply_transforms() {
     fi
 }
 
+transform() {
+    if [ "$(command -v "$1_transform")" == "$1_transform" ]; then
+        "$1_transform"
+    else
+        cat
+    fi
+}
+
 generate() {
     cat "$CONFIG/templates/$target/header.$target" \
         "$CONFIG/templates/$target/${source_path##*.}.main.$target" \
         "$CONFIG/templates/$target/footer.$target" |
-        instantiate | apply_transforms "$TRANSFORMS"
+        instantiate | transform "$target"
 }
 
 import() {
@@ -109,12 +113,9 @@ run_hook() {
 main() {
     import "$CONFIG/plugins"
     import "$CONFIG/hooks"
-    run_hook "pre_hook"
     generator="core"
     for target_config in "$CONFIG/templates"/*; do
-        TRANSFORMS=""
         target="${target_config##*/}"
-        run_hook "pre_${target}_hook"
         ls "$target_config" | grep -F ".main.$target" | sort |
         while IFS='' read -r template_filename; do
             find_files "." "*.${template_filename%%.*}" |
@@ -125,9 +126,8 @@ main() {
             done
         done
         unset source_path dest_path template_filename
-        run_hook "post_${target}_hook"
     done
-    unset generator target target_config TRANSFORMS
+    unset generator target target_config
     run_hook "post_hook"
 }
 
