@@ -7,7 +7,6 @@ meta_tags() {
 }
 
 insert_meta_dl() {
-    source_path="$1"
     (
         println "<dl>"
         grep '^% ' "$source_path" |

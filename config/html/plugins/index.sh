@@ -46,24 +46,25 @@ gen_listing() {
 
 gen_index_page() {
     dir="$1"
+    source_path=""
     title="$(get_basename_title "$dir")"
-    get_header "$dir" "$title" | set_generator
+    get_header | set_generator
     println "<nav>"
     println "<h1>$title</h1>"
     gen_listing "$dir"
     println "</nav>"
-    get_footer "$dir" "$title"
+    get_footer
 }
 
 
 index_generator() {
     find_subdirs "." |
     while IFS='' read -r dir; do
-        html="$dir/index.html"
-        if [ ! -e "$html" ] || is_generated_index "$html"; then
+        dest_path="$dir/index.html"
+        if [ ! -e "$dest_path" ] || is_generated_index "$dest_path"; then
             if [ "$(get_posts "$dir")" ]; then
-                println "${html#./}" >&2
-                gen_index_page "$dir" > "$html"
+                println "${dest_path#./}" >&2
+                gen_index_page "$dir" > "$dest_path"
             fi
         fi
     done
