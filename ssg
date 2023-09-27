@@ -9,6 +9,10 @@ println() {
     printf '%s\n' "$1"
 }
 
+is_function() {
+    [ "$(command -v "$1")" = "$1" ]
+}
+
 find_files() {
     find "$1" -name '.?*' -prune -o -type f -name "$2" -print
 }
@@ -72,7 +76,7 @@ input() {
 }
 
 transform() {
-    if [ "$(command -v "$1_transform")" = "$1_transform" ]; then
+    if is_function "$1_transform"; then
         "$1_transform"
     else
         cat
@@ -97,7 +101,7 @@ import() {
 }
 
 run_hook() {
-    if [ "$(command -v "$1")" = "$1" ]; then
+    if is_function "$1"; then
         "$1"
     fi
 }
