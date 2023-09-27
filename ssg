@@ -60,10 +60,6 @@ get_filename_title() {
     fi
 }
 
-get_title() {
-    try "get_${source_path##*.}_title" || get_filename_title "$dest_path"
-}
-
 input() {
     cat "$source_path"
 }
@@ -80,7 +76,8 @@ instantiate_template() {
 }
 
 generate() {
-    title="$(get_title)"
+    title="$(try "get_${source_path##*.}_title" ||
+        get_filename_title "$dest_path")"
     cat "$CONFIG/templates/$target/header.$target" \
         "$CONFIG/templates/$target/${source_path##*.}.main.$target" \
         "$CONFIG/templates/$target/footer.$target" |
