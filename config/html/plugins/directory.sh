@@ -1,6 +1,10 @@
 
 directory() {
 
+_get_html_title() {
+    cat "$1" | tr -d '\r\n' | sed -n 's|.*<title>\(.*\)</title>.*|\1|p'
+}
+
 _get_subdirs() {
     find "$1" ! -name "${1##*/}" -prune ! -name '.*' -type d
 }
@@ -15,7 +19,7 @@ _get_subpages() {
 }
 
 _generate_directory_tree() {
-    title="$(get_html_title "$1/index.html")"
+    title="$(_get_html_title "$1/index.html")"
     subpages="$(_get_subpages "$1")"
     if [ "$subpages" ]; then
         if [ "$1" == "$dir" ]; then

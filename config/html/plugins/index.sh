@@ -6,6 +6,10 @@ is_generated_index() {
 
 index() {
 
+_get_html_title() {
+    cat "$1" | tr -d '\r\n' | sed -n 's|.*<title>\(.*\)</title>.*|\1|p'
+}
+
 _get_meta_tag_content() {
     sed -n "s/<meta name=\"$1\" content=\"\(.*\)\">/\1/p"
 }
@@ -38,7 +42,7 @@ _generate_listing() {
         date="${line%% *}"
         relpath="${line#* }"
         path="${dir%/}/$relpath"
-        title="$(get_html_title "$path")"
+        title="$(_get_html_title "$path")"
         println "<section>"
         println "<time>$date</time>"
         println "<a href=\"$relpath\">$title</a>"

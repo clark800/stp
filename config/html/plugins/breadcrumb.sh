@@ -2,6 +2,10 @@ HOME_TITLE="$SSG_HOME_TITLE"
 
 breadcrumb() {
 
+_get_html_title() {
+    cat "$1" | tr -d '\r\n' | sed -n 's|.*<title>\(.*\)</title>.*|\1|p'
+}
+
 _get_home_title() {
     if [ "$HOME_TITLE" ]; then
         println "$HOME_TITLE"
@@ -14,7 +18,7 @@ _get_breadcrumb_title() {
     dir="${1%/}"
     index="$dir/index.html"
     if [ -r "$index" ] && ! is_generated_index "$index" ; then
-        get_html_title "$index"
+        _get_html_title "$index"
     else
         format_title "${dir##*/}"
     fi
