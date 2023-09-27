@@ -100,12 +100,6 @@ import() {
     fi
 }
 
-run_hook() {
-    if is_function "$1"; then
-        "$1"
-    fi
-}
-
 main() {
     import "$CONFIG/plugins"
     import "$CONFIG/hooks"
@@ -124,7 +118,7 @@ main() {
         unset source_path dest_path template_filename
     done
     unset generator target target_config
-    run_hook "post_hook"
+    if is_function post_hook; then post_hook; fi
 }
 
 cd "${1:-.}" || exit 1
