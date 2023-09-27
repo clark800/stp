@@ -22,7 +22,7 @@ capitalize() {
 }
 
 format_title() {
-    if [ "${1%.*}" == "$1" ]; then
+    if [ "${1%.*}" = "$1" ]; then
         println "$1" | tr '_-' '  ' | ${TITLE_FORMAT:-cat}
     else
         println "$1"
@@ -32,7 +32,7 @@ format_title() {
 get_basename_title() {
     path="${1%/}"
     basename="${path##*/}"
-    if [ "$basename" == "." ]; then
+    if [ "$basename" = "." ]; then
         if [ "$ROOT_TITLE" ]; then
             println "$ROOT_TITLE"
         else
@@ -45,7 +45,7 @@ get_basename_title() {
 
 get_filename_title() {
     path="${1%.*}"
-    if [ "${path##*/}" == "index" ]; then
+    if [ "${path##*/}" = "index" ]; then
         get_basename_title "${path%/*}"
     else
         get_basename_title "$path"
@@ -72,7 +72,7 @@ input() {
 }
 
 transform() {
-    if [ "$(command -v "$1_transform")" == "$1_transform" ]; then
+    if [ "$(command -v "$1_transform")" = "$1_transform" ]; then
         "$1_transform"
     else
         cat
@@ -97,7 +97,7 @@ import() {
 }
 
 run_hook() {
-    if [ "$(command -v "$1")" == "$1" ]; then
+    if [ "$(command -v "$1")" = "$1" ]; then
         "$1"
     fi
 }

@@ -35,7 +35,7 @@ _get_breadcrumb_title() {
 }
 
 _generate_breadcrumb() {
-    if [ "$dest_path" == "./index.html" ]; then
+    if [ "$dest_path" = "./index.html" ]; then
         return
     fi
     tail="${dest_path%/*}"

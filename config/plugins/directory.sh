@@ -22,7 +22,7 @@ _generate_directory_tree() {
     title="$(_get_html_title "$1/index.html")"
     subpages="$(_get_subpages "$1")"
     if [ "$subpages" ]; then
-        if [ "$1" == "$dir" ]; then
+        if [ "$1" = "$dir" ]; then
             println "<details open>"
         else
             println "<details>"
