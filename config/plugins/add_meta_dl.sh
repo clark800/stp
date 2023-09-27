@@ -1,5 +1,5 @@
 
-meta_dl() {
+add_meta_dl() {
     (
         println "<dl>"
         grep '^% ' "$source_path" |
