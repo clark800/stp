@@ -67,7 +67,7 @@ instantiate_template() {
     cat "$CONFIG/templates/$target/$2.$target" | instantiate
 }
 
-read_source() {
+input() {
     cat "$source_path"
 }
 
