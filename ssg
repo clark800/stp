@@ -60,6 +60,10 @@ title() {
     get_filename_title "$dest_path"
 }
 
+input() {
+    cat "$source_path"
+}
+
 instantiate() {
     eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g')\""
 }
@@ -69,10 +73,6 @@ instantiate_template() {
     dest_path="$3"
     source_path="$4"
     cat "$CONFIG/templates/$target/$2.$target" | instantiate
-}
-
-input() {
-    cat "$source_path"
 }
 
 transform() {
