@@ -52,6 +52,10 @@ get_filename_title() {
     fi
 }
 
+title() {
+    get_filename_title "$dest_path"
+}
+
 process_template() {
     eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g')\""
 }
@@ -85,7 +89,6 @@ apply_transforms() {
 }
 
 generate() {
-    title="$(get_filename_title "$source_path")"
     cat "$CONFIG/$target/templates/header.$target" \
         "$CONFIG/$target/templates/${source_path##*.}.$target" \
         "$CONFIG/$target/templates/footer.$target" |
