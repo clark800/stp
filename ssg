@@ -53,7 +53,7 @@ get_filename_title() {
 }
 
 process_template() {
-    eval "printf '%s\\n' \"$(sed 's/"/\\"/g')\""
+    eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g')\""
 }
 
 get_header() {
