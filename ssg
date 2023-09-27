@@ -108,7 +108,7 @@ main() {
         TRANSFORMS=""
         GENERATORS=""
         import_plugins "$target_config/plugins"
-        ls "$target_config/templates" |
+        ls "$target_config/templates" | sort |
         grep -v -x -F -e "header.$target" -e "footer.$target" |
         while IFS='' read -r template_filename; do
             find_files "." "*.${template_filename%%.*}" |
