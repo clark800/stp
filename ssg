@@ -90,15 +90,15 @@ apply_transforms() {
 
 generate() {
     cat "$CONFIG/templates/$target/header.$target" \
-        "$CONFIG/templates/$target/${source_path##*.}.$target" \
+        "$CONFIG/templates/$target/${source_path##*.}.main.$target" \
         "$CONFIG/templates/$target/footer.$target" |
         instantiate | apply_transforms "$TRANSFORMS"
 }
 
 import() {
-    if [ -r "$1" ]; then
+    if [ -d "$1" ]; then
         for plugin in "$1"/*.sh; do
-            if [ -r "$plugin" ]; then
+            if [ -e "$plugin" ]; then
                 . "$plugin"
             fi
         done
@@ -116,11 +116,10 @@ main() {
     import "$CONFIG/hooks"
     run_hook "pre_hook"
     for target_config in "$CONFIG/templates"/*; do
-        target="${target_config##*/}"
         TRANSFORMS=""
+        target="${target_config##*/}"
         run_hook "pre_${target}_hook"
-        ls "$target_config" | sort |
-        grep -v -x -F -e "header.$target" -e "footer.$target" |
+        ls "$target_config" | grep -F ".main.$target" | sort |
         while IFS='' read -r template_filename; do
             find_files "." "*.${template_filename%%.*}" |
             while IFS='' read -r source_path; do
