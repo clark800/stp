@@ -35,19 +35,14 @@ _get_breadcrumb_title() {
 }
 
 _generate_breadcrumb() {
-    dir="${source_path%/*}"
-    tail="${dir%/}"
-    if [ "$tail" == "." ]; then
-        println '<header>'
-        println '</header>'
+    if [ "$dest_path" == "./index.html" ]; then
         return
     fi
+    tail="${dest_path%/*}"
     tail="${tail%/*}/" # start with parent directory
     tail="${tail#.}"
     tail="${tail#/}"   #  a/b/    b/      ''
     head="/"           # /     /a/   /a/b/
-    println "<header>"
-    println "<nav>"
     println "<a href=\"$head\">$(_get_home_title)</a>"
     while [ "$tail" ]; do
         head="$head${tail%%/*}/"
@@ -55,8 +50,6 @@ _generate_breadcrumb() {
         label="$(_get_breadcrumb_title ".$head")"
         println "<a href=\"$head\">$label</a>"
     done
-    println "</nav>"
-    println "</header>"
 }
 
 _generate_breadcrumb
