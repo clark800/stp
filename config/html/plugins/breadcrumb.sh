@@ -18,7 +18,7 @@ get_breadcrumb_title() {
     fi
 }
 
-gen_breadcrumb() {
+breadcrumb() {
     dir="${source_path%/*}"
     tail="${dir%/}"
     if [ "$tail" == "." ]; then
