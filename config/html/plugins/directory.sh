@@ -1,10 +1,12 @@
 
-get_subdirs() {
+directory() {
+
+_get_subdirs() {
     find "$1" ! -name "${1##*/}" -prune ! -name '.*' -type d
 }
 
-get_subpages() {
-    get_subdirs "$1" |
+_get_subpages() {
+    _get_subdirs "$1" |
     while IFS='' read -r subdir; do
         if [ -r "$subdir/index.html" ]; then
             println "$subdir"
@@ -12,9 +14,9 @@ get_subpages() {
     done
 }
 
-gen_directory_tree() {
+_generate_directory_tree() {
     title="$(get_html_title "$1/index.html")"
-    subpages="$(get_subpages "$1")"
+    subpages="$(_get_subpages "$1")"
     if [ "$subpages" ]; then
         if [ "$1" == "$dir" ]; then
             println "<details open>"
@@ -26,7 +28,7 @@ gen_directory_tree() {
         println "</summary>"
         println "$subpages" | sort |
         while IFS='' read -r path; do
-            gen_directory_tree "$path"
+            _generate_directory_tree "$path"
         done
         println "</details>"
     else
@@ -34,19 +36,23 @@ gen_directory_tree() {
     fi
 }
 
-gen_directory_page() {
+_generate_directory_page() {
     dir="$1"
     title="Directory"
     get_header "$dest_path"
     println "<nav>"
     println "<h1>$title</h1>"
-    gen_directory_tree "$dir"
+    _generate_directory_tree "$dir"
     println "</nav>"
     get_footer "$dest_path"
 }
 
-directory_generator() {
+_generate_directory() {
     dest_path="./directory.html"
     println "${dest_path#*/}" >&2
-    gen_directory_page "." > "$dest_path"
+    _generate_directory_page "." > "$dest_path"
+}
+
+_generate_directory
+
 }
