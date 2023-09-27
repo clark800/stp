@@ -60,16 +60,12 @@ instantiate() {
     eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g')\""
 }
 
-get_header() {
-    dest_path="$1"
-    source_path="$2"
-    cat "$CONFIG/templates/$target/header.$target" | instantiate
-}
-
-get_footer() {
-    dest_path="$1"
-    source_path="$2"
-    cat "$CONFIG/templates/$target/footer.$target" | instantiate
+instantiate_template() {
+    target="$1"
+    name="$2"
+    dest_path="$3"
+    source_path="$4"
+    cat "$CONFIG/templates/$target/$name.$target" | instantiate
 }
 
 read_source() {

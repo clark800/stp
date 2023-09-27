@@ -43,12 +43,12 @@ _generate_directory_tree() {
 _generate_directory_page() {
     dir="$1"
     title="Directory"
-    get_header "$dest_path"
+    instantiate_template html header "$dest_path"
     println "<nav>"
     println "<h1>$title</h1>"
     _generate_directory_tree "$dir"
     println "</nav>"
-    get_footer "$dest_path"
+    instantiate_template html footer "$dest_path"
 }
 
 _generate_directory() {
