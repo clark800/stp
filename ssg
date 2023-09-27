@@ -56,20 +56,20 @@ title() {
     get_filename_title "$dest_path"
 }
 
-process_template() {
+instantiate() {
     eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g')\""
 }
 
 get_header() {
     dest_path="$1"
     source_path="$2"
-    cat "$CONFIG/$target/templates/header.$target" | process_template
+    cat "$CONFIG/$target/templates/header.$target" | instantiate
 }
 
 get_footer() {
     dest_path="$1"
     source_path="$2"
-    cat "$CONFIG/$target/templates/footer.$target" | process_template
+    cat "$CONFIG/$target/templates/footer.$target" | instantiate
 }
 
 read_source() {
@@ -96,7 +96,7 @@ generate() {
     cat "$CONFIG/$target/templates/header.$target" \
         "$CONFIG/$target/templates/${source_path##*.}.$target" \
         "$CONFIG/$target/templates/footer.$target" |
-        process_template | apply_transforms "$TRANSFORMS"
+        instantiate | apply_transforms "$TRANSFORMS"
 }
 
 import_plugins() {
