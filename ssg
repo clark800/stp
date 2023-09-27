@@ -62,10 +62,9 @@ instantiate() {
 
 instantiate_template() {
     target="$1"
-    name="$2"
     dest_path="$3"
     source_path="$4"
-    cat "$CONFIG/templates/$target/$name.$target" | instantiate
+    cat "$CONFIG/templates/$target/$2.$target" | instantiate
 }
 
 read_source() {
