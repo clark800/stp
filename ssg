@@ -76,10 +76,6 @@ read_source() {
     cat "$source_path"
 }
 
-register_generator() {
-    GENERATORS="$GENERATORS$1;"
-}
-
 register_transform() {
     TRANSFORMS="$TRANSFORMS$1;"
 }
@@ -99,7 +95,7 @@ generate() {
         instantiate | apply_transforms "$TRANSFORMS"
 }
 
-import_plugins() {
+import() {
     if [ -r "$1" ]; then
         for plugin in "$1"/*.sh; do
             if [ -r "$plugin" ]; then
@@ -109,12 +105,20 @@ import_plugins() {
     fi
 }
 
+run_hook() {
+    if [ "$(command -v "$1")" == "$1" ]; then
+        "$1"
+    fi
+}
+
 main() {
+    import "$CONFIG/html/plugins"
+    import "$CONFIG/html/hooks"
+    run_hook "pre_hook"
     for target_config in "$CONFIG"/*; do
         target="${target_config##*/}"
         TRANSFORMS=""
-        GENERATORS=""
-        import_plugins "$target_config/plugins"
+        run_hook "pre_${target}_hook"
         ls "$target_config/templates" | sort |
         grep -v -x -F -e "header.$target" -e "footer.$target" |
         while IFS='' read -r template_filename; do
@@ -125,8 +129,9 @@ main() {
                 generate > "$dest_path"
             done
         done
-        eval "$GENERATORS"
+        run_hook "post_${target}_hook"
     done
+    run_hook "post_hook"
 }
 
 cd "${1:-.}" || exit 1

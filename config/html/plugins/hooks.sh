@@ -1,3 +1,0 @@
-register_transform set_html_title
-register_generator index
-register_generator directory
