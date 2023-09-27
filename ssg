@@ -71,14 +71,6 @@ read_source() {
     cat "$source_path"
 }
 
-apply_transforms() {
-    if [ ! "$1" ]; then
-        cat
-    else
-        "${1%%;*}" "$source_path" | apply_transforms "${1#*;}"
-    fi
-}
-
 transform() {
     if [ "$(command -v "$1_transform")" == "$1_transform" ]; then
         "$1_transform"
