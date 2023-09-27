@@ -61,10 +61,14 @@ process_template() {
 }
 
 get_header() {
+    dest_path="$1"
+    source_path="$2"
     cat "$CONFIG/$target/templates/header.$target" | process_template
 }
 
 get_footer() {
+    dest_path="$1"
+    source_path="$2"
     cat "$CONFIG/$target/templates/footer.$target" | process_template
 }
 

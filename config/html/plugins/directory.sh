@@ -37,15 +37,16 @@ gen_directory_tree() {
 gen_directory_page() {
     dir="$1"
     title="Directory"
-    get_header "$dir" "$title"
+    get_header "$dest_path"
     println "<nav>"
-    println "<h1>Directory</h1>"
+    println "<h1>$title</h1>"
     gen_directory_tree "$dir"
     println "</nav>"
-    get_footer "$dir" "$title"
+    get_footer "$dest_path"
 }
 
 directory_generator() {
-    println "directory.html" >&2
-    gen_directory_page "." > "directory.html"
+    dest_path="./directory.html"
+    println "${dest_path#*/}" >&2
+    gen_directory_page "." > "$dest_path"
 }
