@@ -30,19 +30,19 @@ capitalize() {
 
 format_title() {
     if [ "${1%.*}" != "$1" ]; then
-        cat
+        println "$1"
     else
-        tr '_-' '  ' | ${TITLE_FORMAT:-cat}
+        println "$1" | tr '_-' '  ' | ${TITLE_FORMAT:-cat}
     fi
 }
 
 get_directory_title() {
     path="${1#.}" path="${path#/}" path="${path:-"$(pwd)"}"
-    println "${ROOT_TITLE:-"$(basename "$path" | format_title)"}"
+    println "${ROOT_TITLE:-"$(format_title "$(basename "$path")")"}"
 }
 
 get_file_title() {
-    _fallback() { basename "$DEST_PATH" ".${DEST_PATH##*.}" | format_title; }
+    _fallback() { format_title "$(basename "$DEST_PATH" ".${DEST_PATH##*.}")"; }
     try "get_${SOURCE_PATH##*.}_title" _fallback
 }
 
