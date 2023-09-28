@@ -30,7 +30,7 @@ _get_breadcrumb_title() {
     if [ -r "$index" ] && ! _is_generator_file "$index" ; then
         _get_html_title "$index"
     else
-        format_title "${dir##*/}"
+        get_default_title "$dir"
     fi
 }
 
