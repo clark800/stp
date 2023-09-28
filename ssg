@@ -58,8 +58,7 @@ instantiate() {
 
 wrap() {
     _cat() { cat; }
-    (instantiate header; cat; instantiate footer) |
-        try "${TARGET}_transform" _cat
+    (instantiate header; cat; instantiate footer) | try post_"$TARGET"_hook _cat
 }
 
 run_generator() {
