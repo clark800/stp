@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 readonly CONFIG="${SSG_CONFIG:-.ssg}"
-readonly ROOT_TITLE="${SSG_ROOT_TITLE}"
+readonly ROOT_TITLE="${SSG_ROOT_TITLE:-}"
 readonly TITLE_FORMAT="${SSG_TITLE_FORMAT-capitalize}"
 
 println() {
