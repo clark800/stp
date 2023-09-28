@@ -20,7 +20,7 @@ _get_home_title() {
     if [ "$BREADCRUMB_HOME_TITLE" ]; then
         println "$BREADCRUMB_HOME_TITLE"
     else
-        get_basename_title "."
+        get_default_title "."
     fi
 }
 

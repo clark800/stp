@@ -14,7 +14,7 @@ is_function() {
 }
 
 try() {
-    if is_function "$1"; then "$1"; else false; fi
+    if is_function "$1"; then f="$1"; shift; "$f" "$@"; else false; fi
 }
 
 find_files() {
@@ -30,14 +30,14 @@ capitalize() {
 }
 
 format_title() {
-    if [ "${1%.*}" = "$1" ]; then
-        println "$1" | tr '_-' '  ' | ${TITLE_FORMAT:-cat}
-    else
+    if [ "${1%.*}" != "$1" ]; then
         println "$1"
+    else
+        println "$1" | tr '_-' '  ' | ${TITLE_FORMAT:-cat}
     fi
 }
 
-get_basename_title() {
+get_file_title() {
     path="${1%/}"
     basename="${path##*/}"
     if [ "$basename" = "." ]; then
@@ -46,9 +46,15 @@ get_basename_title() {
         else
             format_title "$(basename "$(pwd)")"
         fi
-    else
+    elif [ -d "$path" ]; then
         format_title "$basename"
+    else
+        format_title "${basename%.*}"
     fi
+}
+
+get_default_title() {
+    try get_file_title "$1" || println "$(basename "$1" ".${1##*.}")"
 }
 
 input() {
@@ -97,7 +103,7 @@ main() {
                 DEST_PATH="${SOURCE_PATH%.*}.$TARGET"
                 println "${DEST_PATH#./}" >&2
                 TITLE="$(try "get_${SOURCE_PATH##*.}_title" ||
-                         get_basename_title "${DEST_PATH%.*}")"
+                         get_default_title "$DEST_PATH")"
                 instantiate "${SOURCE_PATH##*.}.main" | wrap > "$DEST_PATH"
             done
         done
