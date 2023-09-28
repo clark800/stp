@@ -41,7 +41,7 @@ get_directory_title() {
     println "${ROOT_TITLE:-"$(basename "$path" | format_title)"}"
 }
 
-get_title() {
+get_file_title() {
     _fallback() { basename "$DEST_PATH" ".${DEST_PATH##*.}" | format_title; }
     try "get_${SOURCE_PATH##*.}_title" _fallback
 }
@@ -88,7 +88,7 @@ main() {
             while IFS='' read -r SOURCE_PATH; do
                 DEST_PATH="${SOURCE_PATH%.*}.$TARGET"
                 println "${DEST_PATH#./}" >&2
-                TITLE="$(get_title)"
+                TITLE="$(get_file_title)"
                 instantiate "${SOURCE_PATH##*.}.main" | wrap > "$DEST_PATH"
             done
         done
