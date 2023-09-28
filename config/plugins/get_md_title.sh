@@ -1,5 +1,5 @@
 
 get_md_title() {
-    cat "$SOURCE_PATH" | grep -v '^[[:space:]]*$' | head -n 1 |
+    grep -v '^[[:space:]]*$' "$SOURCE_PATH" | head -n 1 |
         sed 's/^#*//' | sed 's/^[[:space:]]*//'
 }

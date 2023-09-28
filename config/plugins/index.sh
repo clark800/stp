@@ -20,7 +20,7 @@ _find_subdirs() {
 
 _get_posts() {
     dir="$1"
-    (cd "$dir"; find_files "." "*.html") |
+    (cd "$dir" || exit 1; find_files "." "*.html") |
     while IFS='' read -r relpath; do
         path="${dir%/}/${relpath#./}"
         date="$(cat "$path" | _get_meta_tag_content "$INDEX_DATE_KEY")"
