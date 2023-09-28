@@ -71,13 +71,15 @@ instantiate() {
         eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g')\""
 }
 
+wrap() {
+    (instantiate header; cat; instantiate footer) |
+        { try "${TARGET}_transform" || cat; }
+}
+
 generate() {
     TITLE="$(try "get_${SOURCE_PATH##*.}_title" ||
-        get_filename_title "$DEST_PATH")"
-    cat "$CONFIG/templates/$TARGET/header.$TARGET" \
-        "$CONFIG/templates/$TARGET/${SOURCE_PATH##*.}.main.$TARGET" \
-        "$CONFIG/templates/$TARGET/footer.$TARGET" |
-        instantiate | { try "${TARGET}_transform" || cat; }
+             get_filename_title "$DEST_PATH")"
+    instantiate "${SOURCE_PATH##*.}.main" | wrap
 }
 
 import() {
