@@ -48,17 +48,18 @@ _generate_listing() {
 _generate_index_page() {
     dir="$1"
     title="$(get_basename_title "$dir")"
-    instantiate_template html header "$dest_path"
+    instantiate_template header "$dest_path"
     println "<nav>"
     println "<h1>$title</h1>"
     _generate_listing "$dir"
     println "</nav>"
-    instantiate_template html footer "$dest_path"
+    instantiate_template footer "$dest_path"
 }
 
 
 _generate_index() {
     generator="index"
+    target="html"
     _find_subdirs "." |
     while IFS='' read -r dir; do
         dest_path="$dir/index.html"
@@ -69,7 +70,7 @@ _generate_index() {
             fi
         fi
     done
-    unset generator
+    unset generator target
 }
 
 _generate_index

@@ -69,10 +69,9 @@ instantiate() {
 }
 
 instantiate_template() {
-    target="$1"
-    dest_path="$3"
-    source_path="$4"
-    cat "$CONFIG/templates/$target/$2.$target" | instantiate
+    dest_path="$2"
+    source_path="$3"
+    cat "$CONFIG/templates/$target/$1.$target" | instantiate
 }
 
 generate() {
