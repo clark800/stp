@@ -9,7 +9,7 @@ println() {
 }
 
 is_function() {
-    [ "$1" ] && [ "$(command -v "$1")" = "$1" ]
+    [ "$1" != "" ] && [ "$(command -v "$1")" = "$1" ]
 }
 
 try() {
