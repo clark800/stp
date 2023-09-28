@@ -20,7 +20,7 @@ _get_home_title() {
     if [ "$BREADCRUMB_HOME_TITLE" ]; then
         println "$BREADCRUMB_HOME_TITLE"
     else
-        get_default_title "."
+        get_directory_title "."
     fi
 }
 
@@ -30,7 +30,7 @@ _get_breadcrumb_title() {
     if [ -r "$index" ] && ! _is_generator_file "$index" ; then
         _get_html_title "$index"
     else
-        get_default_title "$dir"
+        get_directory_title "$dir"
     fi
 }
 

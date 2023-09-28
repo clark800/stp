@@ -60,7 +60,7 @@ _generate_index() {
         if [ ! -e "$DEST_PATH" ] || _is_generated_index "$DEST_PATH"; then
             if [ "$(_get_posts "$dir")" ]; then
                 println "${DEST_PATH#./}" >&2
-                TITLE="$(get_default_title "$dir")"
+                TITLE="$(get_directory_title "$dir")"
                 _generate_index_content "$dir" | wrap > "$DEST_PATH"
             fi
         fi
