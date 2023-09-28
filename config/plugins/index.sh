@@ -56,7 +56,6 @@ _generate_index_page() {
     instantiate footer
 }
 
-
 _generate_index() {
     generator="index"
     target="html"
