@@ -76,6 +76,13 @@ wrap() {
         { try "${TARGET}_transform" || cat; }
 }
 
+run_generator() {
+    unset SOURCE_PATH DEST_PATH TITLE
+    TARGET="${1:?}"
+    GENERATOR="${2:?}"
+    "$2"
+}
+
 import() {
     if [ -d "$1" ]; then
         for plugin in "$1"/*.sh; do
@@ -84,13 +91,6 @@ import() {
             fi
         done
     fi
-}
-
-run_generator() {
-    unset SOURCE_PATH DEST_PATH TITLE
-    TARGET="${1:?}"
-    GENERATOR="${2:?}"
-    "$2"
 }
 
 main() {
