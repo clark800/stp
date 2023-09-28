@@ -94,9 +94,9 @@ main() {
     import "$CONFIG/plugins"
     import "$CONFIG/hooks"
     generator="core"
-    for target_config in "$CONFIG/templates"/*; do
-        target="${target_config##*/}"
-        ls "$target_config" | grep -F ".main.$target" | sort |
+    for templates in "$CONFIG/templates"/*; do
+        target="${templates##*/}"
+        ls "$templates" | grep -F ".main.$target" | sort |
         while IFS='' read -r template_filename; do
             find_files "." "*.${template_filename%%.*}" |
             while IFS='' read -r source_path; do
@@ -107,7 +107,7 @@ main() {
         done
         unset source_path dest_path template_filename
     done
-    unset generator target target_config
+    unset generator target templates
     try post_hook || true
 }
 
