@@ -47,10 +47,10 @@ _generate_listing() {
 
 _generate_index_page() {
     dir="$1"
-    title="$(get_basename_title "$dir")"
+    TITLE="$(get_basename_title "$dir")"
     instantiate header
     println "<nav>"
-    println "<h1>$title</h1>"
+    println "<h1>$TITLE</h1>"
     _generate_listing "$dir"
     println "</nav>"
     instantiate footer
@@ -59,11 +59,11 @@ _generate_index_page() {
 _generate_index() {
     _find_subdirs "." |
     while IFS='' read -r dir; do
-        dest_path="$dir/index.html"
-        if [ ! -e "$dest_path" ] || _is_generated_index "$dest_path"; then
+        DEST_PATH="$dir/index.html"
+        if [ ! -e "$DEST_PATH" ] || _is_generated_index "$DEST_PATH"; then
             if [ "$(_get_posts "$dir")" ]; then
-                println "${dest_path#./}" >&2
-                _generate_index_page "$dir" > "$dest_path"
+                println "${DEST_PATH#./}" >&2
+                _generate_index_page "$dir" > "$DEST_PATH"
             fi
         fi
     done

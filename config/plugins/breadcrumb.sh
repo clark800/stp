@@ -35,10 +35,10 @@ _get_breadcrumb_title() {
 }
 
 _generate_breadcrumb() {
-    if [ "$dest_path" = "./index.html" ]; then
+    if [ "$DEST_PATH" = "./index.html" ]; then
         return
     fi
-    tail="${dest_path%/*}"
+    tail="${DEST_PATH%/*}"
     tail="${tail%/*}/" # start with parent directory
     tail="${tail#.}"
     tail="${tail#/}"   #  a/b/    b/      ''

@@ -42,19 +42,19 @@ _generate_directory_tree() {
 
 _generate_directory_page() {
     dir="$1"
-    title="Directory"
+    TITLE="Directory"
     instantiate header
     println "<nav>"
-    println "<h1>$title</h1>"
+    println "<h1>$TITLE</h1>"
     _generate_directory_tree "$dir"
     println "</nav>"
     instantiate footer
 }
 
 _generate_directory() {
-    dest_path="./directory.html"
-    println "${dest_path#*/}" >&2
-    _generate_directory_page "." > "$dest_path"
+    DEST_PATH="./directory.html"
+    println "${DEST_PATH#*/}" >&2
+    _generate_directory_page "." > "$DEST_PATH"
 }
 
 _generate_directory

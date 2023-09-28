@@ -61,23 +61,23 @@ get_filename_title() {
 }
 
 input() {
-    cat "${source_path:?}"
+    cat "${SOURCE_PATH:?}"
 }
 
 instantiate() {
-    : "${generator:?}" "${target:?}" "${title:?}" "${dest_path:?}"
-    template_path="${1:+"$CONFIG/templates/$target/$1.$target"}"
+    : "${GENERATOR:?}" "${TARGET:?}" "${TITLE:?}" "${DEST_PATH:?}"
+    template_path="${1:+"$CONFIG/templates/$TARGET/$1.$TARGET"}"
     cat "${template_path:--}" |
         eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g')\""
 }
 
 generate() {
-    title="$(try "get_${source_path##*.}_title" ||
-        get_filename_title "$dest_path")"
-    cat "$CONFIG/templates/$target/header.$target" \
-        "$CONFIG/templates/$target/${source_path##*.}.main.$target" \
-        "$CONFIG/templates/$target/footer.$target" |
-        instantiate | { try "${target}_transform" || cat; }
+    TITLE="$(try "get_${SOURCE_PATH##*.}_title" ||
+        get_filename_title "$DEST_PATH")"
+    cat "$CONFIG/templates/$TARGET/header.$TARGET" \
+        "$CONFIG/templates/$TARGET/${SOURCE_PATH##*.}.main.$TARGET" \
+        "$CONFIG/templates/$TARGET/footer.$TARGET" |
+        instantiate | { try "${TARGET}_transform" || cat; }
 }
 
 import() {
@@ -91,25 +91,25 @@ import() {
 }
 
 run_generator() {
-    unset source_path dest_path title
-    target="${1:?}"
-    generator="${2:?}"
+    unset SOURCE_PATH DEST_PATH TITLE
+    TARGET="${1:?}"
+    GENERATOR="${2:?}"
     "$2"
 }
 
 main() {
     import "$CONFIG/plugins"
     import "$CONFIG/hooks"
-    generator="core"
+    GENERATOR="core"
     for templates in "$CONFIG/templates"/*; do
-        target="${templates##*/}"
-        ls "$templates" | grep -F ".main.$target" | sort |
+        TARGET="${templates##*/}"
+        ls "$templates" | grep -F ".main.$TARGET" | sort |
         while IFS='' read -r template_filename; do
             find_files "." "*.${template_filename%%.*}" |
-            while IFS='' read -r source_path; do
-                dest_path="${source_path%.*}.$target"
-                println "${dest_path#./}" >&2
-                generate > "$dest_path"
+            while IFS='' read -r SOURCE_PATH; do
+                DEST_PATH="${SOURCE_PATH%.*}.$TARGET"
+                println "${DEST_PATH#./}" >&2
+                generate > "$DEST_PATH"
             done
         done
     done

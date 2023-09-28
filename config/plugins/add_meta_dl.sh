@@ -2,12 +2,12 @@
 add_meta_dl() {
     (
         println "<dl>"
-        grep '^% ' "$source_path" |
+        grep '^% ' "$SOURCE_PATH" |
             sed "s|^% \([^:]*\): \(.*\)$|<dt>\1</dt><dd>\2</dd>|"
         println "</dl>"
         println "</header>"
-    ) > "$source_path.tmp"
+    ) > "$SOURCE_PATH.tmp"
     sed -e "$(printf '1,/<h1>/{/<h1>/i\\\n<header>\n')" -e '}' |
-        sed -e "1,/<\/h1>/{/<\/h1>/r $source_path.tmp" -e '}'
-    rm -f "$source_path.tmp"
+        sed -e "1,/<\/h1>/{/<\/h1>/r $SOURCE_PATH.tmp" -e '}'
+    rm -f "$SOURCE_PATH.tmp"
 }
