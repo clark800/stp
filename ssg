@@ -65,9 +65,7 @@ wrap() {
 
 run_generator() {
     unset SOURCE_PATH DEST_PATH TITLE
-    TARGET="${1:?}"
-    GENERATOR="${2:?}"
-    "$2"
+    TARGET="${1:?}" GENERATOR="${2:?}" "$2"
 }
 
 import() {
