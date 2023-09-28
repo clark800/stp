@@ -76,12 +76,6 @@ wrap() {
         { try "${TARGET}_transform" || cat; }
 }
 
-generate() {
-    TITLE="$(try "get_${SOURCE_PATH##*.}_title" ||
-             get_filename_title "$DEST_PATH")"
-    instantiate "${SOURCE_PATH##*.}.main" | wrap
-}
-
 import() {
     if [ -d "$1" ]; then
         for plugin in "$1"/*.sh; do
@@ -111,7 +105,9 @@ main() {
             while IFS='' read -r SOURCE_PATH; do
                 DEST_PATH="${SOURCE_PATH%.*}.$TARGET"
                 println "${DEST_PATH#./}" >&2
-                generate > "$DEST_PATH"
+                TITLE="$(try "get_${SOURCE_PATH##*.}_title" ||
+                         get_filename_title "$DEST_PATH")"
+                instantiate "${SOURCE_PATH##*.}.main" | wrap > "$DEST_PATH"
             done
         done
     done
