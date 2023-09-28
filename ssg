@@ -10,7 +10,7 @@ println() {
 }
 
 is_function() {
-    [ "$(command -v "$1")" = "$1" ]
+    [ "$1" ] && [ "$(command -v "$1")" = "$1" ]
 }
 
 try() {
@@ -61,11 +61,11 @@ get_filename_title() {
 }
 
 input() {
-    cat "$source_path"
+    cat "${source_path:?}"
 }
 
 instantiate() {
-    template_path="${1:+"$CONFIG/templates/$target/$1.$target"}"
+    template_path="${1:+"$CONFIG/templates/${target:?}/$1.$target"}"
     cat "${template_path:--}" |
         eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g')\""
 }
