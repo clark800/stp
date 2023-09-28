@@ -90,6 +90,13 @@ import() {
     fi
 }
 
+run_generator() {
+    unset source_path dest_path title
+    target="${1:?}"
+    generator="${2:?}"
+    "$2"
+}
+
 main() {
     import "$CONFIG/plugins"
     import "$CONFIG/hooks"
@@ -105,9 +112,7 @@ main() {
                 generate > "$dest_path"
             done
         done
-        unset source_path dest_path template_filename
     done
-    unset generator target templates
     try post_hook || true
 }
 

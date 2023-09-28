@@ -57,8 +57,6 @@ _generate_index_page() {
 }
 
 _generate_index() {
-    generator="index"
-    target="html"
     _find_subdirs "." |
     while IFS='' read -r dir; do
         dest_path="$dir/index.html"
@@ -69,7 +67,6 @@ _generate_index() {
             fi
         fi
     done
-    unset generator target
 }
 
 _generate_index

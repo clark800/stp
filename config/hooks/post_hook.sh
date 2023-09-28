@@ -1,5 +1,5 @@
 
 post_hook() {
-    index
-    directory
+    run_generator html index
+    run_generator html directory
 }
