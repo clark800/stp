@@ -40,21 +40,19 @@ _generate_directory_tree() {
     fi
 }
 
-_generate_directory_page() {
+_generate_directory_content() {
     dir="$1"
-    TITLE="Directory"
-    instantiate header
     println "<nav>"
     println "<h1>$TITLE</h1>"
     _generate_directory_tree "$dir"
     println "</nav>"
-    instantiate footer
 }
 
 _generate_directory() {
     DEST_PATH="./directory.html"
+    TITLE="Directory"
     println "${DEST_PATH#*/}" >&2
-    _generate_directory_page "." > "$DEST_PATH"
+    _generate_directory_content "." | wrap > "$DEST_PATH"
 }
 
 _generate_directory

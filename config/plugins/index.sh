@@ -45,15 +45,12 @@ _generate_listing() {
     done
 }
 
-_generate_index_page() {
+_generate_index_content() {
     dir="$1"
-    TITLE="$(get_basename_title "$dir")"
-    instantiate header
     println "<nav>"
     println "<h1>$TITLE</h1>"
     _generate_listing "$dir"
     println "</nav>"
-    instantiate footer
 }
 
 _generate_index() {
@@ -63,7 +60,8 @@ _generate_index() {
         if [ ! -e "$DEST_PATH" ] || _is_generated_index "$DEST_PATH"; then
             if [ "$(_get_posts "$dir")" ]; then
                 println "${DEST_PATH#./}" >&2
-                _generate_index_page "$dir" > "$DEST_PATH"
+                TITLE="$(get_basename_title "$dir")"
+                _generate_index_content "$dir" | wrap > "$DEST_PATH"
             fi
         fi
     done
