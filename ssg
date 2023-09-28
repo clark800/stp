@@ -71,7 +71,7 @@ run_generator() {
 import() {
     if [ -d "$1" ]; then
         for plugin in "$1"/*.sh; do
-            [ -e "$plugin" ] && . "$plugin"
+            if [ -e "$plugin" ]; then . "$plugin"; fi
         done
     fi
 }
