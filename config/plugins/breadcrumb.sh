@@ -1,4 +1,4 @@
-HOME_TITLE="$SSG_HOME_TITLE"
+readonly BREADCRUMB_HOME_TITLE="$SSG_BREADCRUMB_HOME_TITLE"
 
 breadcrumb() {
 
@@ -17,8 +17,8 @@ _get_html_title() {
 }
 
 _get_home_title() {
-    if [ "$HOME_TITLE" ]; then
-        println "$HOME_TITLE"
+    if [ "$BREADCRUMB_HOME_TITLE" ]; then
+        println "$BREADCRUMB_HOME_TITLE"
     else
         get_basename_title "."
     fi

@@ -1,4 +1,4 @@
-DATEKEY="${SSG_DATEKEY:-published}"
+readonly INDEX_DATE_KEY="${SSG_INDEX_DATE_KEY:-published}"
 
 index() {
 
@@ -23,7 +23,7 @@ _get_posts() {
     (cd "$dir"; find_files "." "*.html") |
     while IFS='' read -r relpath; do
         path="${dir%/}/${relpath#./}"
-        date="$(cat "$path" | _get_meta_tag_content "$DATEKEY")"
+        date="$(cat "$path" | _get_meta_tag_content "$INDEX_DATE_KEY")"
         if [ "$date" ]; then
             println "$date ${relpath#./}"
         fi
