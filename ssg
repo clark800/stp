@@ -65,15 +65,10 @@ input() {
 }
 
 instantiate() {
-    template_path="${1:+"$CONFIG/templates/${target:?}/$1.$target"}"
+    : "${generator:?}" "${target:?}" "${title:?}" "${dest_path:?}"
+    template_path="${1:+"$CONFIG/templates/$target/$1.$target"}"
     cat "${template_path:--}" |
         eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g')\""
-}
-
-instantiate_template() {
-    dest_path="${2:?}"
-    source_path="$3"
-    instantiate "${1:?}"
 }
 
 generate() {

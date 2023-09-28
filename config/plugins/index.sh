@@ -48,12 +48,12 @@ _generate_listing() {
 _generate_index_page() {
     dir="$1"
     title="$(get_basename_title "$dir")"
-    instantiate_template header "$dest_path"
+    instantiate header
     println "<nav>"
     println "<h1>$title</h1>"
     _generate_listing "$dir"
     println "</nav>"
-    instantiate_template footer "$dest_path"
+    instantiate footer
 }
 
 
