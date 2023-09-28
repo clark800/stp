@@ -53,7 +53,9 @@ input() {
 instantiate() {
     : "${GENERATOR:?}" "${TARGET:?}" "${TITLE:?}" "${DEST_PATH:?}"
     path="${1:+"$CONFIG/templates/$TARGET/$1.$TARGET"}"
-    cat "${path:--}" | eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g')\""
+    path="${path:-$SOURCE_PATH}"
+    if grep -qF -e '\`' -e '\"' "$path"; then println 'ERROR' >&2; exit 1; fi
+    eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g' "$path")\""
 }
 
 wrap() {
