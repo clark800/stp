@@ -2,8 +2,8 @@
 set -e
 readonly CONFIG="${SSG_CONFIG:-.ssg}"
 ROOT_TITLE="${SSG_ROOT_TITLE:-}"
-TITLE_SPACES="${SSG_TITLE_SPACES-_-}"
 TITLE_FORMAT="${SSG_TITLE_FORMAT-capitalize}"
+TITLE_SPACE_CHARACTERS="${SSG_TITLE_SPACE_CHARACTERS-_-}"
 
 println() {
     printf '%s\n' "$1"
@@ -30,7 +30,7 @@ capitalize() {
 }
 
 format_title() {
-    _format() { tr " $TITLE_SPACES" '[ *]' | ${TITLE_FORMAT:-cat}; }
+    _format() { tr " $TITLE_SPACE_CHARACTERS" '[ *]' | ${TITLE_FORMAT:-cat}; }
     println "$1" | if [ "${1%.*}" != "$1" ]; then cat; else _format; fi
 }
 
