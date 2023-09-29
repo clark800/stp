@@ -2,6 +2,7 @@
 set -e
 readonly CONFIG="${SSG_CONFIG:-.ssg}"
 readonly ROOT_TITLE="${SSG_ROOT_TITLE:-}"
+readonly TITLE_SPACES="${SSG_TITLE_SPACES-_-}"
 readonly TITLE_FORMAT="${SSG_TITLE_FORMAT-capitalize}"
 
 println() {
@@ -29,7 +30,7 @@ capitalize() {
 }
 
 format_title() {
-    _format() { tr '_-' '  ' | ${TITLE_FORMAT:-cat}; }
+    _format() { tr "$TITLE_SPACES" '[ *]' | ${TITLE_FORMAT:-cat}; }
     println "$1" | if [ "${1%.*}" != "$1" ]; then cat; else _format; fi
 }
 
@@ -64,8 +65,7 @@ wrap() {
 }
 
 run_generator() {
-    unset SOURCE_PATH DEST_PATH TITLE
-    TARGET="${1:?}" GENERATOR="${2:?}" "$2"
+    TARGET="${1:?}" GENERATOR="${2:?}" SOURCE_PATH="" DEST_PATH="" TITLE="" "$2"
 }
 
 import() {
