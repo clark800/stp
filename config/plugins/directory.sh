@@ -2,7 +2,7 @@
 directory() {
 
 _get_html_title() {
-    cat "$1" | tr -d '\r\n' | sed -n 's|.*<title>\(.*\)</title>.*|\1|p'
+    tr -d '\r\n' < "$1" | sed -n 's|.*<title>\(.*\)</title>.*|\1|p'
 }
 
 _get_subdirs() {

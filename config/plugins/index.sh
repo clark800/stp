@@ -7,7 +7,7 @@ _is_generated_index() {
 }
 
 _get_html_title() {
-    cat "$1" | tr -d '\r\n' | sed -n 's|.*<title>\(.*\)</title>.*|\1|p'
+    tr -d '\r\n' < "$1" | sed -n 's|.*<title>\(.*\)</title>.*|\1|p'
 }
 
 _get_meta_tag_content() {
@@ -23,7 +23,7 @@ _get_posts() {
     (cd "$dir" || exit 1; find_files "." "*.html") |
     while IFS='' read -r relpath; do
         path="${dir%/}/${relpath#./}"
-        date="$(cat "$path" | _get_meta_tag_content "$INDEX_DATE_KEY")"
+        date="$(_get_meta_tag_content "$INDEX_DATE_KEY" < "$path")"
         if [ "$date" ]; then
             println "$date ${relpath#./}"
         fi
