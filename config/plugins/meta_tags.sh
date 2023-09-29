@@ -1,7 +1,7 @@
 
 meta_tags() {
     if [ -e "$SOURCE_PATH" ]; then
-        grep '^% ' "$SOURCE_PATH" |
-            sed 's|^% \([^:]*\): \(.*\)$|<meta name="\1" content="\2">|'
+        sed -n 's|^% \([^:]*\): \(.*\)$|<meta name="\1" content="\2">|p' \
+            "$SOURCE_PATH"
     fi
 }
