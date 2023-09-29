@@ -30,7 +30,7 @@ capitalize() {
 }
 
 format_title() {
-    _format() { tr "$TITLE_SPACES" '[ *]' | ${TITLE_FORMAT:-cat}; }
+    _format() { tr " $TITLE_SPACES" '[ *]' | ${TITLE_FORMAT:-cat}; }
     println "$1" | if [ "${1%.*}" != "$1" ]; then cat; else _format; fi
 }
 

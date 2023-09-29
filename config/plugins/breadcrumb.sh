@@ -3,7 +3,7 @@ readonly BREADCRUMB_HOME_TITLE="${SSG_BREADCRUMB_HOME_TITLE:-}"
 breadcrumb() {
 
 _get_html_generator() {
-    sed 's|<meta name="generator" content="\(.*\)">|\1|' "$1" | head -n 1
+    sed -n 's|<meta name="generator" content="\(.*\)">|\1|p' "$1" | head -n 1
 }
 
 _is_generator_file() {

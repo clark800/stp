@@ -53,11 +53,15 @@ _generate_index_content() {
     println "</nav>"
 }
 
+_is_ok_to_write() {
+    [ ! -s "$1" ] || _is_generated_index "$1"
+}
+
 _generate_index() {
     _find_subdirs "." |
     while IFS='' read -r dir; do
         DEST_PATH="$dir/index.html"
-        if [ ! -e "$DEST_PATH" ] || _is_generated_index "$DEST_PATH"; then
+        if _is_ok_to_write "$DEST_PATH"; then
             if [ "$(_get_posts "$dir")" != "" ]; then
                 println "${DEST_PATH#./}" >&2
                 TITLE="$(get_directory_title "$dir")"
