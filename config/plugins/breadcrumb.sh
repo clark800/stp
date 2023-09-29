@@ -1,4 +1,4 @@
-readonly BREADCRUMB_HOME_TITLE="$SSG_BREADCRUMB_HOME_TITLE"
+readonly BREADCRUMB_HOME_TITLE="${SSG_BREADCRUMB_HOME_TITLE:-}"
 
 breadcrumb() {
 
@@ -17,7 +17,7 @@ _get_html_title() {
 }
 
 _get_home_title() {
-    if [ "$BREADCRUMB_HOME_TITLE" ]; then
+    if [ "$BREADCRUMB_HOME_TITLE" != "" ]; then
         println "$BREADCRUMB_HOME_TITLE"
     else
         get_directory_title "."
@@ -44,7 +44,7 @@ _generate_breadcrumb() {
     tail="${tail#/}"   #  a/b/    b/      ''
     head="/"           # /     /a/   /a/b/
     println "<a href=\"$head\">$(_get_home_title)</a>"
-    while [ "$tail" ]; do
+    while [ "$tail" != "" ]; do
         head="$head${tail%%/*}/"
         tail="${tail#*/}"
         label="$(_get_breadcrumb_title ".$head")"

@@ -8,7 +8,7 @@ _get_h1_title() {
 _set_html_title() {
     stream="$(cat)"
     title="$(println "$stream" | _get_h1_title)"
-    if [ "$title" ]; then
+    if [ "$title" != "" ]; then
         println "$stream" | sed "s|<title>.*</title>|<title>$title</title>|"
     else
         println "$stream"

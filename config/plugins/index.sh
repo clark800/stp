@@ -24,7 +24,7 @@ _get_posts() {
     while IFS='' read -r relpath; do
         path="${dir%/}/${relpath#./}"
         date="$(_get_meta_tag_content "$INDEX_DATE_KEY" < "$path")"
-        if [ "$date" ]; then
+        if [ "$date" != "" ]; then
             println "$date ${relpath#./}"
         fi
     done
@@ -58,7 +58,7 @@ _generate_index() {
     while IFS='' read -r dir; do
         DEST_PATH="$dir/index.html"
         if [ ! -e "$DEST_PATH" ] || _is_generated_index "$DEST_PATH"; then
-            if [ "$(_get_posts "$dir")" ]; then
+            if [ "$(_get_posts "$dir")" != "" ]; then
                 println "${DEST_PATH#./}" >&2
                 TITLE="$(get_directory_title "$dir")"
                 _generate_index_content "$dir" | wrap > "$DEST_PATH"
