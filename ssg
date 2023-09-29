@@ -35,8 +35,9 @@ format_title() {
 }
 
 get_directory_title() {
-    path="${1#.}" path="${path#/}" path="${path:-"$(pwd)"}"
-    println "${ROOT_TITLE:-"$(format_title "$(basename "$path")")"}"
+    title="$(format_title "$(basename "$1")")"
+    root_title="${ROOT_TITLE:-"$(format_title "$(basename "$(pwd)")")"}"
+    if [ "${1%/}" = "." ]; then println "$root_title"; else println "$title"; fi
 }
 
 get_file_title() {

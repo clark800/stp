@@ -16,14 +16,6 @@ _get_html_title() {
     tr -d '\r\n' < "$1" | sed -n 's|.*<title>\(.*\)</title>.*|\1|p'
 }
 
-_get_home_title() {
-    if [ "$BREADCRUMB_HOME_TITLE" != "" ]; then
-        println "$BREADCRUMB_HOME_TITLE"
-    else
-        get_directory_title "."
-    fi
-}
-
 _get_breadcrumb_title() {
     dir="${1%/}"
     index="$dir/index.html"
@@ -43,7 +35,8 @@ _generate_breadcrumb() {
     tail="${tail#.}"
     tail="${tail#/}"   #  a/b/    b/      ''
     head="/"           # /     /a/   /a/b/
-    println "<a href=\"$head\">$(_get_home_title)</a>"
+    home_title="${BREADCRUMB_HOME_TITLE:-"$(get_directory_title '.')"}"
+    println "<a href=\"$head\">$home_title</a>"
     while [ "$tail" != "" ]; do
         head="$head${tail%%/*}/"
         tail="${tail#*/}"
