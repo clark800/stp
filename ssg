@@ -43,7 +43,7 @@ get_directory_title() {
 
 get_file_title() {
     _fallback() { format_title "$(basename "$DEST_PATH" ".${DEST_PATH##*.}")"; }
-    try "get_${SOURCE_PATH##*.}_title" _fallback
+    try "get_title_${SOURCE_PATH##*.}" _fallback
 }
 
 input() {
