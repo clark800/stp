@@ -1,9 +1,9 @@
-INDEX_DATE_KEY="${SSG_INDEX_DATE_KEY:-published}"
+INDEX_DATE_KEY="${STP_INDEX_DATE_KEY:-published}"
 
 index() {
 
 _is_generated_index() {
-    grep -q -x "<meta name=\"generator\" content=\"ssg:$GENERATOR\">" "$1"
+    grep -q -x "<meta name=\"generator\" content=\"stp:$GENERATOR\">" "$1"
 }
 
 _get_html_title() {

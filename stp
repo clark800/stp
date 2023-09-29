@@ -1,9 +1,9 @@
 #!/bin/sh
 set -e
-readonly CONFIG="${SSG_CONFIG:-.ssg}"
-ROOT_TITLE="${SSG_ROOT_TITLE:-}"
-TITLE_FORMAT="${SSG_TITLE_FORMAT-capitalize}"
-TITLE_SPACE_CHARACTERS="${SSG_TITLE_SPACE_CHARACTERS-_-}"
+readonly CONFIG="${STP_CONFIG:-.stp}"
+ROOT_TITLE="${STP_ROOT_TITLE:-}"
+TITLE_FORMAT="${STP_TITLE_FORMAT-capitalize}"
+TITLE_SPACE_CHARACTERS="${STP_TITLE_SPACE_CHARACTERS-_-}"
 
 println() {
     printf '%s\n' "$1"

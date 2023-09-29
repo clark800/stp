@@ -1,4 +1,4 @@
-BREADCRUMB_HOME_TITLE="${SSG_BREADCRUMB_HOME_TITLE:-}"
+BREADCRUMB_HOME_TITLE="${STP_BREADCRUMB_HOME_TITLE:-}"
 
 breadcrumb() {
 
@@ -8,7 +8,7 @@ _get_html_generator() {
 
 _is_generator_file() {
     html_generator="$(_get_html_generator "$1")"
-    generator="${html_generator#ssg:}"
+    generator="${html_generator#stp:}"
     [ "$generator" != "$html_generator" ] && [ "$generator" != "core" ]
 }
 
