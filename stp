@@ -51,17 +51,18 @@ input() {
 
 instantiate() {
     : "${GENERATOR:?}" "${TARGET:?}" "${TITLE:?}" "${DEST_PATH:?}"
-    path="${1:+"$CONFIG/templates/$TARGET/$1.$TARGET"}"
+    path="${1:+"$CONFIG/templates/$1.$TARGET"}"
     path="${path:-"$SOURCE_PATH"}"
     if grep -q -F -e '\"' -e '\`' "$path"; then
-        println "ERROR: template contains \\\" or \\\`: $path" >&2 && exit 1
+        println "ERROR: template contains \\\" or \\\`: $path" >&2
+        exit 1
     fi
     eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g' "$path")\""
 }
 
 transform() {
     _cat() { cat; }
-    try post_"${TARGET:?}"_hook _cat
+    try "post_${TARGET:?}_hook" _cat
 }
 
 run_generator() {
@@ -80,17 +81,16 @@ main() {
     import "$CONFIG/plugins"
     import "$CONFIG/hooks"
     GENERATOR="core"
-    for templates in "$CONFIG/templates"/*; do
-        TARGET="${templates##*/}"
-        ls "$templates" | grep -F ".to.$TARGET" | sort |
-        while IFS='' read -r template_filename; do
-            find_files "." "*.${template_filename%%.*}" |
-            while IFS='' read -r SOURCE_PATH; do
-                DEST_PATH="${SOURCE_PATH%.*}.$TARGET"
-                println "${DEST_PATH#./}" >&2
-                TITLE="$(get_file_title)"
-                instantiate "${SOURCE_PATH##*.}.to" | transform > "$DEST_PATH"
-            done
+    ls "$CONFIG/templates" | grep -F '.to.' | LC_ALL=C sort |
+    while IFS='' read -r template_filename; do
+        source_ext="${template_filename%%.to.*}"
+        TARGET="${template_filename#*.to.}"
+        find_files "." "*.$source_ext" |
+        while IFS='' read -r SOURCE_PATH; do
+            DEST_PATH="${SOURCE_PATH%.$source_ext}.$TARGET"
+            println "${DEST_PATH#./}" >&2
+            TITLE="$(get_file_title)"
+            instantiate "$source_ext.to" | transform > "$DEST_PATH"
         done
     done
     try post_hook :
