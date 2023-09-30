@@ -59,9 +59,9 @@ instantiate() {
     eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g' "$path")\""
 }
 
-wrap() {
+transform() {
     _cat() { cat; }
-    (instantiate header; cat; instantiate footer) | try post_"$TARGET"_hook _cat
+    try post_"${TARGET:?}"_hook _cat
 }
 
 run_generator() {
@@ -82,14 +82,14 @@ main() {
     GENERATOR="core"
     for templates in "$CONFIG/templates"/*; do
         TARGET="${templates##*/}"
-        ls "$templates" | grep -F ".main.$TARGET" | sort |
+        ls "$templates" | grep -F ".to.$TARGET" | sort |
         while IFS='' read -r template_filename; do
             find_files "." "*.${template_filename%%.*}" |
             while IFS='' read -r SOURCE_PATH; do
                 DEST_PATH="${SOURCE_PATH%.*}.$TARGET"
                 println "${DEST_PATH#./}" >&2
                 TITLE="$(get_file_title)"
-                instantiate "${SOURCE_PATH##*.}.main" | wrap > "$DEST_PATH"
+                instantiate "${SOURCE_PATH##*.}.to" | transform > "$DEST_PATH"
             done
         done
     done
