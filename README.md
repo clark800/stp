@@ -19,7 +19,7 @@ If you have a directory of markdown files, this will generate an HTML page for e
 1. Install [smu](https://github.com/karlb/smu) and make sure it is on your `PATH`.
 2. `cd stp`
 3. `cp -r config <your-markdown-directory>/.stp`
-4. `stp <your-markdown-direcory>`
+4. `./stp <your-markdown-direcory>`
 
 If you want to use another markdown processor you can replace `smu` in the `md.to.html` template.
 
