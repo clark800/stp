@@ -103,6 +103,6 @@ Main content here
 
 Plugins
 -------
-Any `.sh` shell script you place in the `.ste/plugins` directory will be automatically imported when you run `ste` and any functions imported from plugins will be available in all templates.
+Any `.sh` shell script you place in the `.stp/plugins` directory will be automatically imported when you run `stp` and any functions imported from plugins will be available in all templates.
 
 To avoid conflicts between plugins, each plugin should only define one top-level function and the name should be the same as the filename without the `.sh` extension. Additional functions can be defined nested inside the top-level function starting with an underscore, which ensures they don't interfere with any top-level functions.
