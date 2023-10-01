@@ -1,7 +1,7 @@
 stp
 ===
 
-`stp` (shell template processor) is an extensible static site generator and generic template processor in 100 lines of POSIX shell.
+`stp` (shell template processor) is an extensible static site generator and generic template processor in 100 lines of POSIX shell. Plugins for automatic generation of navigation links, index files, etc are another couple hundred lines.
 
 Summary of features:
 * Dynamic template engine based on shell command substitution (no new syntax)
