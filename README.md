@@ -14,7 +14,7 @@ Summary of features:
 
 Quick Start
 -----------
-If you have a directory of markdown files, this will generate an HTML page for each markdown file. Each HTML file is placed in the same directory as the corresponding markdown file.
+If you have a directory of markdown files, this will generate an HTML page for each markdown file in the same directory as the markdown file.
 
 1. Install [smu](https://github.com/karlb/smu) and make sure it is on your `PATH`.
 2. `cd stp`
