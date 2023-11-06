@@ -23,8 +23,8 @@ _get_posts() {
     (cd "$dir" && find_files "." "*.html") |
     while IFS='' read -r relpath; do
         path="${dir%/}/${relpath#./}"
-        date="$(_get_meta_tag_content "$INDEX_DATE_KEY" < "$path")"
-        if [ "$date" != "" ]; then
+        if ! _is_generated_index "$path"; then
+            date="$(_get_meta_tag_content "$INDEX_DATE_KEY" < "$path")"
             println "$date ${relpath#./}"
         fi
     done
@@ -39,7 +39,9 @@ _generate_listing() {
         path="${dir%/}/$relpath"
         title="$(_get_html_title "$path")"
         println "<section>"
-        println "<time>$date</time>"
+        if [ "$date" ]; then
+            println "<time>$date</time>"
+        fi
         println "<a href=\"$relpath\">$title</a>"
         println "</section>"
     done
