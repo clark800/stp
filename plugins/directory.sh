@@ -36,7 +36,7 @@ _generate_directory_tree() {
             println "<details>"
         fi
         println "<summary>"
-        println "<a href=\"$1\">$title</a>"
+        println "<a href=\"$1/index.html\">$title</a>"
         println "</summary>"
         println "$subpages" | sort |
         while IFS='' read -r path; do
@@ -44,7 +44,7 @@ _generate_directory_tree() {
         done
         println "</details>"
     else
-        println "<a href=\"$1\">$title</a>"
+        println "<a href=\"$1/index.html\">$title</a>"
     fi
 }
 
@@ -53,7 +53,9 @@ _generate_directory_page() {
     instantiate header
     println "<nav>"
     println "<h1>$TITLE</h1>"
-    _generate_directory_tree "$dir"
+    if [ -r "$dir/index.html" ]; then
+        _generate_directory_tree "$dir"
+    fi
     println "</nav>"
     instantiate footer
 }
