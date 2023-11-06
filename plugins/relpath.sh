@@ -1,6 +1,10 @@
 
 relpath() {
     path="$1"
+    if [ "${path#/}" != "$path" ]; then
+        println "$path"
+        return
+    fi
     cwd="$(pwd)"
     dest_dir="${DEST_PATH%/*}"
     dots=""
