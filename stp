@@ -14,7 +14,7 @@ is_function() {
 }
 
 try() {
-    if is_function "${1:?}"; then "$1"; else shift && try "$@"; fi
+    if is_function "${1:?}" && "$1"; then return; else shift && try "$@"; fi
 }
 
 find_files() {

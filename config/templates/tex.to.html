@@ -1,0 +1,5 @@
+$(instantiate header)
+<article>
+$(input | grep -v '^%' | tex_to_html | add_meta_dl)
+</article>
+$(instantiate footer)

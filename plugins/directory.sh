@@ -18,8 +18,16 @@ _get_subpages() {
     done
 }
 
+_get_directory_title() {
+    if [ -r "$1/index.html" ]; then
+        _get_html_title "$1/index.html"
+    else
+        get_directory_title "$1"
+    fi
+}
+
 _generate_directory_tree() {
-    title="$(_get_html_title "$1/index.html")"
+    title="$(_get_directory_title "$1")"
     subpages="$(_get_subpages "$1")"
     if [ "$subpages" != "" ]; then
         if [ "$1" = "$dir" ]; then
