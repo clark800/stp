@@ -30,18 +30,21 @@ _generate_breadcrumb() {
     if [ "$DEST_PATH" = "./index.html" ]; then
         return
     fi
-    tail="${DEST_PATH%/*}"
-    tail="${tail%/*}/" # start with parent directory
-    tail="${tail#.}"
-    tail="${tail#/}"   #  a/b/    b/      ''
-    head="/"           # /     /a/   /a/b/
-    home_title="${BREADCRUMB_HOME_TITLE:-"$(get_directory_title '.')"}"
-    println "<a href=\"$head\">$home_title</a>"
+    dir="${DEST_PATH%/*}/"
+    tail="${dir#./}"
+    dots=""
     while [ "$tail" != "" ]; do
-        head="$head${tail%%/*}/"
+        dots="../$dots"
         tail="${tail#*/}"
-        label="$(_get_breadcrumb_title ".$head")"
-        println "<a href=\"$head\">$label</a>"
+    done
+    home_title="${BREADCRUMB_HOME_TITLE:-"$(get_directory_title '.')"}"
+    println "<a href=\"${dots}index.html\">$home_title</a>"
+    dots="${dots#*/}"
+    while [ "$dots" != "" ]; do
+        path="$(cd "$dir/$dots"; pwd)"
+        label="$(_get_breadcrumb_title "$path")"
+        println "<a href=\"${dots}index.html\">$label</a>"
+        dots="${dots#*/}"
     done
 }
 
