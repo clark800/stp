@@ -49,6 +49,11 @@ input() {
     cat "${SOURCE_PATH:?}"
 }
 
+relpath() {
+    dir="${DEST_PATH%/*}/"
+    println "$(println "${dir#./}" | sed 's|[^/]*/|\.\./|g')$1"
+}
+
 instantiate() {
     : "${GENERATOR:?}" "${TARGET:?}" "${TITLE:?}" "${DEST_PATH:?}"
     path="${1:+"$CONFIG/templates/$1.$TARGET"}"
