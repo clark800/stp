@@ -17,13 +17,14 @@ Quick Start
 If you have a directory of markdown files, this will generate an HTML page for each markdown file in the same directory as the markdown file.
 
 1. Install [smu](https://github.com/karlb/smu) and make sure it is on your `PATH`.
-2. `cd stp`
-3. `cp -r config <your-markdown-directory>/.stp`
-4. `./stp <your-markdown-direcory>`
+2. Install `stp` so that it is on your path.
+3. `cp -r stp/config <your-markdown-directory>/.stp`
+4. `cd <your-markdown-directory>`
+5. `stp`
 
 If you want to use another markdown processor you can replace `smu` in the `md.to.html` template.
 
-You will have to add `%` annotations to markdown files if you want to automatically generate index files:
+You can add `%` annotations to markdown files if you want index files to show dates:
 
 ```
 Title
