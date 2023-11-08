@@ -98,7 +98,7 @@ main() {
     import "$CONFIG/hooks"
     GENERATOR="core"
     for path in "${@:-.}"; do
-        relative="${path#$(pwd)/}"
+        relative="${path#$PWD/}"
         process "./${relative#./}"
     done
     if [ "$#" = 0 ]; then
