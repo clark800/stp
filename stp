@@ -103,8 +103,10 @@ main() {
     import "$CONFIG/hooks"
     GENERATOR="core"
     for path in "${@:-.}"; do
-        relative="${path#$PWD/}"
-        process "./${relative#./}"
+        rel="${path#$PWD/}"
+        if [ "${rel#/}" = "$rel" ] && [ "${rel#*..}" = "$rel" ]; then
+            process "./${rel#./}"
+        else println "Error: invalid path: $path" >&2; fi
     done
     if [ "$#" = 0 ]; then
         try post_hook :
