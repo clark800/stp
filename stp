@@ -6,7 +6,11 @@ TITLE_FORMAT="${STP_TITLE_FORMAT-capitalize}"
 TITLE_SPACE_CHARACTERS="${STP_TITLE_SPACE_CHARACTERS-_-}"
 
 println() {
-    printf '%s\n' "$1"
+    for line; do printf '%s\n' "$line"; done
+}
+
+slugify() {
+    println "$1" | sed 's|[^[:alnum:]_-]|_|g'
 }
 
 is_function() {
@@ -65,11 +69,6 @@ instantiate() {
     eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g' "$path")\""
 }
 
-transform() {
-    _cat() { cat; }
-    try "post_${TARGET:?}_hook" _cat
-}
-
 run_generator() {
     TARGET="${1:?}" GENERATOR="${2:?}" SOURCE_PATH="" DEST_PATH="" TITLE="" "$2"
 }
@@ -83,7 +82,7 @@ import() {
 }
 
 process() {
-    root="${1%/.}"
+    processor="$1"; root="${2%/.}";
     ls "$CONFIG/templates" | grep -F '.to.' | LC_ALL=C sort |
     while IFS='' read -r template_filename; do
         source_ext="${template_filename%%.to.*}"
@@ -91,26 +90,34 @@ process() {
         find_files "${root%/}" "*.$source_ext" |
         while IFS='' read -r SOURCE_PATH; do
             DEST_PATH="${SOURCE_PATH%.$source_ext}.$TARGET"
-            println "${DEST_PATH#./}" >&2
             TITLE="$(get_file_title)"
-            instantiate "$source_ext.to" | transform > "$DEST_PATH"
+            "$processor" "$source_ext.to"
         done
     done
+}
+
+transform() {
+    _cat() { cat; }
+    try "post_${TARGET:?}_hook" _cat
+}
+
+generate() {
+    println "${DEST_PATH#./}" >&2
+    instantiate "$1" | transform > "$DEST_PATH"
 }
 
 main() {
     import "$CONFIG/plugins"
     import "$CONFIG/hooks"
     GENERATOR="core"
+    if [ "$#" = 0 ]; then try pre_hook :; fi
     for path in "${@:-.}"; do
         rel="${path#$PWD/}"
         if [ "${rel#/}" = "$rel" ] && [ "${rel#*..}" = "$rel" ]; then
-            process "./${rel#./}"
+            process generate "./${rel#./}"
         else println "Error: invalid path: $path" >&2; fi
     done
-    if [ "$#" = 0 ]; then
-        try post_hook :
-    fi
+    if [ "$#" = 0 ]; then try post_hook :; fi
 }
 
 main "$@"

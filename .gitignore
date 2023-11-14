@@ -1,4 +1,5 @@
 test
 config/libraries
 config/templates/tex.html
+config/titlemap
 stp.bundle
