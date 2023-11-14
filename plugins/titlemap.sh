@@ -9,6 +9,7 @@ titlemap() {
         fi
         println "$DEST_PATH" > "$slug_path"
     }
+    rm -rf "$TMP/titlemap"
     mkdir -p "$TITLEMAP"
     process _titlemap "."
 }
