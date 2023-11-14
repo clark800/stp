@@ -1,5 +1,6 @@
 
 get_title_md() {
-    grep -v '^[[:space:]]*$' "$SOURCE_PATH" | head -n 1 |
-        sed 's/^#*[[:space:]]*//'
+    nx="$(printf '\nx')"
+    n="${nx%x}"
+    sed "/[^[:space:]]/{s/^#*[[:space:]]*//${n}q${n}}" "$SOURCE_PATH"
 }
