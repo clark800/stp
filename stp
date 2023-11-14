@@ -92,7 +92,7 @@ process() {
         while IFS='' read -r SOURCE_PATH; do
             DEST_PATH="${SOURCE_PATH%.$source_ext}.$TARGET"
             TITLE="$(get_file_title)"
-            "$processor" "$source_ext.to"
+            "$processor" "$source_ext"
         done
     done
 }
@@ -104,7 +104,7 @@ transform() {
 
 generate() {
     println "${DEST_PATH#./}" >&2
-    instantiate "$1" | transform > "$DEST_PATH"
+    instantiate "$1.to" | transform > "$DEST_PATH"
 }
 
 main() {
