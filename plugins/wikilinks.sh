@@ -24,7 +24,7 @@ wikilinks() {
         links="${1#*$n}"
         if [ ! "$link" ]; then cat && return; fi
         title="${link%%|*}"
-        slug_path="$TITLEMAP/$(slugify "$title")"
+        slug_path="$TMP/titlemap/$(slugify "$title")"
         if [ ! -f "$slug_path" ]; then
             println "WARNING: page not found for wikilink '$title'" >&2
             _substitute_all "$links"
@@ -34,7 +34,7 @@ wikilinks() {
         _substitute "$link" "$href" | _substitute_all "$links"
     }
 
-    if [ ! -d "$TITLEMAP" ]; then
+    if [ ! -d "$TMP/titlemap" ]; then
         println "WARNING: titlemap not found; skipping wikilinks" >&2
         cat && return
     fi
