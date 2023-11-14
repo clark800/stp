@@ -55,7 +55,7 @@ input() {
 
 relpath() {
     dir="${DEST_PATH%/*}/"
-    println "$(println "${dir#./}" | sed 's|[^/]*/|\.\./|g')$1"
+    println "$(println "${dir#./}" | sed 's|[^/]*/|\.\./|g')${1#./}"
 }
 
 instantiate() {
