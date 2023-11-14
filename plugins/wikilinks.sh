@@ -16,19 +16,28 @@ wikilinks() {
         link="$(println "$link" | sed 's/[.*[]/\\&/g')"
         title="$(println "${link#*|}" | sed 's/[&]/\\&/g')"
         href="$(println "$href" | sed 's/[&]/\\&/g')"
-        sed "s${bs}\\[\\[${link}\\]\\]${bs}[${title}](${href})${bs}g"
+        sed "s${bs}\\[\\[$link\\]\\]${bs}<a href=\"$href\">$title</a>${bs}g"
     }
 
     _substitute_all() {
-        links="$1"
-        if [ ! "$links" ]; then cat; return; fi
-        link="${links%%$n*}"
-        links="${links#*$n}"
-        slug_path="$CONFIG/titlemap/$(slugify "${link%%|*}")"
-        if [ ! -f "$slug_path" ]; then _substitute_all "$links"; return; fi
+        link="${1%%$n*}"
+        links="${1#*$n}"
+        if [ ! "$link" ]; then cat && return; fi
+        title="${link%%|*}"
+        slug_path="$TITLEMAP/$(slugify "$title")"
+        if [ ! -f "$slug_path" ]; then
+            println "WARNING: page not found for wikilink '$title'" >&2
+            _substitute_all "$links"
+            return
+        fi
         href="$(relpath "$(cat "$slug_path")")"
         _substitute "$link" "$href" | _substitute_all "$links"
     }
+
+    if [ ! -d "$TITLEMAP" ]; then
+        println "WARNING: titlemap not found; skipping wikilinks" >&2
+        cat && return
+    fi
 
     document="$(cat)"
     links="$(println "$document" | _find_wikilinks)"

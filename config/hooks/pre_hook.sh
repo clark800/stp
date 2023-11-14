@@ -9,6 +9,7 @@ pre_hook() {
         println "$DEST_PATH" > "$slug_path"
     }
     rm -rf "${CONFIG?:}/titlemap"
-    mkdir "${CONFIG?:}/titlemap"
+    TITLEMAP="$CONFIG/titlemap"
+    mkdir "$TITLEMAP"
     process _titlemap "."
 }
