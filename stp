@@ -106,12 +106,11 @@ generate() {
 main() {
     import "$CONFIG/plugins"
     import "$CONFIG/hooks"
-    GENERATOR="core"
     if [ "$#" = 0 ]; then try pre_hook :; fi
     for path in "${@:-.}"; do
         rel="${path#$PWD/}"
         if [ "${rel#/}" = "$rel" ] && [ "${rel#*..}" = "$rel" ]; then
-            process generate "./${rel#./}"
+            GENERATOR="core" process generate "./${rel#./}"
         else println "Error: invalid path: $path" >&2; fi
     done
     if [ "$#" = 0 ]; then try post_hook :; fi
