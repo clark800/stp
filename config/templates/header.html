@@ -6,7 +6,8 @@
 $(meta_tags)
 <title>$TITLE</title>
 <link rel="stylesheet" href="$(relpath $CONFIG/styles/default.css)">
-$(if [ -r $CONFIG/libraries/mathjax.js ]; then instantiate mathjax; fi)
+<script type="text/javascript" src="$(relpath $CONFIG/libraries/mathjax.js)">
+</script>
 </head>
 <body>
 <header>
