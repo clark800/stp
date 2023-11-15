@@ -42,7 +42,7 @@ How it works
 The main idea of `stp` is to use shell command substitution and parameter expansion to instantiate templates. It does this by automatically escaping double quotes and backticks in the input, then `eval`ing a `printf` with the input placed inside shell script double quotes. The actual instantiation code is one line:
 
 ```shell
-eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g' "$1")\""
+eval "printf '%s\\n' \"$(sed 's/\\*\(["`]\)/\\\1/g' "$path")\""
 ```
 
 This is a simplified markdown to HTML template:

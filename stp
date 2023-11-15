@@ -63,11 +63,7 @@ instantiate() {
     : "${GENERATOR:?}" "${TARGET:?}" "${TITLE:?}" "${DEST_PATH:?}"
     path="${1:+"$CONFIG/templates/$1.$TARGET"}"
     path="${path:-"$SOURCE_PATH"}"
-    if grep -q -F -e '\"' -e '\`' "$path"; then
-        println "ERROR: template contains \\\" or \\\`: $path" >&2
-        exit 1
-    fi
-    eval "printf '%s\\n' \"$(sed 's/"/\\"/g;s/`/\\`/g' "$path")\""
+    eval "printf '%s\\n' \"$(sed 's/\\*\(["`]\)/\\\1/g' "$path")\""
 }
 
 run_generator() {
