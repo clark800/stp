@@ -10,20 +10,29 @@ wikilinks() {
     }
 
     _substitute() {
-        link="$1"; href="$2"
+        link="$1"; path="$2"
         # there are edge cases when the link or href contain special characters
         # but these escapes should handle most common cases
-        link="$(println "$link" | sed 's/[.*[]/\\&/g')"
-        title="$(println "${link#*|}" | sed 's/[&]/\\&/g')"
-        href="$(println "$href" | sed 's/[&]/\\&/g')"
-        sed "s${bs}\\[\\[$link\\]\\]${bs}<a href=\"$href\">$title</a>${bs}g"
+        esclink="$(println "$link" | sed 's/[.*[]/\\&/g')"
+        escaped="$(println "$link" | sed 's/[&]/\\&/g')"
+        label="${escaped#*|}"
+        left="${escaped%%|*}"
+        title="${left%%#*}"
+        fragment="${left#$title}"
+        href="$(println "$path$fragment" | sed 's/[&]/\\&/g')"
+        sed "s${bs}\\[\\[$esclink\\]\\]${bs}<a href=\"$href\">$label</a>${bs}g"
     }
 
     _substitute_all() {
         link="${1%%$n*}"
         links="${1#*$n}"
         if [ ! "$link" ]; then cat && return; fi
-        title="${link%%|*}"
+        left="${link%%|*}"
+        title="${left%%#*}"
+        if [ ! "$title" ]; then
+            _substitute "$link" | _substitute_all "$links"
+            return
+        fi
         slug_path="$TMP/titlemap/$(slugify "$title")"
         if [ ! -f "$slug_path" ]; then
             println "WARNING: page not found for wikilink '$title'" >&2
