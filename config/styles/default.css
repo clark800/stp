@@ -12,8 +12,10 @@ a {
     color: #1d1d1d;
 }
 
-sup {
-    font-size: 0.5em;
+sup a {
+    text-decoration: none;
+    font-family: "Times New Roman";
+    vertical-align: middle;
 }
 
 img {
@@ -170,4 +172,15 @@ main > nav > section > time {
     margin-right: 1em;
     padding-top: 0.25em;
     width: 6em;
+}
+
+:target {
+    animation: highlight 1.5s;
+    background-color: #d6d6d6;
+}
+
+@keyframes highlight {
+  0% {background: transparent;}
+  10% {background: #bbb;}
+  100% {background: #d6d6d6;}
 }
