@@ -16,6 +16,7 @@ sup a {
     text-decoration: none;
     font-family: "Times New Roman";
     vertical-align: middle;
+    user-select: none;
 }
 
 img {
