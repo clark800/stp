@@ -8,5 +8,5 @@ chmod +x stp
 if [ "$1" = "install" ]; then
     PREFIX="${PREFIX:-/usr/local}"
     mkdir -p "$PREFIX/bin"
-    cp stp "$PREFIX/bin/"
+    mv stp "$PREFIX/bin/"
 fi
