@@ -180,18 +180,21 @@ main > nav > section > time {
     width: 6em;
 }
 
+/* footnotes */
 p[id] {
     display: list-item;
     margin-left: 1em;
 }
 
 :target {
-    animation: highlight 1.5s;
-    background-color: #d6d6d6;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    animation: highlight 2s;
+    background-color: #eee;
 }
 
 @keyframes highlight {
   0% {background: transparent;}
-  10% {background: #bbb;}
-  100% {background: #d6d6d6;}
+  10% {background: #b7d2f7;}
+  100% {background: #eee;}
 }
