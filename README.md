@@ -16,13 +16,13 @@ Quick Start
 -----------
 If you have a directory of markdown files, this will generate an HTML page for each markdown file in the same directory as the markdown file.
 
-1. Install [smu](https://github.com/karlb/smu) and make sure it is on your `PATH`.
+1. Install [smd](https://github.com/clark800/smd) and make sure it is on your `PATH`.
 2. Install `stp` so that it is on your path.
 3. `cp -r stp/config <your-markdown-directory>/.stp`
 4. `cd <your-markdown-directory>`
 5. `stp`
 
-If you want to use another markdown processor you can replace `smu` in the `md.to.html` template.
+If you want to use another markdown processor you can replace `smd` in the `md.to.html` template.
 
 You can add `%` annotations to markdown files if you want index files to show dates:
 
@@ -58,12 +58,12 @@ This is a simplified markdown to HTML template:
 <header>
 $(breadcrumb)
 </header>
-$(input | grep -v '^%' | smu)
+$(input | grep -v '^%' | smd)
 </body>
 </html>
 ```
 
-Instantiation will substitute the value of the shell variables for `GENERATOR` and `TITLE`, and run the code in the `$()` brackets, substituting the output into the template. The `input` function prints the contents of the current source file being processed, which is then stripped of metadata annotations with `grep`, then processed with the `smu` markdown processor to fill in the main content.
+Instantiation will substitute the value of the shell variables for `GENERATOR` and `TITLE`, and run the code in the `$()` brackets, substituting the output into the template. The `input` function prints the contents of the current source file being processed, which is then stripped of metadata annotations with `grep`, then processed with the `smd` markdown processor to fill in the main content.
 
 
 Recursive templates
@@ -72,7 +72,7 @@ Templates can recursively instantiate other templates, which allows you to extra
 
 ```html
 $(instantiate header)
-$(input | grep -v '^%' | smu)
+$(input | grep -v '^%' | smd)
 $(instantiate footer)
 ```
 
@@ -85,7 +85,7 @@ The templates above are target templates. We can also treat the source files as 
 
 ```html
 $(instantiate header)
-$(instantiate | grep -v '^%' | smu)
+$(instantiate | grep -v '^%' | smd)
 $(instantiate footer)
 ```
 
