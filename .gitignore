@@ -2,4 +2,4 @@ test
 config/libraries
 config/templates/tex.html
 config/tmp
-stp.bundle
+stp

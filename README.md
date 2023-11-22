@@ -17,7 +17,7 @@ Quick Start
 If you have a directory of markdown files, this will generate an HTML page for each markdown file in the same directory as the markdown file.
 
 1. Install [smd](https://github.com/clark800/smd) and make sure it is on your `PATH`.
-2. Install `stp` so that it is on your path.
+2. `sudo ./make install`
 3. `cp -r stp/config <your-markdown-directory>/.stp`
 4. `cd <your-markdown-directory>`
 5. `stp`
