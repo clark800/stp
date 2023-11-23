@@ -1,0 +1,11 @@
+<iframe name="postmail-response"></iframe>
+<form action="https://postmail.invotes.com/send" method="post"
+        target="postmail-response" id="postmail">
+    <input type="text" name="reply_to" placeholder="Your Email (optional)" />
+    <input type="hidden" name="subject" value="Contact" />
+    <textarea name="text" placeholder="Message"></textarea>
+    <input type="hidden" name="access_token" value="INSERT_TOKEN_HERE" />
+    <input type="hidden" name="success_url" value="/postmail-success.html" />
+    <input type="hidden" name="error_url" value="/postmail-failure.html" />
+    <input id="submit_form" type="submit" value="Send" />
+</form>

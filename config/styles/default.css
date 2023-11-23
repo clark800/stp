@@ -180,6 +180,22 @@ main > nav > section > time {
     width: 6em;
 }
 
+input, textarea {
+    display: block;
+    margin: 1em;
+    width: 50%;
+}
+
+textarea {
+    height: 4em;
+}
+
+iframe {
+    border: 0;
+    width: 100%;
+    height: 1em;
+}
+
 /* footnotes */
 p[id] {
     display: list-item;
