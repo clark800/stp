@@ -3,7 +3,7 @@ add_meta_dl() {
     : "${SOURCE_PATH:?}"
     (
         println "<dl>"
-        sed -n 's|^% \([^:]*\): \(.*\)$|<dt>\1</dt><dd>\2</dd>|p' "$SOURCE_PATH"
+        sed -n 's|^= \([^:]*\): \(.*\)$|<dt>\1</dt><dd>\2</dd>|p' "$SOURCE_PATH"
         println "</dl>"
         println "</header>"
     ) > "$SOURCE_PATH.tmp"

@@ -1,5 +1,5 @@
 $(instantiate header)
 <article>
-$(input | grep -v '^%' | wikilinks | smd | add_meta_dl | add_heading_ids)
+$(input | wikilinks | smd | add_heading_ids)
 </article>
 $(instantiate footer)

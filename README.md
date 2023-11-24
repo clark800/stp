@@ -24,17 +24,17 @@ If you have a directory of markdown files, this will generate an HTML page for e
 
 If you want to use another markdown processor you can replace `smd` in the `md.to.html` template.
 
-You can add `%` annotations to markdown files if you want index files to show dates:
+You can add `=` annotations to markdown files if you want index files to show dates:
 
 ```
 Title
 =====
-% published: 2023-09-30
+= published: 2023-09-30
 
 Main content
 ```
 
-Another option is manually writing `index.md` files which provides more flexibility and doesn't require `%` annotations.
+Another option is manually writing `index.md` files which provides more flexibility and doesn't require `=` annotations.
 
 
 How it works
@@ -58,7 +58,7 @@ This is a simplified markdown to HTML template:
 <header>
 $(breadcrumb)
 </header>
-$(input | grep -v '^%' | smd)
+$(input | smd)
 </body>
 </html>
 ```
@@ -72,7 +72,7 @@ Templates can recursively instantiate other templates, which allows you to extra
 
 ```html
 $(instantiate header)
-$(input | grep -v '^%' | smd)
+$(input | smd)
 $(instantiate footer)
 ```
 
@@ -85,7 +85,7 @@ The templates above are target templates. We can also treat the source files as 
 
 ```html
 $(instantiate header)
-$(instantiate | grep -v '^%' | smd)
+$(instantiate | smd)
 $(instantiate footer)
 ```
 
