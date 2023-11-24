@@ -30,6 +30,7 @@ You can add `=` annotations to markdown files if you want index files to show da
 Title
 =====
 = published: 2023-09-30
+= tags: blog
 
 Main content
 ```
