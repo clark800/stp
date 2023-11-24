@@ -17,10 +17,11 @@ Quick Start
 If you have a directory of markdown files, this will generate an HTML page for each markdown file in the same directory as the markdown file.
 
 1. Install the [smd](https://github.com/clark800/smd) markdown renderer.
-2. In the `stp` directory, run `sudo ./make install`
-3. `cp -r stp/config <your-markdown-directory>/.stp`
-4. `cd <your-markdown-directory>`
-5. `stp`
+2. In the `stp` directory, run `./make`
+3. `sudo ./make install`
+4. `cp -r stp/config <your-markdown-directory>/.stp`
+5. `cd <your-markdown-directory>`
+6. `stp`
 
 If you want to use another markdown processor you can replace `smd` in the `md.to.html` template.
 
