@@ -51,7 +51,7 @@ get_file_title() {
 }
 
 input() {
-    cat "${SOURCE_PATH:?}"
+    "${@:-cat}" < "${SOURCE_PATH:?}"
 }
 
 relpath() {
