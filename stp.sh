@@ -7,7 +7,7 @@ TITLE_FORMAT="${STP_TITLE_FORMAT-capitalize}"
 TITLE_SPACE_CHARACTERS="${STP_TITLE_SPACE_CHARACTERS-_-}"
 
 println() {
-    for line; do printf '%s\n' "$line"; done
+    printf '%s\n' "$@"
 }
 
 slugify() {
