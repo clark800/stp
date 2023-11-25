@@ -64,7 +64,7 @@ _generate_directory() {
     DEST_PATH="./directory.html"
     TITLE="Directory"
     println "${DEST_PATH#*/}" >&2
-    _generate_directory_page "." | transform > "$DEST_PATH"
+    _generate_directory_page "." > "$DEST_PATH"
 }
 
 _generate_directory

@@ -7,7 +7,7 @@ Summary of features:
 * Dynamic template engine based on shell command substitution (no new syntax)
 * Recursive template instantiation
 * Supports both source templates (e.g. markdown) and target templates (e.g. html)
-* Extensible with plugins for template functions, output transformations, and generators
+* Extensible with plugins for template functions and generators
 * Supports any combination of input formats and output formats
 * The default configuration generates semantic HTML5 with classless CSS and no Javascript from a directory of markdown files
 

@@ -93,14 +93,9 @@ process() {
     done
 }
 
-transform() {
-    _cat() { cat; }
-    try "post_${TARGET:?}_hook" _cat
-}
-
 generate() {
     println "${DEST_PATH#./}" >&2
-    instantiate "$1.to" | transform > "$DEST_PATH"
+    instantiate "$1.to" > "$DEST_PATH"
 }
 
 main() {

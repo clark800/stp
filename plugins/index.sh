@@ -69,7 +69,7 @@ _generate_index() {
             if [ "$(_get_posts "$dir")" != "" ]; then
                 println "${DEST_PATH#./}" >&2
                 TITLE="$(get_directory_title "$dir")"
-                _generate_index_page "$dir" | transform > "$DEST_PATH"
+                _generate_index_page "$dir" > "$DEST_PATH"
             fi
         fi
     done
