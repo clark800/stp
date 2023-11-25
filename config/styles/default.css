@@ -135,26 +135,26 @@ main > header nav a::after {
     line-height: 0;
 }
 
-/* "header dl" is for metadata shown under the heading */
+/* "h1 + dl" is for metadata shown under the heading */
 
-header dl {
+h1 + dl {
     margin-top: 0em;
 }
 
-header dl dt,
-header dl dd {
+h1 + dl dt,
+h1 + dl dd {
     font-size: small;
     display: inline;
     vertical-align: middle;
 }
 
-header dl dt {
+h1 + dl dt {
     margin: 0;
     font-weight: bolder;
     text-transform: capitalize;
 }
 
-header dl dd {
+h1 + dl dd {
     margin: 0 1em 0 0.5em;
 }
 
