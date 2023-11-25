@@ -60,14 +60,14 @@ relpath() {
 }
 
 instantiate() {
-    : "${GENERATOR:?}" "${TARGET:?}" "${TITLE:?}" "${DEST_PATH:?}"
-    path="${1:+"$CONFIG/templates/$1.$TARGET"}"
+    : "${GENERATOR:?}" "${TITLE:?}" "${DEST_PATH:?}"
+    path="${1:+"$CONFIG/templates/$1"}"
     path="${path:-"$SOURCE_PATH"}"
     eval "printf '%s\\n' \"$(sed 's/\\*\(["`]\)/\\\1/g' "$path")\""
 }
 
 run_generator() {
-    TARGET="${1:?}" GENERATOR="${2:?}" SOURCE_PATH="" DEST_PATH="" TITLE="" "$2"
+    GENERATOR="${2:?}" SOURCE_PATH="" DEST_PATH="" TITLE="" "$2"
 }
 
 import() {
@@ -83,19 +83,19 @@ process() {
     ls "$CONFIG/templates" | grep -F '.to.' | LC_ALL=C sort |
     while IFS='' read -r template_filename; do
         source_ext="${template_filename%%.to.*}"
-        TARGET="${template_filename#*.to.}"
+        dest_ext="${template_filename#*.to.}"
         find_files "${root%/}" "*.$source_ext" |
         while IFS='' read -r SOURCE_PATH; do
-            DEST_PATH="${SOURCE_PATH%.$source_ext}.$TARGET"
+            DEST_PATH="${SOURCE_PATH%.$source_ext}.$dest_ext"
             TITLE="$(get_file_title)"
-            "$processor" "$source_ext"
+            "$processor" "$source_ext" "$dest_ext"
         done
     done
 }
 
 generate() {
     println "${DEST_PATH#./}" >&2
-    instantiate "$1.to" > "$DEST_PATH"
+    instantiate "$1.to.$2" > "$DEST_PATH"
 }
 
 main() {

@@ -73,9 +73,9 @@ Recursive templates
 Templates can recursively instantiate other templates, which allows you to extract common parts like headers and footers. The above template could be refactored to:
 
 ```html
-$(instantiate header)
+$(instantiate header.html)
 $(input | smd)
-$(instantiate footer)
+$(instantiate footer.html)
 ```
 
 Now the `header` and `footer` templates can be reused in other templates.
@@ -86,9 +86,9 @@ Source templates
 The templates above are target templates. We can also treat the source files as templates by replacing `input` with `instantiate`:
 
 ```html
-$(instantiate header)
+$(instantiate header.html)
 $(instantiate | smd)
-$(instantiate footer)
+$(instantiate footer.html)
 ```
 
 Now you can process a markdown file that looks like this:

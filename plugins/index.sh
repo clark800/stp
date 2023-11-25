@@ -49,12 +49,12 @@ _generate_listing() {
 
 _generate_index_page() {
     dir="$1"
-    instantiate header
+    instantiate header.html
     println "<nav>"
     println "<h1>$TITLE</h1>"
     _generate_listing "$dir"
     println "</nav>"
-    instantiate footer
+    instantiate footer.html
 }
 
 _is_ok_to_write() {

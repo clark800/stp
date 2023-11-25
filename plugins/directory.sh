@@ -50,14 +50,14 @@ _generate_directory_tree() {
 
 _generate_directory_page() {
     dir="$1"
-    instantiate header
+    instantiate header.html
     println "<nav>"
     println "<h1>$TITLE</h1>"
     if [ -r "$dir/index.html" ]; then
         _generate_directory_tree "$dir"
     fi
     println "</nav>"
-    instantiate footer
+    instantiate footer.html
 }
 
 _generate_directory() {
