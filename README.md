@@ -81,29 +81,6 @@ $(instantiate footer.html)
 Now the `header` and `footer` templates can be reused in other templates.
 
 
-Source templates
-----------------
-The templates above are target templates. We can also treat the source files as templates by replacing `input` with `instantiate`:
-
-```html
-$(instantiate header.html)
-$(instantiate | smd)
-$(instantiate footer.html)
-```
-
-Now you can process a markdown file that looks like this:
-
-```
-Article Title
-=============
-Intro text
-
-$(table_of_contents_md)
-
-Main content here
-```
-
-
 Plugins
 -------
 Any `.sh` shell script you place in the `.stp/plugins` directory will be automatically imported when you run `stp` and any functions imported from plugins will be available in all templates.
