@@ -45,7 +45,7 @@ get_directory_title() {
     if [ "${1%/}" = "." ]; then println "$root_title"; else println "$title"; fi
 }
 
-get_file_title() {
+get_title() {
     _fallback() { format_title "$(basename "$DEST_PATH" ".${DEST_PATH##*.}")"; }
     try "get_title_${SOURCE_PATH##*.}" _fallback
 }
@@ -87,7 +87,7 @@ process() {
         find_files "${root%/}" "*.$source_ext" |
         while IFS='' read -r SOURCE_PATH; do
             DEST_PATH="${SOURCE_PATH%.$source_ext}.$dest_ext"
-            TITLE="$(get_file_title)"
+            TITLE="$(get_title)"
             "$processor" "$source_ext" "$dest_ext"
         done
     done
