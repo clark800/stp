@@ -67,7 +67,7 @@ instantiate() {
 }
 
 run_generator() {
-    GENERATOR="${2:?}" SOURCE_PATH="" DEST_PATH="" TITLE="" "$2"
+    GENERATOR="${1:?}" SOURCE_PATH="" DEST_PATH="" TITLE="" "${2:?}"
 }
 
 import() {

@@ -67,6 +67,6 @@ _generate_directory() {
     _generate_directory_page "." > "$DEST_PATH"
 }
 
-_generate_directory
+run_generator directory _generate_directory
 
 }

@@ -75,6 +75,6 @@ _generate_index() {
     done
 }
 
-_generate_index
+run_generator index _generate_index
 
 }
