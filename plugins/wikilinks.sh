@@ -39,7 +39,7 @@ wikilinks() {
             _substitute_all "$links"
             return
         fi
-        href="${ROOT}$(cat "$slug_path")"
+        href="$ROOT/$(cat "$slug_path")"
         _substitute "$link" "$href" | _substitute_all "$links"
     }
 

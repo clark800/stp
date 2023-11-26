@@ -56,7 +56,7 @@ input() {
 
 root() {
     dir="${DEST_PATH%/*}/"
-    println "${dir#./}" | sed 's|[^/]*/|\.\./|g'
+    println "${dir#./}" | sed 's|[^/]*/|\.\./|g;s|/$||;s|^$|.|'
 }
 
 instantiate() {
