@@ -54,9 +54,9 @@ input() {
     "${@:-cat}" < "${SOURCE_PATH:?}"
 }
 
-relpath() {
+root() {
     dir="${DEST_PATH%/*}/"
-    println "$(println "${dir#./}" | sed 's|[^/]*/|\.\./|g')${1#./}"
+    println "${dir#./}" | sed 's|[^/]*/|\.\./|g'
 }
 
 instantiate() {
@@ -67,7 +67,7 @@ instantiate() {
 }
 
 run_generator() {
-    GENERATOR="${1:?}" SOURCE_PATH="" DEST_PATH="" TITLE="" "${2:?}"
+    GENERATOR="${1:?}" SOURCE_PATH="" DEST_PATH="" ROOT="" TITLE="" "${2:?}"
 }
 
 import() {
@@ -87,14 +87,14 @@ process() {
         find_files "${root%/}" "*.$source_ext" |
         while IFS='' read -r SOURCE_PATH; do
             DEST_PATH="${SOURCE_PATH%.$source_ext}.$dest_ext"
-            "$processor" "$template_filename"
+            TITLE="" "$processor" "$template_filename"
         done
     done
 }
 
 generate() {
     println "${DEST_PATH#./}" >&2
-    TITLE="${TITLE:-$(title)}" instantiate "$1" > "$DEST_PATH"
+    ROOT="$(root)" TITLE="${TITLE:-$(title)}" instantiate "$1" > "$DEST_PATH"
 }
 
 main() {
