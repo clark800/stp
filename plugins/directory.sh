@@ -26,45 +26,42 @@ _get_directory_title() {
     fi
 }
 
+_print_link() {
+    if [ -e "$1" ]; then
+        println "<a href=\"$1/index.html\">$2</a>"
+    else
+        println "$2"
+    fi
+}
+
 _generate_directory_tree() {
-    title="$(_get_directory_title "$1")"
-    subpages="$(_get_subpages "$1")"
+    root="$1"
+    dir="$2"
+    title="$(_get_directory_title "$dir")"
+    subpages="$(_get_subpages "$dir")"
     if [ "$subpages" != "" ]; then
-        if [ "$1" = "$dir" ]; then
+        if [ "$dir" = "$root" ]; then
             println "<details open>"
         else
             println "<details>"
         fi
         println "<summary>"
-        println "<a href=\"$1/index.html\">$title</a>"
+        _print_link "$dir" "$title"
         println "</summary>"
         println "$subpages" | sort |
         while IFS='' read -r path; do
-            _generate_directory_tree "$path"
+            _generate_directory_tree "$root" "$path"
         done
         println "</details>"
     else
-        println "<a href=\"$1/index.html\">$title</a>"
+        _print_link "$dir" "$title"
     fi
-}
-
-_generate_directory_page() {
-    dir="$1"
-    instantiate header.html
-    println "<nav>"
-    println "<h1>$TITLE</h1>"
-    if [ -r "$dir/index.html" ]; then
-        _generate_directory_tree "$dir"
-    fi
-    println "</nav>"
-    instantiate footer.html
 }
 
 _generate_directory() {
     DEST_PATH="./directory.html"
     TITLE="Directory"
-    println "${DEST_PATH#*/}" >&2
-    _generate_directory_page "." > "$DEST_PATH"
+    _generate_directory_tree "." "." | generate directory.html
 }
 
 run_generator directory _generate_directory
