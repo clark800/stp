@@ -1,7 +1,9 @@
 
 meta_tags() {
     if [ -e "$SOURCE_PATH" ]; then
-        sed -n 's|^= \([^:]*\): \(.*\)$|<meta name="\1" content="\2">|p' \
-            "$SOURCE_PATH"
+        A='/[^[:space:]]/,/^[[:space:]]*$/'
+        S='s|^= \([^:]*\): \(.*\)$|<meta name="\1" content="\2">|p'
+        Q='/^[[:space:]]*$/q'
+        sed -n "$A{$S;$Q;}" "$SOURCE_PATH"
     fi
 }
