@@ -88,14 +88,14 @@ process() {
         while IFS='' read -r SOURCE_PATH; do
             DEST_PATH="${SOURCE_PATH%.$source_ext}.$dest_ext"
             TITLE="$(get_title)"
-            "$processor" "$source_ext" "$dest_ext"
+            "$processor" "$template_filename"
         done
     done
 }
 
 generate() {
     println "${DEST_PATH#./}" >&2
-    instantiate "$1.to.$2" > "$DEST_PATH"
+    instantiate "$1" > "$DEST_PATH"
 }
 
 main() {
