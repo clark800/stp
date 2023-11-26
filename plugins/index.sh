@@ -47,16 +47,6 @@ _generate_listing() {
     done
 }
 
-_generate_index_page() {
-    dir="$1"
-    instantiate header.html
-    println "<nav>"
-    println "<h1>$TITLE</h1>"
-    _generate_listing "$dir"
-    println "</nav>"
-    instantiate footer.html
-}
-
 _is_ok_to_write() {
     [ ! -s "$1" ] || _is_generated_index "$1"
 }
@@ -67,9 +57,8 @@ _generate_index() {
         DEST_PATH="$dir/index.html"
         if _is_ok_to_write "$DEST_PATH"; then
             if [ "$(_get_posts "$dir")" != "" ]; then
-                println "${DEST_PATH#./}" >&2
                 TITLE="$(get_directory_title "$dir")"
-                _generate_index_page "$dir" > "$DEST_PATH"
+                _generate_listing "$dir" | generate index.html
             fi
         fi
     done
