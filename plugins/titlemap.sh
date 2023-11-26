@@ -1,7 +1,7 @@
 
 titlemap() {
     _titlemap() {
-        slug="$(slugify "$TITLE")"
+        slug="$(slugify "$(get_title)")"
         slug_path="$TMP/titlemap/$slug"
         if [ -e "$slug_path" ]; then
             println "WARNING: duplicate title slug $slug" >&2

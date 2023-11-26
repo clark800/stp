@@ -87,7 +87,6 @@ process() {
         find_files "${root%/}" "*.$source_ext" |
         while IFS='' read -r SOURCE_PATH; do
             DEST_PATH="${SOURCE_PATH%.$source_ext}.$dest_ext"
-            TITLE="$(get_title)"
             "$processor" "$template_filename"
         done
     done
@@ -95,7 +94,7 @@ process() {
 
 generate() {
     println "${DEST_PATH#./}" >&2
-    instantiate "$1" > "$DEST_PATH"
+    TITLE="${TITLE:-$(get_title)}" instantiate "$1" > "$DEST_PATH"
 }
 
 main() {
