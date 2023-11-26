@@ -45,7 +45,7 @@ get_directory_title() {
     if [ "${1%/}" = "." ]; then println "$root_title"; else println "$title"; fi
 }
 
-get_title() {
+title() {
     _fallback() { format_title "$(basename "$DEST_PATH" ".${DEST_PATH##*.}")"; }
     try "get_title_${SOURCE_PATH##*.}" _fallback
 }
@@ -94,7 +94,7 @@ process() {
 
 generate() {
     println "${DEST_PATH#./}" >&2
-    TITLE="${TITLE:-$(get_title)}" instantiate "$1" > "$DEST_PATH"
+    TITLE="${TITLE:-$(title)}" instantiate "$1" > "$DEST_PATH"
 }
 
 main() {
