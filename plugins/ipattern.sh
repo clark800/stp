@@ -1,9 +1,13 @@
+# ipattern: select a template based on the destination path and instantiate
+# for example, to include a submenu based on the top-level directory name:
+#   $(ipattern '${1:-root}-menu.html')
 
 ipattern() {
 
     _format() {
         pattern="$1"
-        path="${DEST_PATH#./}"
+        path="${DEST_PATH%/*}/"
+        path="${path#./}"
         ifs="$IFS"
         set -f
         IFS='/'
