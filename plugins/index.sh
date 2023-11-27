@@ -57,8 +57,8 @@ _generate_index() {
         DEST_PATH="$dir/index.html"
         if _is_ok_to_write "$DEST_PATH"; then
             if [ "$(_get_posts "$dir")" != "" ]; then
-                TITLE="$(get_directory_title "$dir")"
-                _generate_listing "$dir" | generate index.html
+                title="$(get_directory_title "$dir")"
+                _generate_listing "$dir" | generate index.html "$title"
             fi
         fi
     done

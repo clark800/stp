@@ -87,14 +87,16 @@ process() {
         find_files "${root%/}" "*.$source_ext" |
         while IFS='' read -r SOURCE_PATH; do
             DEST_PATH="${SOURCE_PATH%.$source_ext}.$dest_ext"
-            TITLE="" "$processor" "$template_filename"
+            "$processor" "$template_filename"
         done
     done
+    unset SOURCE_PATH DEST_PATH
 }
 
 generate() {
     println "${DEST_PATH#./}" >&2
-    ROOT="$(root)" TITLE="${TITLE:-$(title)}" instantiate "$1" > "$DEST_PATH"
+    ROOT="$(root)" TITLE="${2:-$(title)}" instantiate "$1" > "$DEST_PATH"
+    unset SOURCE_PATH DEST_PATH ROOT TITLE
 }
 
 main() {
@@ -107,7 +109,7 @@ main() {
             GENERATOR="core" process generate "./${rel#./}"
         else println "Error: invalid path: $path" >&2; fi
     done
-    if [ "$#" = 0 ]; then try post_hook :; fi
+    if [ "$#" = 0 ]; then unset GENERATOR && try post_hook :; fi
 }
 
 main "$@"
