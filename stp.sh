@@ -62,7 +62,7 @@ root() {
 instantiate() {
     : "${GENERATOR:?}" "${DEST_PATH:?}" "${TITLE:?}" "${ROOT:?}"
     path="${1:+"$CONFIG/templates/$1"}"
-    path="${path:-"$SOURCE_PATH"}"
+    path="${path:-"${SOURCE_PATH:?}"}"
     eval "printf '%s\\n' \"$(sed 's/\\*\(["`]\)/\\\1/g' "$path")\""
 }
 
