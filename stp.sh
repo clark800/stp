@@ -92,7 +92,7 @@ process() {
 generate() {
     println "${DEST_PATH#./}" >&2
     ROOT="$(root)" TITLE="${2:-$(title)}" instantiate "$1" > "$DEST_PATH"
-    unset SOURCE_PATH DEST_PATH ROOT TITLE
+    unset ROOT TITLE
 }
 
 main() {
