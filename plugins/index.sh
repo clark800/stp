@@ -54,11 +54,12 @@ _is_ok_to_write() {
 _generate_index() {
     _find_subdirs "." |
     while IFS='' read -r dir; do
-        DEST_PATH="$dir/index.html"
-        if _is_ok_to_write "$DEST_PATH"; then
+        dest_path="$dir/index.html"
+        if _is_ok_to_write "$dest_path"; then
             if [ "$(_get_posts "$dir")" != "" ]; then
                 title="$(get_directory_title "$dir")"
-                _generate_listing "$dir" | generate index.html "$title"
+                _generate_listing "$dir" |
+                    DEST_PATH="$dest_path" generate index.html "$title"
             fi
         fi
     done

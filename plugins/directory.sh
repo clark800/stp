@@ -59,8 +59,8 @@ _generate_directory_tree() {
 }
 
 _generate_directory() {
-    DEST_PATH="./directory.html"
-    _generate_directory_tree "." "." | generate directory.html "Directory"
+    _generate_directory_tree "." "." |
+        DEST_PATH="./directory.html" generate directory.html "Directory"
 }
 
 GENERATOR="directory" _generate_directory
