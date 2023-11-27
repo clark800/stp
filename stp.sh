@@ -66,10 +66,6 @@ instantiate() {
     eval "printf '%s\\n' \"$(sed 's/\\*\(["`]\)/\\\1/g' "$path")\""
 }
 
-run_generator() {
-    GENERATOR="${1:?}" SOURCE_PATH="" DEST_PATH="" ROOT="" TITLE="" "${2:?}"
-}
-
 import() {
     if [ -d "$1" ]; then
         for plugin in "$1"/*.sh; do

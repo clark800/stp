@@ -63,6 +63,7 @@ _generate_directory() {
     _generate_directory_tree "." "." | generate directory.html "Directory"
 }
 
-run_generator directory _generate_directory
+GENERATOR="directory" _generate_directory
+unset GENERATOR
 
 }

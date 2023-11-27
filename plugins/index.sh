@@ -64,6 +64,7 @@ _generate_index() {
     done
 }
 
-run_generator index _generate_index
+GENERATOR="index" _generate_index
+unset GENERATOR
 
 }
