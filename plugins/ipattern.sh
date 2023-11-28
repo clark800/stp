@@ -18,6 +18,9 @@ ipattern() {
     }
 
     for pattern; do
+        if [ "$pattern" = "" ]; then
+            return
+        fi
         filename="$(_format "$pattern")"
         if [ -e "$CONFIG/templates/$filename" ]; then
             instantiate "$filename"
