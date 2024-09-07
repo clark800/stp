@@ -27,7 +27,8 @@ _get_posts() {
             index="$(_get_meta_tag_content ".index" < "$path")"
             if [ "$index" != "no" ]; then
                 date="$(_get_meta_tag_content "$INDEX_DATE_KEY" < "$path")"
-                println "$date ${relpath#./}"
+                # use pipe separator so posts with no date are sorted higher
+                println "$date|${relpath#./}"
             fi
         fi
     done
@@ -35,10 +36,10 @@ _get_posts() {
 
 _generate_listing() {
     dir="$1"
-    _get_posts "$dir" | sort -r -k 1 |
+    _get_posts "$dir" | sort -r |
     while IFS='' read -r line; do
-        date="${line%% *}"
-        relpath="${line#* }"
+        date="${line%%|*}"
+        relpath="${line#*|}"
         path="${dir%/}/$relpath"
         title="$(_get_html_title "$path")"
         println "<section>"
