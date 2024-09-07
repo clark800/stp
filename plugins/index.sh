@@ -24,8 +24,11 @@ _get_posts() {
     while IFS='' read -r relpath; do
         path="${dir%/}/${relpath#./}"
         if ! _is_generated_index "$path"; then
-            date="$(_get_meta_tag_content "$INDEX_DATE_KEY" < "$path")"
-            println "$date ${relpath#./}"
+            index="$(_get_meta_tag_content ".index" < "$path")"
+            if [ "$index" != "no" ]; then
+                date="$(_get_meta_tag_content "$INDEX_DATE_KEY" < "$path")"
+                println "$date ${relpath#./}"
+            fi
         fi
     done
 }
