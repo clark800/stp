@@ -1,0 +1,47 @@
+.gallery {
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 10px auto;
+    max-width: 850px;
+    position: relative;
+    padding-top: 560px;
+}
+
+.gallery img {
+    max-width: 100%;
+    max-height: 560px;
+    vertical-align: top;
+}
+
+.gallery > div > img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.gallery > div > label {
+    padding-top: 6px;
+    margin: 6px;
+    display: block;
+}
+
+.gallery > div > input {
+    position: absolute;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.gallery > div > label > img {
+    max-width: 150px;
+}
+
+.gallery > div > input:checked + img {
+    opacity: 1;
+}
+
+.gallery > div > input:checked ~ label > img {
+    box-shadow: 0 0 0 3px #333;
+}
