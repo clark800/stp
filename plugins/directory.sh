@@ -1,3 +1,4 @@
+DIRECTORY_TITLE="${STP_DIRECTORY_TITLE:-Directory}"
 
 directory() {
 
@@ -60,7 +61,7 @@ _generate_directory_tree() {
 
 _generate_directory() {
     _generate_directory_tree "." "." |
-        DEST_PATH="./directory.html" generate directory.html "Directory"
+        DEST_PATH="./directory.html" generate directory.html "$DIRECTORY_TITLE"
 }
 
 GENERATOR="directory" _generate_directory
