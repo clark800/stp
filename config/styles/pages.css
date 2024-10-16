@@ -1,0 +1,14 @@
+html {
+    scroll-snap-type: y mandatory;
+}
+
+body {
+    scroll-snap-type: y mandatory;
+}
+
+.page {
+    width: 100vw;
+    height: 100vh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+}
