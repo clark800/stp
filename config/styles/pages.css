@@ -11,6 +11,9 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: clip;
+    box-sizing: border-box;
+    padding-left: 3vw;
+    padding-right: 3vw;
     scroll-snap-align: start;
     scroll-snap-stop: always;
 }
