@@ -1,5 +1,14 @@
-$(instantiate pheader.html)
-<article>
-$(input | wikilinks | smd | h1_pages | add_heading_ids)
-</article>
-$(instantiate footer.html)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="generator" content="stp:$GENERATOR">
+$(meta_tags)
+<title>$TITLE</title>
+<link rel="stylesheet" href="$ROOT/$CONFIG/styles/default.css">
+<link rel="stylesheet" href="$ROOT/$CONFIG/styles/pages.css">
+</head>
+<body>
+$(input | smd | h1_pages | add_heading_ids)
+</body>
+</html>
