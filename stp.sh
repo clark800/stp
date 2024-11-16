@@ -90,9 +90,11 @@ process() {
 }
 
 generate() {
-    println "${DEST_PATH#./}" >&2
-    ROOT="$(root)" TITLE="${2:-$(title)}" instantiate "$1" > "$DEST_PATH"
-    unset ROOT TITLE
+    if [ ! -e "$SOURCE_PATH" ] || [ "$SOURCE_PATH" -nt "$DEST_PATH" ]; then
+        println "${DEST_PATH#./}" >&2
+        ROOT="$(root)" TITLE="${2:-$(title)}" instantiate "$1" > "$DEST_PATH"
+        unset ROOT TITLE
+    fi
 }
 
 main() {
