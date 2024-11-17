@@ -98,7 +98,6 @@ generate() {
 }
 
 main() {
-    import "$CONFIG/plugins"
     import "$CONFIG/hooks"
     if [ "$#" = 0 ]; then try pre_hook :; fi
     for path in "${@:-.}"; do
@@ -110,4 +109,5 @@ main() {
     if [ "$#" = 0 ]; then unset GENERATOR && try post_hook :; fi
 }
 
-main "$@"
+import "$CONFIG/plugins"
+if [ "$1" == "-e" ]; then is_function "$2" && shift && "$@"; else main "$@"; fi
