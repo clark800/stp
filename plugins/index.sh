@@ -6,6 +6,10 @@ _is_generated_index() {
     grep -q -x "<meta name=\"generator\" content=\"stp:$GENERATOR\">" "$1"
 }
 
+_is_no_index() {
+    grep -q -x '<meta name=".index" content="no">' "$1"
+}
+
 _get_html_title() {
     tr -d '\r\n' < "$1" | sed -n 's|.*<title>\(.*\)</title>.*|\1|p'
 }
@@ -23,13 +27,11 @@ _get_posts() {
     (cd "$dir" && find_files "." "*.html") |
     while IFS='' read -r relpath; do
         path="${dir%/}/${relpath#./}"
-        if ! _is_generated_index "$path"; then
-            index="$(_get_meta_tag_content ".index" < "$path")"
-            if [ "$index" != "no" ]; then
-                date="$(_get_meta_tag_content "$INDEX_DATE_KEY" < "$path")"
-                # use pipe separator so posts with no date are sorted higher
-                println "$date|${relpath#./}"
-            fi
+        # -s makes sure we don't index the file we are currently generating
+        if [ -s "$path" ] && ! _is_no_index "$path"; then
+            date="$(_get_meta_tag_content "$INDEX_DATE_KEY" < "$path")"
+            # use pipe separator so posts with no date are sorted higher
+            println "$date|${relpath#./}"
         fi
     done
 }
@@ -55,11 +57,15 @@ _is_ok_to_write() {
     [ ! -s "$1" ] || _is_generated_index "$1"
 }
 
+_needs_update() {
+    [ ! -s "$1" ] || [ "$(find "${1%/*}" -newer "$1")" ]
+}
+
 _generate_index() {
     _find_subdirs "." |
     while IFS='' read -r dir; do
         dest_path="$dir/index.html"
-        if _is_ok_to_write "$dest_path"; then
+        if _is_ok_to_write "$dest_path" && _needs_update "$dest_path"; then
             if [ "$(_get_posts "$dir")" != "" ]; then
                 title="$(get_directory_title "$dir")"
                 _generate_listing "$dir" |
