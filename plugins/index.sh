@@ -58,7 +58,7 @@ _is_ok_to_write() {
 }
 
 _needs_update() {
-    [ ! -s "$1" ] || [ "$(find "${1%/*}" -newer "$1")" ]
+    [ ! -s "$1" ] || [ "$(find "${1%/*}" -name "*.html" -newer "$1")" ]
 }
 
 _generate_index() {
