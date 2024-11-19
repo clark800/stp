@@ -62,6 +62,10 @@ _needs_update() {
 }
 
 _generate_index() {
+    # index generation is done as a preorder traversal because each index needs
+    # all its parents to generate the titles for the breadcrumb navigation and
+    # parents do not need children because index files are not indexed - they
+    # are listed in the directory which is generated after all index files
     _find_subdirs "." |
     while IFS='' read -r dir; do
         dest_path="$dir/index.html"
