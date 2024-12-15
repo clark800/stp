@@ -75,13 +75,13 @@ details[open] > summary::before {
     transform: scale(1.25, 0.8);
 }
 
+details {
+    line-height: 2em;
+}
+
 nav > details {
     margin-left: 1em;
     margin-top: 0.5em;
-}
-
-nav details {
-    line-height: 2em;
 }
 
 nav details > details {
