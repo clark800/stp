@@ -1,4 +1,4 @@
-$(instantiate header.html)
+$(instantiate header.html | tr -s '\n')
 <article>
 $(input | tex_to_html | add_heading_ids)
 </article>
