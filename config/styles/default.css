@@ -20,6 +20,8 @@ sup a {
 }
 
 sup a:hover::after {
+    position: absolute;
+    background-color: #f5f5f5;
     content: "[" attr(href) "]";
 }
 
