@@ -12,6 +12,7 @@ a {
     color: #1d1d1d;
 }
 
+/* footnote reference */
 sup a {
     text-decoration: none;
     font-family: "Times New Roman";
@@ -23,6 +24,14 @@ sup a:hover::after {
     position: absolute;
     background-color: #f5f5f5;
     content: "[" attr(href) "]";
+}
+
+/* footnotes */
+p[id]::before {
+    color: #888;
+    font-size: small;
+    vertical-align: middle;
+    content: "[" attr(id) "]";
 }
 
 li p {
