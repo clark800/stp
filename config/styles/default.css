@@ -218,12 +218,6 @@ blockquote p {
   font-style: italic;
 }
 
-/* footnotes */
-p[id] {
-    display: list-item;
-    margin-left: 1em;
-}
-
 :target {
     border: 1px solid #aaa;
     border-radius: 5px;
