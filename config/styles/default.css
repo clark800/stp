@@ -20,10 +20,12 @@ sup a {
     user-select: none;
 }
 
-sup a:hover::after {
-    position: absolute;
-    background-color: #f5f5f5;
-    content: "[" attr(href) "]";
+@media (hover: hover) {
+    sup a:hover::after {
+        position: absolute;
+        background-color: #f5f5f5;
+        content: "[" attr(href) "]";
+    }
 }
 
 /* footnotes */
@@ -112,8 +114,10 @@ nav a {
     text-decoration: none;
 }
 
-nav a:hover {
-    text-decoration: underline;
+@media (hover: hover) {
+    nav a:hover {
+        text-decoration: underline;
+    }
 }
 
 header nav {
