@@ -110,4 +110,4 @@ main() {
 }
 
 import "$CONFIG/plugins"
-if [ "$1" == "-e" ]; then is_function "$2" && shift && "$@"; else main "$@"; fi
+if [ "$1" = "-e" ]; then is_function "$2" && shift && "$@"; else main "$@"; fi

@@ -7,7 +7,7 @@ substitute() {
     }
 
     _is_builtin() {
-        /bin/sh -c "[ \"\$(command -v \"$1\")\" == \"$1\" ]"
+        /bin/sh -c "[ \"\$(command -v \"$1\")\" = \"$1\" ]"
     }
 
     while IFS='' read -r line; do
