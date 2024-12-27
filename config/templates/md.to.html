@@ -1,5 +1,5 @@
 $(instantiate header.html | tr -s '\n')
 <article>
-$(input | wikilinks | smd | add_heading_ids)
+$(input | erase_dl | wikilinks | smd | add_heading_ids)
 </article>
 $(instantiate footer.html)

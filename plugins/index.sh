@@ -7,7 +7,7 @@ _is_generated_index() {
 }
 
 _is_no_index() {
-    grep -q -x '<meta name=".index" content="no">' "$1"
+    grep -q -x '<meta name="index" content="no">' "$1"
 }
 
 _get_html_title() {
