@@ -57,8 +57,20 @@ _is_ok_to_write() {
     [ ! -s "$1" ] || _is_generated_index "$1"
 }
 
+_is_any_indexed() {
+    while IFS='' read -r html_path; do
+        if ! _is_no_index "$html_path"; then
+            return 0
+        fi
+    done
+    return 1
+}
+
 _needs_update() {
-    [ ! -s "$1" ] || [ "$(find "${1%/*}" -name "*.html" -newer "$1")" ]
+    if [ ! -s "$1" ]; then
+       return 0  # true
+    fi
+    find "${1%/*}" -name "*.html" -newer "$1" | _is_any_indexed
 }
 
 _generate_index() {
