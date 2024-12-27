@@ -59,9 +59,15 @@ _generate_directory_tree() {
     fi
 }
 
+_needs_update() {
+    [ ! -s "$1" ] || [ "$(find "${1%/*}" -name "index.html" -newer "$1")" ]
+}
+
 _generate_directory() {
-    _generate_directory_tree "." "." |
+    if _needs_update "./directory.html"; then
+        _generate_directory_tree "." "." |
         DEST_PATH="./directory.html" generate directory.html "$DIRECTORY_TITLE"
+    fi
 }
 
 GENERATOR="directory" _generate_directory
