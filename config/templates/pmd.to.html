@@ -9,6 +9,6 @@ $(meta_tags)
 <link rel="stylesheet" href="$ROOT/$CONFIG/styles/pages.css">
 </head>
 <body>
-$(input | smd | h1_pages | add_heading_ids)
+$(input | substitute | erase_dl | smd | h1_pages | add_heading_ids)
 </body>
 </html>
